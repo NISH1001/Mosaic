@@ -55,7 +55,7 @@ void circleFill(SDL_Renderer *renderer, int cx, int cy, int r, ColorRGBA color)
     }
 }
 
-void Circle(SDL_Renderer *renderer, int cx, int cy, int r, ColorRGBA color)
+void circle(SDL_Renderer *renderer, int cx, int cy, int r, ColorRGBA color)
 {
     int x = 0;
     int y = r;
