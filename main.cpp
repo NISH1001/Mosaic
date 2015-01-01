@@ -31,7 +31,7 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	circle(renderer, 400, 300, 100, ColorRGBA(255,0,0,0));
+	circleFill(renderer, 400, 300, 100, ColorRGBA(255,0,0,0));
 	
 	SDL_RenderPresent(renderer);
 	
