@@ -1,14 +1,32 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "paradoxlib/pixel.h"
-#include "paradoxlib/bresenham.h"
-#include "paradoxlib/circle.h"
+//#include "paradoxlib/pixel.h"
+//#include "paradoxlib/bresenham.h"
+//#include "paradoxlib/circle.h"
+#include "src/primitives.cpp"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
+using namespace Primitives;
 
 int main()
 {
+	int r, rx, ry, xc, yc;
+	std::cout << "Enter the radius of circle:";
+	std::cin >> r;
+	fflush(stdin);
+	std::cout << "Enter the x-radius of ellipse:";
+	std::cin >> rx; 
+	fflush(stdin);
+	std::cout << "Enter y-radius of ellipse:";
+	std::cin >> ry;
+	fflush(stdin);
+	std::cout << "Enter the Xcenter:";
+	std::cin >> xc;
+	fflush(stdin);
+	std::cout << "Enter the Ycenter:";
+	std::cin >> yc;
+
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		std::cout<<"cannot initialize"<<std::endl;
@@ -31,11 +49,12 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	circleFill(renderer, 400, 300, 100, ColorRGBA(255,0,0,0));
+	circle(renderer, xc, yc, r, ColorRGBA(255,0,0,0));
+	ellipse(renderer, xc, yc, rx, ry, ColorRGBA(255,0,0,0));
 	
 	SDL_RenderPresent(renderer);
 	
-	SDL_Delay(2000);
+	SDL_Delay(3000);
 
 	SDL_DestroyWindow(window);
 	SDL_Quit();
