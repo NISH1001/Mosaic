@@ -18,7 +18,7 @@ void Primitives::ellipseFill(SDL_Renderer *renderer, int cx, int cy, int rx, int
 	int x = 0;
 	int y = ry;
 
-	int p = ry2 - rx2*ry + rx2/4;
+	int p = ry2 - rx2*ry + rx2/4.f + 0.5f;
 	
 	ellipsePlot(renderer, cx, cy, x, y, color);
 	
@@ -73,7 +73,7 @@ void Primitives::ellipse(SDL_Renderer *renderer, int cx, int cy, int rx, int ry,
 	int x = 0;
 	int y = ry;
 
-	int p = ry2 - rx2*ry + rx2/4;
+	int p = ry2 - rx2*ry + rx2/4.f + 0.5f;
 	
 	ellipsePlot(renderer, cx, cy, x, y, color);
 	
