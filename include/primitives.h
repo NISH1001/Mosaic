@@ -4,7 +4,7 @@
 namespace Primitives
 {
 
-	void ellipsePlot(SDL_Renderer*renderer, int cx, int cy, int x, int y, ColorRGBA color);
+	void ellipsePlot(SDL_Renderer*renderer, int cx, int cy, int rx, int ry, ColorRGBA color);
 
 	void ellipseFill(SDL_Renderer *renderer, int cx, int cy, int rx, int ry, ColorRGBA color);
 
