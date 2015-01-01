@@ -1,13 +1,10 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-//#include "paradoxlib/pixel.h"
-//#include "paradoxlib/bresenham.h"
-//#include "paradoxlib/circle.h"
 #include "src/primitives.cpp"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
-using namespace Primitives;
+//using namespace Primitives;
 
 int main()
 {
@@ -49,8 +46,8 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	circle(renderer, xc, yc, r, ColorRGBA(255,0,0,0));
-	ellipse(renderer, xc, yc, rx, ry, ColorRGBA(255,0,0,0));
+	Primitives::circle(renderer, xc, yc, r, ColorRGBA(255,0,0,0));
+	Primitives::ellipse(renderer, xc, yc, rx, ry, ColorRGBA(255,0,0,0));
 	
 	SDL_RenderPresent(renderer);
 	
