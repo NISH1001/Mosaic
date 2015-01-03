@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <assert.h>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <vector>
@@ -9,12 +11,7 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-void triangle(SDL_Renderer *renderer, int x1, int y1, int x2, int y2, int x3, int y3, ColorRGBA color)
-{
-    Primitives::bresenham(renderer, x1, y1, x2, y2 , color);
-    Primitives::bresenham(renderer, x2, y2, x3, y3, color);
-    Primitives::bresenham(renderer, x3, y3, x1, y1, color);
-}
+
 
 int main()
 {
@@ -40,12 +37,14 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-    Primitives::triangleFlatFill(renderer, 400, 50, 100, 700, 200, ColorRGBA(255,0,0,0));
-    Primitives::triangleFlatFill(renderer, 400, 400, 100, 700, 200, ColorRGBA(255,0,0,0));
+	Primitives::triangle(renderer, Point2D(10,550), Point2D(10,400), Point2D(50, 450), ColorRGBA(255,0,0,0));
+	Primitives::triangleFill(renderer, 50, 400, 200, 100, 100,500, ColorRGBA(255,0,0,0));
+	Primitives::triangleFill(renderer, 600, 20, 400, 200, 200,50, ColorRGBA(255,0,0,0));
+	Primitives::triangleFill(renderer, Point2D(400,300), Point2D(800,0), Point2D(800,100), ColorRGBA(255,0,0,0));
 	
 	SDL_RenderPresent(renderer);
 	
-	SDL_Delay(3000);
+	SDL_Delay(1000 * 3);
 
 	SDL_DestroyWindow(window);
 	SDL_Quit();

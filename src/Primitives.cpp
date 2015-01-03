@@ -169,6 +169,11 @@ void Primitives::bresenham(SDL_Renderer *renderer, int xstart, int ystart, int x
 	}
 }
 
+void Primitives::bresenham(SDL_Renderer *renderer, const Point2D & start, const Point2D & end, ColorRGBA color)
+{
+	bresenham(renderer, start.x, start.y, end.x, end.y, color);
+}
+
 
 void Primitives::circlePlot(SDL_Renderer *renderer, int cx, int cy, int x, int y, ColorRGBA color)
 {
@@ -249,9 +254,32 @@ void Primitives::circle(SDL_Renderer *renderer, int cx, int cy, int r, ColorRGBA
 
 /*---------------------------- TRIANGLE------------------*/
 
-void Primitives::triangleFlatFill(SDL_Renderer *renderer, int xt, int yt, 
+/* sort the point according to y */
+void Primitives::TriangleHelper::sortY(int & x1, int & y1, int & x2, int & y2, int & x3, int & y3) 
+{
+	if (y1 > y2) 
+	{
+		std::swap(x1, x2);
+		std::swap(y1, y2);
+	}
+	if (y2 > y3) 
+	{
+		std::swap(x2, x3);
+		std::swap(y2, y3);
+	} ///largest yvalue coord is at 3
+	if (y1 > y2) 
+	{
+		std::swap(x1, x2);
+		std::swap(y1, y2);
+	}
+}
+
+/* just a triangle with a horizontal side */
+void Primitives::TriangleHelper::triangleFlatFill(SDL_Renderer *renderer, int xt, int yt, 
 										int xb1, int xb2, int yb, ColorRGBA color)
 {
+	if(yt == yb) return;
+	
 	Line line1(xt, yt, xb1, yb);
 	line1.nextPoint();
 	Line line2(xt, yt, xb2, yb);
@@ -272,4 +300,45 @@ void Primitives::triangleFlatFill(SDL_Renderer *renderer, int xt, int yt,
 
 		if(!line2.nextPoint()) break;
 	}
+}
+
+/* real public function */
+void Primitives::triangleFill(SDL_Renderer *renderer, int x1, int y1, int x2, int y2, int x3, int y3, ColorRGBA color)
+{
+    TriangleHelper::sortY(x1, y1, x2, y2, x3, y3);
+
+    if(y2 == y3)
+    {
+    	TriangleHelper::triangleFlatFill(renderer, x1, y1, x2, x3, y2, color);
+    }
+
+    else if(y1 == y2)
+    {
+    	TriangleHelper::triangleFlatFill(renderer, x3, y3, x1, x2, y1, color);
+    }
+
+    else
+    {
+    	int x4 = x1 == x3 ? x1 : (x1 + (int)((y2 - y1) * 1.0 * (x3 - x1) / (y3 - y1)));
+    	TriangleHelper::triangleFlatFill(renderer, x1, y1, x2, x4, y2, color);
+		TriangleHelper::triangleFlatFill(renderer, x3, y3, x2, x4, y2, color);
+		Primitives::bresenham(renderer, x2, y2, x4, y2, color);
+    }
+}
+
+void Primitives::triangleFill(SDL_Renderer *renderer, Point2D p1, Point2D p2, Point2D p3, ColorRGBA color)
+{
+	triangleFill(renderer, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, color);
+}
+
+void Primitives::triangle(SDL_Renderer *renderer, int x1, int y1, int x2 ,int y2, int x3, int y3, ColorRGBA color)
+{
+	Primitives::bresenham(renderer, x1, y1, x2, y2, color);
+	Primitives::bresenham(renderer, x2, y2, x3, y3, color);
+	Primitives::bresenham(renderer, x1, y1, x3, y3, color);
+}
+
+void Primitives::triangle(SDL_Renderer *renderer, Point2D p1, Point2D p2, Point2D p3, ColorRGBA color)
+{
+	triangle(renderer, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y,color);
 }
