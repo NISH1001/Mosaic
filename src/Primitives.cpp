@@ -1,4 +1,4 @@
-#include <primitives.h>
+#include <Primitives.h>
 
 void Primitives::ellipsePlot(SDL_Renderer *renderer, int cx, int cy, int x, int y, ColorRGBA color)
 {
@@ -247,3 +247,29 @@ void Primitives::circle(SDL_Renderer *renderer, int cx, int cy, int r, ColorRGBA
 }
 
 
+/*---------------------------- TRIANGLE------------------*/
+
+void Primitives::triangleFlatFill(SDL_Renderer *renderer, int xt, int yt, 
+										int xb1, int xb2, int yb, ColorRGBA color)
+{
+	Line line1(xt, yt, xb1, yb);
+	line1.nextPoint();
+	Line line2(xt, yt, xb2, yb);
+	line2.nextPoint();
+	
+	while(1)
+	{
+		if((line1.m_currentPoint.x == xb1) &&  (line2.m_currentPoint.x==xb2))
+			break;
+
+		while(line1.m_currentPoint.y != line2.m_currentPoint.y)
+		{
+			if(!line1.nextPoint())
+				break;
+		}
+		Line scanline(line1.m_currentPoint.x, line1.m_currentPoint.y, line2.m_currentPoint.x, line2.m_currentPoint.y);
+		scanline.draw(renderer, color);
+
+		if(!line2.nextPoint()) break;
+	}
+}

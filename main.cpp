@@ -1,29 +1,23 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "src/primitives.cpp"
+#include <vector>
+#include <pixel.h>
+#include <Primitives.h>
+#include <Point2D.h>
+#include <Line.h>
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
-//using namespace Primitives;
+
+void triangle(SDL_Renderer *renderer, int x1, int y1, int x2, int y2, int x3, int y3, ColorRGBA color)
+{
+    Primitives::bresenham(renderer, x1, y1, x2, y2 , color);
+    Primitives::bresenham(renderer, x2, y2, x3, y3, color);
+    Primitives::bresenham(renderer, x3, y3, x1, y1, color);
+}
 
 int main()
 {
-	int r, rx, ry, xc, yc;
-	std::cout << "Enter the radius of circle:";
-	std::cin >> r;
-	fflush(stdin);
-	std::cout << "Enter the x-radius of ellipse:";
-	std::cin >> rx; 
-	fflush(stdin);
-	std::cout << "Enter y-radius of ellipse:";
-	std::cin >> ry;
-	fflush(stdin);
-	std::cout << "Enter the Xcenter:";
-	std::cin >> xc;
-	fflush(stdin);
-	std::cout << "Enter the Ycenter:";
-	std::cin >> yc;
-
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		std::cout<<"cannot initialize"<<std::endl;
@@ -46,8 +40,8 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	Primitives::circle(renderer, xc, yc, r, ColorRGBA(255,0,0,0));
-	Primitives::ellipse(renderer, xc, yc, rx, ry, ColorRGBA(255,0,0,0));
+    Primitives::triangleFlatFill(renderer, 400, 50, 100, 700, 200, ColorRGBA(255,0,0,0));
+    Primitives::triangleFlatFill(renderer, 400, 400, 100, 700, 200, ColorRGBA(255,0,0,0));
 	
 	SDL_RenderPresent(renderer);
 	

@@ -1,5 +1,6 @@
 #pragma once
-#include "pixel.h"
+#include <pixel.h>
+#include <Line.h>
 
 namespace Primitives
 {
@@ -18,4 +19,5 @@ namespace Primitives
 	
 	void circle(SDL_Renderer *renderer, int cx, int cy, int r, ColorRGBA color);
 
+	void triangleFlatFill(SDL_Renderer *renderer, int xt, int yt, int xb1, int xb2, int yb, ColorRGBA color);
 }
