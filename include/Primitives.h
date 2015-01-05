@@ -37,4 +37,5 @@ namespace Primitives
 		std::vector<Point2D> convexHull(std::vector<Point2D> P);
 	}
 	void polygonFill(SDL_Renderer *renderer, const std::vector<Point2D> & points, ColorRGBA color);
+	void polygon(SDL_Renderer *renderer, const std::vector<Point2D> & points, ColorRGBA color);
 }

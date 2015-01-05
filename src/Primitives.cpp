@@ -390,3 +390,14 @@ void Primitives::polygonFill(SDL_Renderer *renderer, const std::vector<Point2D> 
 		Primitives::triangleFill(renderer, convexPoints[0], convexPoints[i+1], convexPoints[i+2], color);
 	}
 }
+
+void Primitives::polygon(SDL_Renderer *renderer, const std::vector<Point2D> & points, ColorRGBA color)
+{
+	std::vector<Point2D> convexPoints = PolygonHelper::convexHull(points);
+	//Primitives::bresenham(renderer, convexPoints[0], convexPoints[2], color);
+	for(int i=0; i< convexPoints.size(); i++)
+	{
+		Primitives::bresenham(renderer, convexPoints[i], convexPoints[i+1], color);
+	}
+	Primitives::bresenham(renderer, convexPoints[0], convexPoints[convexPoints.size()-1], color);
+}

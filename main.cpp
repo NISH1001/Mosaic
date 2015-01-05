@@ -7,6 +7,7 @@
 #include <Primitives.h>
 #include <Point2D.h>
 #include <Line.h>
+#include <Transform.h>
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
@@ -20,7 +21,7 @@ int main()
 		return -1;
 	}
 
-	SDL_Window *window =SDL_CreateWindow("circle", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+	SDL_Window *window =SDL_CreateWindow("transform", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
 	
 	if(!window)
 		return -1;
@@ -35,17 +36,13 @@ int main()
 	
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
-	
-	//Primitives::triangle(renderer, Point2D(10,550), Point2D(10,400), Point2D(50, 450), ColorRGBA(255,0,0,0));
-	//Primitives::triangleFill(renderer, 50, 400, 200, 100, 100,500, ColorRGBA(255,0,0,0));
-	//Primitives::triangleFill(renderer, 600, 20, 400, 200, 200,50, ColorRGBA(255,0,0,0));
-	//Primitives::triangleFill(renderer, Point2D(400,300), Point2D(800,0), Point2D(800,100), ColorRGBA(255,0,0,0));
-	
 
-	//std::vector<Point2D> points = {	Point2D(200,50), Point2D(400,400), Point2D(100,300)	};
-	std::vector<Point2D> points = {	Point2D(400,0), Point2D(200,100), Point2D(700,150), Point2D(700,200), Point2D(200,200), Point2D(400,50),
-									Point2D(400,400)};
+	std::vector<Point2D> points = {Point2D(50,50), Point2D(400,400), Point2D(250, 50)};
 	Primitives::polygonFill(renderer, points, ColorRGBA(255,0,0,0));
+
+	std::vector<Point2D> scaled = Transform::scale(points, 400, 400, 0.5, 0.5);
+	scaled = Transform::rotate(scaled, 400,400,30);
+	Primitives::polygonFill(renderer, scaled, ColorRGBA(255,0,0,0));	
 	
 	SDL_RenderPresent(renderer);
 	
