@@ -1,6 +1,7 @@
 #pragma once
 #include <pixel.h>
 #include <Line.h>
+#include <algorithm>
 
 namespace Primitives
 {
@@ -29,4 +30,11 @@ namespace Primitives
 		void triangleFlatFill(SDL_Renderer *renderer, int xt, int yt, int xb1, int xb2, int yb, ColorRGBA color);
 		void sortY(int & x1, int & y1, int & x2, int & y2, int & x3, int & y3) ;
 	}
+
+	namespace PolygonHelper
+	{
+		double cross(const Point2D & O, const Point2D & A, const Point2D & B);
+		std::vector<Point2D> convexHull(std::vector<Point2D> P);
+	}
+	void polygonFill(SDL_Renderer *renderer, const std::vector<Point2D> & points, ColorRGBA color);
 }

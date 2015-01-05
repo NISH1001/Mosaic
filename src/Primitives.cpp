@@ -342,3 +342,51 @@ void Primitives::triangle(SDL_Renderer *renderer, Point2D p1, Point2D p2, Point2
 {
 	triangle(renderer, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y,color);
 }
+
+
+/*---------------- CONVEX POLYGON--------------------------------*/
+
+double Primitives::PolygonHelper::cross(const Point2D & O, const Point2D & A, const Point2D & B)
+{
+	return (A.x - O.x) * (B.y - O.y) - (A.y - O.y) * (B.x - O.x);
+}
+
+std::vector<Point2D> Primitives::PolygonHelper::convexHull(std::vector<Point2D> P)
+{
+	int n = P.size();
+	int k = 0;
+	std::vector<Point2D> H;
+    H.reserve(2*n);
+
+	std::sort(P.begin(), P.end(), [](Point2D p, Point2D q){return p<q;});
+
+	//build upper hull
+	for(int i=0; i<n; i++)
+	{
+		while(k>=2 && PolygonHelper::cross(H[k-2], H[k-1], P[i]) <=0)
+			k--;
+
+		H[k++] = P[i];
+	}
+
+	for(int i=n-2, t = k+1; i>=0; i--)	
+	{
+		while (k >= t && PolygonHelper::cross(H[k-2], H[k-1], P[i]) <= 0) 
+			k--;
+
+		H[k++] = P[i];
+	}
+
+	H.resize(k);
+	return H;
+}
+
+void Primitives::polygonFill(SDL_Renderer *renderer, const std::vector<Point2D> & points, ColorRGBA color)
+{
+	std::vector<Point2D> convexPoints = PolygonHelper::convexHull(points);
+	Primitives::bresenham(renderer, convexPoints[0], convexPoints[2], color);
+	for(int i=0; i< convexPoints.size()-2; i++)
+	{
+		Primitives::triangleFill(renderer, convexPoints[0], convexPoints[i+1], convexPoints[i+2], color);
+	}
+}

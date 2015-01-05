@@ -8,6 +8,8 @@ struct Point2D
 	int y;
 
 	Point2D(int xx, int yy) : x(xx) , y(yy) {}
+	Point2D() {} 
+//	~Point2D(void) {}
 
 	bool operator==(const Point2D & point);
 	bool operator>(const Point2D & point);

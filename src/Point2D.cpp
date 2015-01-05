@@ -7,12 +7,12 @@ bool Point2D::operator==(const Point2D & point)
 
 bool Point2D::operator>(const Point2D & point)
 {
-	return ((x>point.x) && (y>point.y));
+	return (x>point.x) || ((x>point.x) && (y>point.y));
 }
 
 bool Point2D::operator<(const Point2D & point)
 {
-	return ((x<point.x) && (y<point.y));
+	return (x<point.x) || ((x<point.x) && (y<point.y));
 }
 
 Point2D Point2D::operator+(const Point2D & point)
