@@ -3,6 +3,10 @@
 #include <Line.h>
 #include <algorithm>
 
+/*
+---------------------Primitives----------------------------------
+*/
+
 namespace Primitives
 {
 

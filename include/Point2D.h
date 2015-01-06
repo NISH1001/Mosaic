@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+/*
+------------------- A 2D point struct ---------------------------
+*/
+
 struct Point2D
 {
 	int x;
