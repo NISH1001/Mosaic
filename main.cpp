@@ -37,11 +37,13 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	std::vector<Point2D> points = {Point2D(50,50), Point2D(400,400), Point2D(250, 50)};
+	std::vector<Point2D> points = {Point2D(400,0), Point2D(200,100), Point2D(600, 100)};
 	Primitives::polygonFill(renderer, points, ColorRGBA(255,0,0,0));
 
-	std::vector<Point2D> scaled = Transform::scale(points, 400, 400, 0.5, 0.5);
-	scaled = Transform::rotate(scaled, 400,400,30);
+	//std::vector<Point2D> scaled = Transform::scale(points, 400, 400, 0.5, 0.5);
+	std::vector<Point2D> rotated = Transform::rotate(points, 400,100,180);
+	std::vector<Point2D> translated = Transform::translate(rotated, 0,50);
+	std::vector<Point2D> scaled = Transform::scale(translated, 400,100, 2*0.5, 0.5);
 	Primitives::polygonFill(renderer, scaled, ColorRGBA(255,0,0,0));	
 	
 	SDL_RenderPresent(renderer);
