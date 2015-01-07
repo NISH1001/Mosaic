@@ -55,6 +55,7 @@ int main()
 		SDL_RenderPresent(renderer);
 	}
 
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 	
