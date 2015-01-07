@@ -28,27 +28,32 @@ int main()
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(!renderer)
-			{
+	{
 		SDL_DestroyWindow(window);
 		SDL_Quit();
 		return -1;
 	}
-	
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	SDL_RenderClear(renderer);
 
-	std::vector<Point2D> points = {Point2D(400,0), Point2D(200,100), Point2D(600, 100)};
-	Primitives::polygonFill(renderer, points, ColorRGBA(255,0,0,0));
+	bool quit = false;
+	SDL_Event event;
 
-	//std::vector<Point2D> scaled = Transform::scale(points, 400, 400, 0.5, 0.5);
-	std::vector<Point2D> rotated = Transform::rotate(points, 400,100,180);
-	std::vector<Point2D> translated = Transform::translate(rotated, 0,50);
-	std::vector<Point2D> scaled = Transform::scale(translated, 400,100, 2*0.5, 0.5);
-	Primitives::polygonFill(renderer, scaled, ColorRGBA(255,0,0,0));	
+	while(!quit)
 	
-	SDL_RenderPresent(renderer);
+	{
+		while (SDL_PollEvent(&event)) quit = event.type == SDL_QUIT;
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+
+		std::vector<Point2D> points = {Point2D(400,0), Point2D(200,100), Point2D(600, 100)};
+		Primitives::polygonFill(renderer, points, ColorRGBA(255,0,0,0));
+
+		std::vector<Point2D> rotated = Transform::rotate(points, 400,100,180);
+		std::vector<Point2D> translated = Transform::translate(rotated, 0,50);
+		std::vector<Point2D> scaled = Transform::scale(translated, 400,100, 2*0.5, 0.5);
+		Primitives::polygonFill(renderer, scaled, ColorRGBA(255,0,0,0));	
 	
-	SDL_Delay(1000 * 3);
+		SDL_RenderPresent(renderer);
+	}
 
 	SDL_DestroyWindow(window);
 	SDL_Quit();
