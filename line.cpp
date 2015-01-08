@@ -40,6 +40,7 @@ int main()
 	//Triangle(renderer,T(rotate(p1, 100,100, 30)),T(rotate(p2, 100,100, 30)),T(rotate(p3, 100,100, 30)), red);
 	//Triangle(renderer,T(scale(p1, 0,0, 2,2)),T(scale(p2, 0,0, 2,2)),T(scale(p3, 0,0, 2,2)), red);
 	Triangle(renderer,T(reflect(p1,-2,1)),T(reflect(p2,-2,1)),T(reflect(p3,-2, 1)), red);
+	Circle(renderer, T(Point2D(0,0)), 100, ColorRGBA(255,0,0,0)).DrawFilled();
 
 
 	SDL_RenderPresent(renderer);
