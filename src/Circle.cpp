@@ -8,9 +8,8 @@ Circle::Circle(SDL_Renderer *renderer, int cx, int cy, int r, ColorRGBA color) :
 	m_renderer = renderer;
 }
 
-Circle::Circle(SDL_Renderer *renderer, Point2D center, int r, ColorRGBA color)
+Circle::Circle(SDL_Renderer *renderer, Point2D center, int r, ColorRGBA color) : Circle(renderer, center.x, center.y, r, color)
 {
-	Circle::Circle(renderer, center.x, center.y, r, color);
 }
 
 void Circle::PlotSymmetry(int x, int y)
