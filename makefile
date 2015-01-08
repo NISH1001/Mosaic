@@ -1,31 +1,35 @@
+## Directories for include and src files
+INC_DIR := include
 SRC_DIR := src
+
+## Directories to build files into
 OBJ_DIR := obj
-PPS := $(wildcard $(SRC_DIR:%=%/*.cpp))
-CPPS = src/Circle.cpp src/Line.cpp src/Ellipse.cpp
-OBJS := $(addprefix $(OBJ_DIR)/, $(CPPS:src/%.cpp=%.o))
-FLAGS := -lSDL2 -Iinclude/ --std=c++11
+BIN_DIR := bin
 
-all:  output
+## List of all c++ files to compile
+CPP_FILES := $(wildcard $(SRC_DIR:%=%/*.cpp))
 
-output: pixel.o point.o line.o circle.o ellipse.o point.o transform.o
-	clang++ -o $@ line.cpp *.o $(FLAGS)
-pixel.o:
-	clang++ -c -o $@ src/pixel.cpp $(FLAGS)
-point.o:
-	clang++ -c -o $@ src/Point2D.cpp $(FLAGS)
-line.o: 
-	clang++ -c -o $@ src/Line.cpp pixel.o $(FLAGS)
-circle.o:
-	clang++ -c -o $@ src/Circle.cpp pixel.o $(FLAGS)
-ellipse.o:
-	clang++ -c -o $@ src/Ellipse.cpp pixel.o $(FLAGS)
-point.o:
-	clang++ -c -o $@ src/Point2D.cpp pixel.o $(FLAGS)
-transform.o:
-	clang++ -c -o $@ src/Transform.cpp pixel.o $(FLAGS)
-$(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR) 
-	clang++ -c -o $@ $<  $(FLAGS)
+## List of all object files to generate
+OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(CPP_FILES:src/%.cpp=%.o))
+
+## Compiler and linker flags and libraries to use
+CC := clang++
+LDLIBS := -lSDL2
+FLAGS := -I$(INC_DIR)/ --std=c++11
+
+
+## Build files
+
+all: output
+
+output: $(OBJ_FILES)
+	$(CC) -o $@ $^ line.cpp $(LDLIBS) $(FLAGS)
+
+$(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
+	$(CC) -c -o $@ $< $(LDLIBS) $(FLAGS)
+
 $(OBJ_DIR):
-	mkdir $(OBJ_DIR) 
+	mkdir $(OBJ_DIR)
+
 clean:
-	rm *.o
+	rm $(OBJ_DIR)/*.o
