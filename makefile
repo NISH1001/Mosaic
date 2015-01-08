@@ -1,21 +1,31 @@
+SRC_DIR := src
+OBJ_DIR := obj
+PPS := $(wildcard $(SRC_DIR:%=%/*.cpp))
+CPPS = src/Circle.cpp src/Line.cpp src/Ellipse.cpp
+OBJS := $(addprefix $(OBJ_DIR)/, $(CPPS:src/%.cpp=%.o))
+FLAGS := -lSDL2 -Iinclude/ --std=c++11
 
-all: obj/main.o obj/primitives.o obj/point2d.o obj/line.o obj/transform.o
-	g++ obj/main.o obj/primitives.o obj/point2d.o obj/line.o obj/transform.o -o output -lSDL2 -Iinclude/ -std=c++11
+all:  output
 
-obj/main.o: main.cpp
-	g++ -c main.cpp -o $@ -Iinclude/ -std=c++11
-
-obj/primitives.o: src/Primitives.cpp
-	g++ -c src/Primitives.cpp -o $@ -Iinclude/ -std=c++11
-
-obj/point2d.o: src/Point2D.cpp
-	g++ -c src/Point2D.cpp -o $@ -Iinclude/ -std=c++11
-
-obj/line.o: src/Line.cpp
-	g++ -c src/Line.cpp -o $@ -Iinclude/ -std=c++11
-
-obj/transform.o: src/Transform.cpp
-	g++ -c src/Transform.cpp -o $@ -Iinclude/ -std=c++11
-
+output: pixel.o point.o line.o circle.o ellipse.o point.o transform.o
+	clang++ -o $@ line.cpp *.o $(FLAGS)
+pixel.o:
+	clang++ -c -o $@ src/pixel.cpp $(FLAGS)
+point.o:
+	clang++ -c -o $@ src/Point2D.cpp $(FLAGS)
+line.o: 
+	clang++ -c -o $@ src/Line.cpp pixel.o $(FLAGS)
+circle.o:
+	clang++ -c -o $@ src/Circle.cpp pixel.o $(FLAGS)
+ellipse.o:
+	clang++ -c -o $@ src/Ellipse.cpp pixel.o $(FLAGS)
+point.o:
+	clang++ -c -o $@ src/Point2D.cpp pixel.o $(FLAGS)
+transform.o:
+	clang++ -c -o $@ src/Transform.cpp pixel.o $(FLAGS)
+$(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR) 
+	clang++ -c -o $@ $<  $(FLAGS)
+$(OBJ_DIR):
+	mkdir $(OBJ_DIR) 
 clean:
 	rm *.o

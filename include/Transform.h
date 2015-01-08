@@ -1,6 +1,7 @@
 #pragma once
 #include <pixel.h>
 #include <Line.h>
+#include <Point2D.h>
 #include <vector>
 
 namespace Transform
@@ -14,7 +15,7 @@ namespace Transform
 	/*either translate a point or a set of points 
 	 	in fututre the set of points can be an object type
 	*/
-	Point2D translate(const Point2D & point, int tx, int ty);
+	Point2D translate(Point2D & point, double tx, double ty);
 	std::vector<Point2D> translate(const std::vector<Point2D> & points, int tx, int ty);
 
 	/*rotate a point/points about a point*/
@@ -24,5 +25,11 @@ namespace Transform
 	/*general scaling
 	scaling only in parallel x/y direction*/
 	std::vector<Point2D> scale(const std::vector<Point2D> & points, int xf, int yf, double sx, double sy);
+
+	// scaling a point
+	Point2D scale(const Point2D & point, double xf, double yf, double sx, double sy);
+
+	// reflection
+	Point2D reflect(const Point2D &point, double m, double c);
 
 }

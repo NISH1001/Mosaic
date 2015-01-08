@@ -1,10 +1,12 @@
 #include <Line.h>
 
-Line::Line(int xstart, int ystart, int xend, int yend) : m_currentPoint(Point2D(xstart,ystart)),
-														m_endPoint(Point2D(xend, yend))
+Line::Line(SDL_Renderer* renderer, int xstart, int ystart, int xend, int yend, ColorRGBA color) : m_currentPoint(Point2D(xstart,ystart)),
+	m_endPoint(Point2D(xend, yend)), m_color(color)
 {
-	int dx = abs(xend - xstart);
-	int dy = abs(yend - ystart);
+	m_renderer = renderer;
+
+	dx = abs(xend - xstart);
+	dy = abs(yend - ystart);
 	twodx = 2*dx;
 	twody = 2*dy;
 	twodydx = twody - twodx;
@@ -14,7 +16,7 @@ Line::Line(int xstart, int ystart, int xend, int yend) : m_currentPoint(Point2D(
 	p = (slope_less_one) ? (twody-dx) : (twodx - dy);
 }
 
-Line::Line(const Point2D & start, const Point2D & end) : Line(start.x, start.y, end.x, end.y)
+Line::Line(SDL_Renderer*renderer, const Point2D & start, const Point2D & end, ColorRGBA color) : Line(renderer, start.x, start.y, end.x, end.y, color)
 {
 }
 
@@ -51,11 +53,47 @@ bool Line::nextPoint(void)
 	return true;
 }
 
-void Line::draw(SDL_Renderer *renderer, ColorRGBA color)
+
+void Line::Draw()
 {
-	setPixel(renderer, m_currentPoint.x, m_currentPoint.y, color);
-	while(nextPoint())
+	int x = m_currentPoint.x;
+	int y = m_currentPoint.y;
+	setPixel(m_renderer, x, y, m_color);
+	if (dx > dy)
 	{
-		setPixel(renderer, m_currentPoint.x, m_currentPoint.y, color);
+		// p is already calculated
+		for(int i=0;i<dx;i++)
+		{
+			if (p < 0)
+				p+= twody;
+			else
+			{
+				y+=yinc;
+				p+=(twodydx);// twodydx = twody-twodx
+			}
+			x+=xinc;
+			setPixel(m_renderer, x, y, m_color);
+		}
+	} 
+	else
+	{
+		// p is already calculated
+		for(int i=0;i<dy;i++)
+		{
+			if (p < 0)
+				p+= twodx;
+			else
+			{
+				x+=xinc;
+				p-=twodydx; // twodydx = twody-twodx, we need twodx-twody so
+			}
+			y+= yinc;
+			setPixel(m_renderer, x, y, m_color);
+		}
 	}
+}
+
+void Line::DrawFilled()
+{
+	Draw();
 }

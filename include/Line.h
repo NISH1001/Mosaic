@@ -1,34 +1,38 @@
 #pragma once
 
 #include <Point2D.h>
-#include <pixel.h>
+#include <Primitive.h>
 
 /*
 	Line object used for polygon filling
 	As we can plot the scanline horizontally
 	using two interseting lines
 */
-struct Line
+
+
+class Line : public Primitive
 {
 public:
-	Line(int xstart, int ystart, int xend, int yend);
-	Line(const Point2D & start, const Point2D & end);
+	Line(SDL_Renderer * renderer,int xstart, int ystart, int xend, int yend, ColorRGBA color);
+	Line(SDL_Renderer* Renderer,const Point2D & start, const Point2D & end, ColorRGBA color);
 
 	/*check to see if next point is available one the line
 		Also calculates next point and stores as current one
 		If end point is reached, then no nextpoint is available
 	*/
 	bool nextPoint(void);
+	virtual void Draw();
+	virtual void DrawFilled();
 
-	/*draw the whole line start to end*/
-	void draw(SDL_Renderer *renderer, ColorRGBA color);
 
 public:
 	Point2D m_currentPoint;
 private:
+	SDL_Renderer * m_renderer;
+	ColorRGBA m_color;
 	Point2D m_endPoint;
 	bool  slope_less_one;
-	int xinc, yinc;
+	int xinc, yinc, dx, dy;
 	int twodx, twody;
 	int twodydx;
 	int p;

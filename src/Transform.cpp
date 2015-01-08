@@ -10,15 +10,15 @@ Point2D Transform::transform(double (*mat)[3], const Point2D & point)
 	return res;
 }
 
-Point2D Transform::translate(const Point2D & point, int tx, int ty)
+Point2D Transform::translate(Point2D & point, double tx, double ty)
 {
 	double mat[3][3] = {{1,0,tx}, 
 						{0,1,ty}, 
 						{0,0,1}};
 	return transform(mat, point);
 }
-
-std::vector<Point2D> Transform::translate(const std::vector<Point2D> & points, int tx, int ty)
+/*
+std::vector<Point2D> Transform::translate(const std::vector<Point2D> & points, double tx, double ty)
 {
 	std::vector<Point2D> res;
 	res.resize(points.size());
@@ -32,10 +32,11 @@ std::vector<Point2D> Transform::translate(const std::vector<Point2D> & points, i
 	}
 	return res;
 }
+*/
 
 Point2D Transform::rotate(const Point2D & point, int xr, int yr, double theta)
 {
-	theta = -M_PI * theta / 180;
+	theta = M_PI * theta / 180;
 	double mat[3][3] = {{cos(theta), -sin(theta), xr*(1-cos(theta)) + yr*sin(theta) }, 
 						{sin(theta), cos(theta), yr*(1-cos(theta)) - xr*sin(theta)}, 
 						{0, 		0, 			1}};
@@ -46,7 +47,7 @@ std::vector<Point2D> Transform::rotate(const std::vector<Point2D> & points, int 
 {
 	std::vector<Point2D> res;
 	res.resize(points.size());
-	theta = -M_PI * theta / 180;
+	theta = M_PI * theta / 180;
 	double mat[3][3] = {{cos(theta), -sin(theta), xr*(1-cos(theta)) + yr*sin(theta) }, 
 						{sin(theta), cos(theta), yr*(1-cos(theta)) - xr*sin(theta)}, 
 						{0, 		0, 			1}};
@@ -73,3 +74,22 @@ std::vector<Point2D> Transform::scale(const std::vector<Point2D> & points, int x
 	}
 	return res;
 }
+
+Point2D Transform::scale(const Point2D &point, double xf, double yf, double sx, double sy)
+{
+	double mat[3][3] = {{sx, 0, xf*(1-sx) }, 
+						{0, sy, yf*(1-sy) }, 
+						{0, 0, 1}	};
+	return transform(mat, point);
+}
+
+Point2D Transform::reflect(const Point2D &point, double m, double c)
+{
+	double theta = atan(m);
+	double mat[3][3] = {{cos(2*theta), sin(2*theta), -c*sin(2*theta)},
+						{sin(2*theta), -cos(2*theta), c*cos(2*theta)+c},
+						{0, 0, 1} };
+return transform(mat, point);
+}
+
+
