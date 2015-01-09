@@ -17,7 +17,6 @@ Point2D Transform::translate(Point2D & point, double tx, double ty)
 						{0,0,1}};
 	return transform(mat, point);
 }
-/*
 std::vector<Point2D> Transform::translate(const std::vector<Point2D> & points, double tx, double ty)
 {
 	std::vector<Point2D> res;
@@ -32,7 +31,6 @@ std::vector<Point2D> Transform::translate(const std::vector<Point2D> & points, d
 	}
 	return res;
 }
-*/
 
 Point2D Transform::rotate(const Point2D & point, int xr, int yr, double theta)
 {

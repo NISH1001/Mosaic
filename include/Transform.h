@@ -16,7 +16,7 @@ namespace Transform
 	 	in fututre the set of points can be an object type
 	*/
 	Point2D translate(Point2D & point, double tx, double ty);
-	std::vector<Point2D> translate(const std::vector<Point2D> & points, int tx, int ty);
+	std::vector<Point2D> translate(const std::vector<Point2D> & points, double tx, double ty);
 
 	/*rotate a point/points about a point*/
 	Point2D rotate(const Point2D & point, int xr, int yr, double theta);
