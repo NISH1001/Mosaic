@@ -20,7 +20,7 @@ Line::Line(SDL_Renderer*renderer, const Point2D & start, const Point2D & end, Co
 {
 }
 
-bool Line::nextPoint(void)
+bool Line::NextPoint(void)
 {
 	if(m_currentPoint == m_endPoint)
 			return false;

@@ -20,7 +20,7 @@ public:
 		Also calculates next point and stores as current one
 		If end point is reached, then no nextpoint is available
 	*/
-	bool nextPoint(void);
+	bool NextPoint(void);
 	virtual void Draw();
 	virtual void DrawFilled();
 

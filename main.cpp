@@ -1,6 +1,7 @@
 #include <pixel.h>
 #include <Line.h>
 #include <Circle.h>
+#include <Triangle.h>
 #include <Transform.h>
 #include <Point2D.h>
 
@@ -12,7 +13,7 @@
 
 void drawAxes(SDL_Renderer*r);
 Point2D T(Point2D);
-void Triangle(SDL_Renderer* r,Point2D p1, Point2D p2, Point2D p3, ColorRGBA color);
+//void Triangle(SDL_Renderer* r,Point2D p1, Point2D p2, Point2D p3, ColorRGBA color);
 
 using namespace Transform;
 
@@ -33,13 +34,15 @@ int main()
 		
 	Point2D p1(100, 100);
 	Point2D p2(200, 200);
-	Point2D p3(200, 100);
+	Point2D p3(210, 100);
 
-	Triangle(renderer, T(p1), T(p2), T(p3), color);
+	Triangle t(renderer, T(p1), T(p2), T(p3), color);
+	t.DrawFilled();
+	
 	//Triangle(renderer, T(translate(p1, 50, -50)), T(translate(p2, 50, -50)), T(translate(p3, 50, -50)), red);
 	//Triangle(renderer,T(rotate(p1, 100,100, 30)),T(rotate(p2, 100,100, 30)),T(rotate(p3, 100,100, 30)), red);
 	//Triangle(renderer,T(scale(p1, 0,0, 2,2)),T(scale(p2, 0,0, 2,2)),T(scale(p3, 0,0, 2,2)), red);
-	Triangle(renderer,T(reflect(p1,-2,1)),T(reflect(p2,-2,1)),T(reflect(p3,-2, 1)), GREEN);
+	//Triangle(renderer,T(reflect(p1,-2,1)),T(reflect(p2,-2,1)),T(reflect(p3,-2, 1)), GREEN);
 
 
 	SDL_RenderPresent(renderer);
@@ -65,10 +68,11 @@ Point2D T(Point2D p)
 	return Point2D(p.x+WIDTH/2, -p.y+HEIGHT/2);
 }
 	
-void Triangle(SDL_Renderer* r,Point2D p1, Point2D p2, Point2D p3, ColorRGBA color)
+/*void Triangle(SDL_Renderer* r,Point2D p1, Point2D p2, Point2D p3, ColorRGBA color)
 {
 	Line(r, p1, p2, color).Draw();;
 	Line(r, p2,p3, color).Draw();
 	Line(r, p3, p1, color).Draw();
 }
 	
+*/
