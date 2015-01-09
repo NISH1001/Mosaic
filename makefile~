@@ -23,7 +23,7 @@ FLAGS := -I$(INC_DIR)/ --std=c++11
 all: output
 
 output: $(OBJ_FILES)
-	$(CC) -o $@ $^ line.cpp $(LDLIBS) $(FLAGS)
+	$(CC) -o $@ $^ main.cpp $(LDLIBS) $(FLAGS)
 
 $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
 	$(CC) -c -o $@ $< $(LDLIBS) $(FLAGS)
