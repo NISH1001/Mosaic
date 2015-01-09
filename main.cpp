@@ -1,7 +1,7 @@
 #include <pixel.h>
 #include <Line.h>
 #include <Circle.h>
-#include <Triangle.h>
+#include <Polygon.h>
 #include <Transform.h>
 #include <Point2D.h>
 #include <Matrix.h>
@@ -47,10 +47,11 @@ int main()
 		
 	Point2D p1(100, 100);
 	Point2D p2(200, 200);
-	Point2D p3(210, 100);
+	Point2D p3(150, 300);
+	Point2D p4(0, 160);
 
-	Triangle t(renderer, T(p1), T(p2), T(p3), color);
-	t.DrawFilled();
+	Polygon p(renderer, T(p1), T(p2), T(p3), T(p4),  color);
+	p.DrawFilled();
 	
 	//Triangle(renderer, T(translate(p1, 50, -50)), T(translate(p2, 50, -50)), T(translate(p3, 50, -50)), red);
 	//Triangle(renderer,T(rotate(p1, 100,100, 30)),T(rotate(p2, 100,100, 30)),T(rotate(p3, 100,100, 30)), red);

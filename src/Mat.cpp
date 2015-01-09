@@ -9,6 +9,13 @@ Matrix Mat::Mat3()
 	return mat;
 }
 
+Matrix Mat::Mat3(double x)
+{
+	Matrix mat(3,3);
+	mat[0][0] = mat[1][1] = mat[2][2] = x;
+	return mat;
+}
+
 Matrix Mat::Mat4()
 {
 	Matrix mat(4,4);
