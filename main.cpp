@@ -4,6 +4,7 @@
 #include <Triangle.h>
 #include <Transform.h>
 #include <Point2D.h>
+#include <Matrix.h>
 
 #define WIDTH 1000
 #define HEIGHT 800
@@ -26,6 +27,15 @@ int main()
 	
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
+
+	Matrix mat(2,2);
+	for(int i=0; i<mat.rows; i++)
+		for(int j=0; j<mat.cols;j++)
+			mat[i][j] = 1;
+
+	for(int i=0; i<mat.rows; i++)
+		for(int j=0; j<mat.cols;j++)
+			std::cout<<mat[i][j] << std::endl;
 	
 	drawAxes(renderer);
 
