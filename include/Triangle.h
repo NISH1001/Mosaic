@@ -11,15 +11,20 @@ class Triangle : public Primitive
 
 		virtual void Draw();
 		virtual void DrawFilled();
-		void SortY();
-
-		// the FlatFill function takes a vertex, not horizontal to any
-		//  other and other two vertices which are horizontal
-		//  (xb1,yb) and (xb2, yb)
-		void FlatFill(int xt, int yt, int xb1, int xb2, int yb);
 
 		// attributes
 		Point2D m_p1, m_p2, m_p3;
+
+	private:
+		//These are helper functions
+		
+		/* the FlatFill function takes a vertex, not horizontal to any
+		  other and other two vertices which are horizontal
+		  (xb1,yb) and (xb2, yb) 
+		 */
+		void FlatFill(int xt, int yt, int xb1, int xb2, int yb);
+
+		void SortY();
 
 	private:
 		SDL_Renderer * m_renderer;

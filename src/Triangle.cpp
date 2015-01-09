@@ -64,9 +64,9 @@ void Triangle::FlatFill(int xt, int yt, int xb1, int xb2, int yb)
 
 void Triangle::DrawFilled()
 {
-<<<<<<< HEAD
-}
-=======
+
+
+
 	SortY();
 	
 	int x1=m_p1.x, x2=m_p2.x, x3=m_p3.x;
@@ -93,4 +93,4 @@ void Triangle::DrawFilled()
     }
 }
 
->>>>>>> f6c4b6b69f29cd4ac041a448610966326e1ba33a
+
