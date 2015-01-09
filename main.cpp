@@ -29,7 +29,9 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	Matrix mat = (Mat::Mat4() * Mat::Vec3(2.5,1.2,1)) + Mat::Vec3(1,2,1);
+	Matrix mat1 = Mat::Vec2(1,2);
+	Matrix mat2 = Mat::Vec2(1,2);
+	Matrix mat = (Mat::Mat3() * Mat::Vec3(mat1,1) + Mat::Vec3(mat2,0));
 
 	for(int i=0; i<mat.rows; i++)
 	{
@@ -39,6 +41,7 @@ int main()
 		}
 		std::cout << std::endl;
 	}
+	
 	
 	drawAxes(renderer);
 
