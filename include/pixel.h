@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PIXEL
+#define PIXEL
 
 #include <SDL2/SDL.h>
 #include <Point2D.h>
@@ -28,4 +29,21 @@ inline void setPixel(SDL_Renderer * renderer, Point2D p, ColorRGBA color)
     SDL_SetRenderDrawColor(renderer, color.R, color.G, color.B, color.A);
     SDL_RenderFillRect(renderer, &pixel);
 }
+//colors
+extern ColorRGBA RED;
+extern ColorRGBA GREEN;
+extern ColorRGBA BLUE;
+extern ColorRGBA WHITE;
+extern ColorRGBA BLACK;
+/*
+ColorRGBA LIGHT_RED(250, 160, 122, 255);
+ColorRGBA CRIMSON(220, 20, 60, 255);
+ColorRGBA DARK_RED(139, 0, 0, 255);
+ColorRGBA ORANGE(255, 69, 0, 255);
+ColorRGBA YELLOW(255, 255, 0, 255);
+ColorRGBA GOLD(255, 215, 0, 255);
+ColorRGBA MAROON(128, 0, 0, 255);
+ColorRGBA SKY_BLUE(135, 206,235, 255);
+*/
 
+#endif
