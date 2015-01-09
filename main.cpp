@@ -12,6 +12,26 @@
 #define X(x) x+WIDTH/2
 #define Y(y) -y+HEIGHT/2
 
+// the vectors U, V, N
+double N[] = {0.f,0.f,0.f};
+double U[] = {0.f,0.f,0.f};
+double V[] = {0.f,0.f,0.f};
+
+// the normal Vector
+Matrix norm; 
+
+// the matrices
+Matrix trans = Mat::Mat4(); //for translation of VC origin to WC origin
+Matrix rot = Mat::Mat4(); // for aligning x,y,z axes to u, v, n
+Matrix project = Mat::Mat4(); // for perspective projection
+
+// matrix manipulation functions
+void setNvector(double, double, double);
+void setUvector(); // after getting N vector
+void setVvector(); // after getting N and U vectors
+void setTranslationMatrix(double, double, double); // set trans matrix
+void setRotationMatrix(); // set the rot matrix
+void setProjectionMatrix(double z); // sets the matrix project corresponding to projection plane at z
 
 void drawAxes(SDL_Renderer*r);
 Point2D T(Point2D);
@@ -29,45 +49,18 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	Matrix mat1 = Mat::Vec2(1,2);
-	Matrix mat2 = Mat::Vec2(1,2);
-	Matrix mat = (Mat::Mat3() * Mat::Vec3(mat1,1) + Mat::Vec3(mat2,0));
-
-	for(int i=0; i<mat.rows; i++)
-	{
-		for(int j=0; j<mat.cols; j++)
-		{
-			std::cout << mat[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-	
-	
-	drawAxes(renderer);
 
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA color(123,123,123,255);
 		
-	Point2D p1(100, 100);
-	Point2D p2(200, 200);
-	Point2D p3(150, 300);
-	Point2D p4(0, 160);
-
-	Polygon p(renderer, T(p1), T(p2), T(p3), T(p4),  color);
-	p.DrawFilled();
-	
-	//Triangle(renderer, T(translate(p1, 50, -50)), T(translate(p2, 50, -50)), T(translate(p3, 50, -50)), red);
-	//Triangle(renderer,T(rotate(p1, 100,100, 30)),T(rotate(p2, 100,100, 30)),T(rotate(p3, 100,100, 30)), red);
-	//Triangle(renderer,T(scale(p1, 0,0, 2,2)),T(scale(p2, 0,0, 2,2)),T(scale(p3, 0,0, 2,2)), red);
-	//Triangle(renderer,T(reflect(p1,-2,1)),T(reflect(p2,-2,1)),T(reflect(p3,-2, 1)), GREEN);
-
-
 	SDL_RenderPresent(renderer);
 
 	SDL_Delay(2000);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+
+	return 0;
 }
 
 
@@ -85,11 +78,74 @@ Point2D T(Point2D p)
 	return Point2D(p.x+WIDTH/2, -p.y+HEIGHT/2);
 }
 	
-/*void Triangle(SDL_Renderer* r,Point2D p1, Point2D p2, Point2D p3, ColorRGBA color)
+void setNvector(double x, double y, double z)
 {
-	Line(r, p1, p2, color).Draw();;
-	Line(r, p2,p3, color).Draw();
-	Line(r, p3, p1, color).Draw();
+	norm = Mat::Vec4(x,y,z,1);
+	// normalize
+	double r = sqrtf(x*x+y*y+z*z);
+	N[0] = x/r;
+	N[1] = y/r;
+	N[2] = z/r;
+}
+
+void setUvector()
+{
+	// first assuming V vector to be (0,1,0)
+	// U = V X N
+	// assuming V=(0,1,0)
+	V[0] = 0;
+	V[1] = 1;
+	V[2] = 0;
+
+	U[0] = V[1]*N[2] - N[1]*V[2];
+	U[1] = V[2]*N[0] - N[2]*V[0];
+	U[2] = V[0]*N[1] - V[1]*N[0];
+	// normalize
+	double r = sqrtf(U[0]*U[0] + U[1]*U[1] + U[2]*U[2]);
+	U[0] /= r;
+	U[1] /= r;
+	U[2] /= r;
+}
+
+void setVvector()
+{
+	// U and N are calculated by this time
+	V[0] = -N[1]*U[2] + U[1]*N[2];
+	V[1] = -N[2]*U[0] + U[2]*N[0];
+	V[2] = -N[0]*U[1] + U[1]*N[0];
+}
+
+void setTranslationMatrix(double x, double y, double z)
+{
+	trans[0][3] = x;
+	trans[1][3] = y;
+	trans[2][3] = z;
+}
+
+void setRotationMatrix()
+{
+	rot[0][0] = U[0];
+	rot[0][1] = U[1];
+	rot[0][2] = U[2];
+
+	rot[1][0] = V[0];
+	rot[1][1] = V[1];
+	rot[1][2] = V[2];
+
+	rot[2][0] = N[0];
+	rot[2][1] = N[1];
+	rot[2][2] = N[2];
+}
+
+void setProjectionMatrix(double zvp)
+{
+	Matrix temp = rotate*translation*norm;// obtaining the normal after translating and rotating in WC
+	double zprp = temp[2];
+	double d = zprp - zvp; // as in book
+
+	project[2][2] = -zvp/d;
+	project[2][3] = zvp*(zprp/d);
+	project[2][3] = -1/d;
+	project[3][3] = zprp/d;
 }
 	
-*/
