@@ -33,15 +33,7 @@ int main()
 	Matrix mat2 = Mat::Vec2(1,2);
 	Matrix mat = (Mat::Mat3() * Mat::Vec3(mat1,1) + Mat::Vec3(mat2,0));
 
-	for(int i=0; i<mat.rows; i++)
-	{
-		for(int j=0; j<mat.cols; j++)
-		{
-			std::cout << mat[i][j] << " ";
-		}
-		std::cout << std::endl;
-	}
-	
+	std::cout << mat << std::endl;
 	
 	drawAxes(renderer);
 

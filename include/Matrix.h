@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-
+#include <iostream>
 /*
 	A matrix class for matrices of double
 	std::vector<std::vector<double>>
@@ -23,6 +23,9 @@ public:
 	Matrix operator*(const Matrix & rhs);
 	Matrix operator+(const Matrix & rhs);
 	Matrix operator-(const Matrix & rhs);
+
+	/*oveload cout*/
+	friend std::ostream& operator<<(std::ostream& os, const Matrix & m);
 
 private:
 	void Resize(int r, int c) { mat = std::vector<std::vector<double>> (rows, std::vector<double>(cols, 0)); }

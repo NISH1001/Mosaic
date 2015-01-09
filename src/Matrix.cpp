@@ -72,3 +72,16 @@ Matrix Matrix::operator-(const Matrix& rhs)
 	}
 	return res;
 }
+
+std::ostream & operator<<(std::ostream& os, const Matrix & m)
+{
+	for(int i=0; i<m.rows;i++)
+	{
+		for(int j=0; j<m.cols; j++)
+		{
+			os << m[i][j] << " ";
+		}
+		os << std::endl;
+	}
+	return os;
+}
