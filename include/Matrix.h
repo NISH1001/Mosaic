@@ -11,6 +11,7 @@ class Matrix
 {
 public:
 	Matrix(unsigned rows, unsigned cols);
+	Matrix() {}
 	//Matrix(const Matrix & rhs); copy constructor
 	~Matrix() {}
 

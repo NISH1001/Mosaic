@@ -5,6 +5,7 @@
 #include <Transform.h>
 #include <Point2D.h>
 #include <Matrix.h>
+#include <Mat.h>
 
 #define WIDTH 1000
 #define HEIGHT 800
@@ -28,23 +29,16 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	Matrix mat(2,2);
-	Matrix mat1(2,1);
+	Matrix mat = (Mat::Mat3() * Mat::Vec2(2.5,1.2)) + Mat::Vec2(1,2);
+
 	for(int i=0; i<mat.rows; i++)
 	{
-		for(int j=0; j<mat.cols;j++)
+		for(int j=0; j<mat.cols; j++)
 		{
-			mat[i][j] = 1;
-			mat1[i][j] = 2;
+			std::cout << mat[i][j] << " ";
 		}
+		std::cout << std::endl;
 	}
-
-	Matrix mat2(2,1);
-	mat2 = mat * mat1;
-
-	for(int i=0; i<mat2.rows; i++)
-		for(int j=0; j<mat2.cols;j++)
-			std::cout<<mat2[i][j] << std::endl;
 	
 	drawAxes(renderer);
 
