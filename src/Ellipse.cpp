@@ -8,9 +8,8 @@ Ellipse::Ellipse(SDL_Renderer *renderer, int cx, int cy, int rx, int ry, ColorRG
 	m_renderer = renderer;
 }
 
-Ellipse::Ellipse(SDL_Renderer *renderer, Point2D center, int rx, int ry, ColorRGBA color)
+Ellipse::Ellipse(SDL_Renderer *renderer, Point2D center, int rx, int ry, ColorRGBA color) : Ellipse(renderer, center.x, center.y, rx, ry, color)
 {
-	Ellipse(renderer, center.x, center.y, rx, ry, color);
 }
 
 
