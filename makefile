@@ -13,7 +13,7 @@ CPP_FILES := $(wildcard $(SRC_DIR:%=%/*.cpp))
 OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(CPP_FILES:src/%.cpp=%.o))
 
 ## Compiler and linker flags and libraries to use
-CC := g++
+CC := clang++
 LDLIBS := -lSDL2
 FLAGS := -I$(INC_DIR)/ --std=c++11
 
