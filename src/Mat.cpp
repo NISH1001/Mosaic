@@ -41,8 +41,8 @@ Matrix Mat::Vec3(double x, double y,double z)
 {
 	Matrix mat41(4,1);
 	mat41[0][0] = x;
-	mat41[2][0] = y;
-	mat41[3][0] = z;
-	mat41[4][0] = 1;
+	mat41[1][0] = y;
+	mat41[2][0] = z;
+	mat41[3][0] = 1;
 	return mat41;
 }

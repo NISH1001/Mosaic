@@ -29,7 +29,7 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-	Matrix mat = (Mat::Mat3() * Mat::Vec2(2.5,1.2)) + Mat::Vec2(1,2);
+	Matrix mat = (Mat::Mat4() * Mat::Vec3(2.5,1.2,1)) + Mat::Vec3(1,2,1);
 
 	for(int i=0; i<mat.rows; i++)
 	{
