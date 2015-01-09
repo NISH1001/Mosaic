@@ -26,7 +26,7 @@ Matrix rot = Mat::Mat4(); // for aligning x,y,z axes to u, v, n
 Matrix project = Mat::Mat4(); // for perspective projection
 
 // matrix manipulation functions
-void setNvector(double, double, double);
+void setNvector(double, double, double); // assuming look at is at (0,0,0)
 void setUvector(); // after getting N vector
 void setVvector(); // after getting N and U vectors
 void setTranslationMatrix(double, double, double); // set trans matrix
@@ -52,6 +52,13 @@ int main()
 
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA color(123,123,123,255);
+
+	Matrix v1 = Mat::Vec4(0,0,1,1);
+	Matrix v2 = Mat::Vec4(1,0,1,1);
+	Matrix v3 = Mat::Vec4(1,1,1,1);
+	Matrix v4 = Mat::Vec4(0,1,1,1);
+
+	setNvector(0,0,10);
 		
 	SDL_RenderPresent(renderer);
 
@@ -139,8 +146,8 @@ void setRotationMatrix()
 
 void setProjectionMatrix(double zvp)
 {
-	Matrix temp = rotate*translation*norm;// obtaining the normal after translating and rotating in WC
-	double zprp = temp[2];
+	Matrix temp = rot*trans*norm;// obtaining the normal after translating and rotating in WC
+	double zprp = temp[2][0];
 	double d = zprp - zvp; // as in book
 
 	project[2][2] = -zvp/d;
