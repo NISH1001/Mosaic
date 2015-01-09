@@ -22,11 +22,6 @@ int main()
 	SDL_Window *window =SDL_CreateWindow("transform", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	SDL_RenderClear(renderer);
-	
-	drawAxes(renderer);
 
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA color(123,123,123,255);
@@ -35,17 +30,29 @@ int main()
 	Point2D p2(200, 200);
 	Point2D p3(200, 100);
 
-	Triangle(renderer, T(p1), T(p2), T(p3), color);
-	//Triangle(renderer, T(translate(p1, 50, -50)), T(translate(p2, 50, -50)), T(translate(p3, 50, -50)), red);
-	//Triangle(renderer,T(rotate(p1, 100,100, 30)),T(rotate(p2, 100,100, 30)),T(rotate(p3, 100,100, 30)), red);
-	//Triangle(renderer,T(scale(p1, 0,0, 2,2)),T(scale(p2, 0,0, 2,2)),T(scale(p3, 0,0, 2,2)), red);
-	Triangle(renderer,T(reflect(p1,-2,1)),T(reflect(p2,-2,1)),T(reflect(p3,-2, 1)), red);
-	Circle(renderer, T(Point2D(0,0)), 100, ColorRGBA(255,0,0,0)).DrawFilled();
+	bool quit = false;
+	SDL_Event event;
+
+	while(!quit)
+	{
+		while (SDL_PollEvent(&event)) quit = event.type == SDL_QUIT;
+
+		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_RenderClear(renderer);
+
+		drawAxes(renderer);
+
+		Triangle(renderer, T(p1), T(p2), T(p3), color);
+		//Triangle(renderer, T(translate(p1, 50, -50)), T(translate(p2, 50, -50)), T(translate(p3, 50, -50)), red);
+		//Triangle(renderer,T(rotate(p1, 100,100, 30)),T(rotate(p2, 100,100, 30)),T(rotate(p3, 100,100, 30)), red);
+		//Triangle(renderer,T(scale(p1, 0,0, 2,2)),T(scale(p2, 0,0, 2,2)),T(scale(p3, 0,0, 2,2)), red);
+		Triangle(renderer,T(reflect(p1,-2,1)),T(reflect(p2,-2,1)),T(reflect(p3,-2, 1)), red);
+		Circle(renderer, T(Point2D(0,0)), 100, ColorRGBA(255,0,0,0)).DrawFilled();
 
 
-	SDL_RenderPresent(renderer);
+		SDL_RenderPresent(renderer);
+	}
 
-	SDL_Delay(6000);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
