@@ -29,13 +29,22 @@ int main()
 	SDL_RenderClear(renderer);
 
 	Matrix mat(2,2);
+	Matrix mat1(2,1);
 	for(int i=0; i<mat.rows; i++)
+	{
 		for(int j=0; j<mat.cols;j++)
+		{
 			mat[i][j] = 1;
+			mat1[i][j] = 2;
+		}
+	}
 
-	for(int i=0; i<mat.rows; i++)
-		for(int j=0; j<mat.cols;j++)
-			std::cout<<mat[i][j] << std::endl;
+	Matrix mat2(2,1);
+	mat2 = mat * mat1;
+
+	for(int i=0; i<mat2.rows; i++)
+		for(int j=0; j<mat2.cols;j++)
+			std::cout<<mat2[i][j] << std::endl;
 	
 	drawAxes(renderer);
 
