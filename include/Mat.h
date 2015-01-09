@@ -2,7 +2,7 @@
 
 #include <Matrix.h>
 #include <Point2D.h>
-
+#include <iostream>
 /*
 	Uses Matrix class
 */

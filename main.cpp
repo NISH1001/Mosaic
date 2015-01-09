@@ -49,7 +49,6 @@ int main()
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 
-
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA color(123,123,123,255);
 
