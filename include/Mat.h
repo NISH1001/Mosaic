@@ -12,7 +12,6 @@ class Mat
 public:
 	// return 3x3 identity
 	static Matrix Mat3(void);
-	static Matrix Mat3(double);
 
 	//return 3x3 matrix with all elements
 	static Matrix Mat3(double x);
