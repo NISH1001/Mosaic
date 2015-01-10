@@ -187,15 +187,24 @@ int main()
 		Point2D p2(res2[0][0]/res2[3][0], res2[1][0]/res2[3][0]);
 		Point2D p3(res3[0][0]/res3[3][0], res3[1][0]/res3[3][0]);
 		Point2D p4(res4[0][0]/res4[3][0], res4[1][0]/res4[3][0]);
-
-		Polygon pp(renderer, T(p1), T(p2), T(p3), T(p4), ColorRGBA(255,0,0,0));
-		pp.Draw();
-
+		Point2D p5(res5[0][0]/res5[3][0], res5[1][0]/res5[3][0]);
 		Point2D p6(res6[0][0]/res6[3][0], res6[1][0]/res6[3][0]);
 		Point2D p7(res7[0][0]/res7[3][0], res7[1][0]/res7[3][0]);
+		Point2D p8(res8[0][0]/res8[3][0], res8[1][0]/res8[3][0]);
 
-		Polygon pp1(renderer, T(p2), T(p3), T(p7), T(p6), ColorRGBA(0,255,0,0));
-		pp1.Draw();
+		Polygon face1(renderer, T(p1), T(p2), T(p3), T(p4), ColorRGBA(255,0,0,0));
+		face1.Draw();
+		Polygon face2(renderer, T(p2), T(p3), T(p7), T(p6), ColorRGBA(0,255,0,0));
+		face2.Draw();
+		Polygon face3(renderer, T(p1), T(p5), T(p8), T(p4), ColorRGBA(0,255,0,0));
+		face3.Draw();
+		Polygon face4(renderer, T(p4), T(p3), T(p7), T(p8), ColorRGBA(0,255,0,0));
+		face4.Draw();
+		Polygon face5(renderer, T(p1), T(p2), T(p6), T(p5), ColorRGBA(0,255,0,0));
+		face5.Draw();
+		Polygon face6(renderer, T(p5), T(p6), T(p7), T(p7), ColorRGBA(0,255,0,0));
+		face6.Draw();
+
 
 		//drawAxes(renderer);
 		//Circle(renderer, 400, 300, 100, ColorRGBA(255,0,0,0)).Draw();
