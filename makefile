@@ -24,7 +24,7 @@ FLAGS := -I$(INC_DIR)/ --std=c++11
 all: bin/output
 
 bin/output: $(OBJ_FILES) | $(BIN_DIR)
-	$(CC) -o $@ $^ main.cpp $(LDLIBS) $(FLAGS)
+	$(CC) -o $@ $^ cube.cpp $(LDLIBS) $(FLAGS)
 
 $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
 	$(CC) -c -o $@ $< $(LDLIBS) $(FLAGS)

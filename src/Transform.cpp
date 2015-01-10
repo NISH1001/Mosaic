@@ -1,93 +1,72 @@
 #include <Transform.h>
 
-Point2D Transform::transform(double (*mat)[3], const Point2D & point)
+Matrix Transform::Translate(const Matrix & vec)
 {
-	Point2D res = point;
-
-	res.x = mat[0][0]*point.x + mat[0][1]*point.y + mat[0][2];
-	res.y = mat[1][0]*point.x + mat[1][1]*point.y + mat[1][2];
-
-	return res;
-}
-
-Point2D Transform::translate(Point2D & point, double tx, double ty)
-{
-	double mat[3][3] = {{1,0,tx}, 
-						{0,1,ty}, 
-						{0,0,1}};
-	return transform(mat, point);
-}
-std::vector<Point2D> Transform::translate(const std::vector<Point2D> & points, double tx, double ty)
-{
-	std::vector<Point2D> res;
-	res.resize(points.size());
-	double mat[3][3] = {{1,0,tx}, 
-						{0,1,ty}, 
-						{0,0,1}};
-
-	for(int i=0; i<points.size(); i++)
+	int len = vec.rows;
+	Matrix res = (len==3) ? Mat::Mat4() : Mat::Mat3();
+	for(int i=0; i<len; i++)
 	{
-		res[i] = transform(mat, points[i]);
+		res[i][len] = vec[i][0];
 	}
 	return res;
 }
 
-Point2D Transform::rotate(const Point2D & point, int xr, int yr, double theta)
+Matrix Transform::RotateX(double angle)
 {
-	theta = M_PI * theta / 180;
-	double mat[3][3] = {{cos(theta), -sin(theta), xr*(1-cos(theta)) + yr*sin(theta) }, 
-						{sin(theta), cos(theta), yr*(1-cos(theta)) - xr*sin(theta)}, 
-						{0, 		0, 			1}};
-	return transform(mat, point);
+	angle = M_PI * angle / 180;
+	Matrix res = Mat::Mat4();
+	double a = cos(angle);
+	double b = sin(angle);
+	res[1][1] = a;
+	res[1][2] = -b;
+	res[2][1] = b;
+	res[2][2] = a;
+
+	return res;
 }
 
-std::vector<Point2D> Transform::rotate(const std::vector<Point2D> & points, int xr, int yr, double theta)
+Matrix Transform::RotateY(double angle)
 {
-	std::vector<Point2D> res;
-	res.resize(points.size());
-	theta = M_PI * theta / 180;
-	double mat[3][3] = {{cos(theta), -sin(theta), xr*(1-cos(theta)) + yr*sin(theta) }, 
-						{sin(theta), cos(theta), yr*(1-cos(theta)) - xr*sin(theta)}, 
-						{0, 		0, 			1}};
+	angle = M_PI * angle / 180;
+	Matrix res = Mat::Mat4();
+	double a = cos(angle);
+	double b = sin(angle);
+	res[0][0] = a;
+	res[0][2] = b;
+	res[2][1] = -b;
+	res[2][2] = a;
 
-	for(int i=0; i<points.size(); i++)
+	return res;
+}
+
+Matrix Transform::RotateZ(double angle)
+{
+	angle = M_PI * angle / 180;
+	Matrix res = Mat::Mat4();
+	double a = cos(angle);
+	double b = sin(angle);
+	res[0][0] = a;
+	res[0][1] = -b;
+	res[1][0] = b;
+	res[1][1] = a;
+
+	return res;
+}
+
+
+Matrix Transform::Scale(const Matrix & sc, const Matrix & vec)
+{
+	int len = vec.rows;
+	Matrix res = (len==3) ? Mat::Mat4() : Mat::Mat3();
+	for(int i=0; i<len; i++)
 	{
-		res[i] = transform(mat, points[i]);
+		res[i][i] = sc[i][0];
+		res[i][len] = (1-sc[i][0])*vec[i][0];
 	}
 	return res;
 }
 
-std::vector<Point2D> Transform::scale(const std::vector<Point2D> & points, int xf, int yf, double sx, double sy)
+Matrix Transform::Scale(double sx, double sy, double sz, const Matrix & vec)
 {
-	std::vector<Point2D> res;
-	res.resize(points.size());
-
-	double mat[3][3] = {{sx, 0, xf*(1-sx) }, 
-						{0, sy, yf*(1-sy) }, 
-						{0, 0, 1}	};
-
-	for(int i=0; i<points.size(); i++)
-	{
-		res[i] = transform(mat, points[i]);
-	}
-	return res;
+	return Scale(Mat::Vec3(sx,sy,sz), vec);
 }
-
-Point2D Transform::scale(const Point2D &point, double xf, double yf, double sx, double sy)
-{
-	double mat[3][3] = {{sx, 0, xf*(1-sx) }, 
-						{0, sy, yf*(1-sy) }, 
-						{0, 0, 1}	};
-	return transform(mat, point);
-}
-
-Point2D Transform::reflect(const Point2D &point, double m, double c)
-{
-	double theta = atan(m);
-	double mat[3][3] = {{cos(2*theta), sin(2*theta), -c*sin(2*theta)},
-						{sin(2*theta), -cos(2*theta), c*cos(2*theta)+c},
-						{0, 0, 1} };
-return transform(mat, point);
-}
-
-
