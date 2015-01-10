@@ -2,7 +2,6 @@
 #include <Line.h>
 #include <Circle.h>
 #include <Polygon.h>
-#include <Transform.h>
 #include <Point2D.h>
 #include <Matrix.h>
 #include <Mat.h>
@@ -37,7 +36,7 @@ void drawAxes(SDL_Renderer*r);
 Point2D T(Point2D);
 //void Triangle(SDL_Renderer* r,Point2D p1, Point2D p2, Point2D p3, ColorRGBA color);
 
-using namespace Transform;
+//using namespace Transform;
 
 int main()
 {

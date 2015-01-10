@@ -54,6 +54,25 @@ Matrix crossProduct(const Matrix & a, const Matrix &b)
 	return Mat::Vec3(x,y,z);
 }
 
+Matrix getViewMatrix(const Matrix & U, const Matrix & V, const Matrix & N)
+{
+	Matrix rot = Mat::Mat4();
+
+	rot[0][0] = U[0][0];
+	rot[0][1] = U[1][0];
+	rot[0][2] = U[2][0];
+
+	rot[1][0] = V[0][0];
+	rot[1][1] = V[1][0];
+	rot[1][2] = V[2][0];
+
+	rot[2][0] = N[0][0];
+	rot[2][1] = N[1][0];
+	rot[2][2] = N[2][0];
+
+	return rot;
+}
+
 int main()
 {
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -78,36 +97,67 @@ int main()
 	bool quit = false;
 	SDL_Event event;
 
-	Matrix v1 = Mat::Vec4(0,0,10,1);
-	Matrix v2 = Mat::Vec4(10,0,10,1);
-	Matrix v3 = Mat::Vec4(10,10,10,1);
-	Matrix v4 = Mat::Vec4(0,10,10,1);
-	Matrix v5 = Mat::Vec4(0,0,0,1);
-	Matrix v6 = Mat::Vec4(10,0,0,1);
-	Matrix v7 = Mat::Vec4(10,10,0,1);
-	Matrix v8 = Mat::Vec4(0,10,0,1);
+	Matrix v1 = Mat::Vec3(0,0,10);
+	Matrix v2 = Mat::Vec3(10,0,10);
+	Matrix v3 = Mat::Vec3(10,10,10);
+	Matrix v4 = Mat::Vec3(0,10,10);
+	Matrix v5 = Mat::Vec3(0,0,0);
+	Matrix v6 = Mat::Vec3(10,0,0);
+	Matrix v7 = Mat::Vec3(10,10,0);
+	Matrix v8 = Mat::Vec3(0,10,0);
 
 	double nx=20, ny=0, nz=20;
+
+	/*
 	Matrix trans = Transform::Translate(Mat::Vec3(nx,ny,nz));
 	Matrix sc = Transform::Scale(Mat::Vec3(1,2,3), Mat::Vec3(4,5,6));
 	Matrix sc1 = Transform::Scale(1,2,3, Mat::Vec3(4,5,6));
 	Matrix rot = Transform::RotateZ(60);
 	std::cout << sc1 << std::endl;
+	*/
 
 	Matrix N = getUnitVector(Mat::Vec3(20,0,20));
-	std::cout <<N << std::endl;
+	//std::cout <<N << std::endl;
 
 	Matrix V = Mat::Vec3(0,1,0);
 
 	Matrix U = Mat::Vec3(0,0,0);
 	U = getUnitVector(crossProduct(N,V));
-	std::cout << U << std::endl;
+	//std::cout << U << std::endl;
 
 	V = crossProduct(N,U);
-	std::cout << V << std::endl;
+	//std::cout << V << std::endl;
+
+	Matrix view = getViewMatrix(U,V,N);
+	//std::cout << view << std::endl;
+
+	Matrix trans = Transform::Translate(Mat::Vec3(-20,0,-20));
+	//std::cout << trans << std::endl;
+
+	double zvp = 300;
+	double zprp = -40;
+	double d = zprp - zvp;
+	Matrix project = Mat::Mat4();
+	project[2][2] = -zvp/d;
+	project[2][3] = zvp*(zprp/d);
+	project[3][2] = -1/d;
+	project[3][3] = zprp/d;
+
+		
 
 	while(!quit)
 	{
+		Matrix res1 = project*view*trans*Mat::Vec4(v1,1);
+		Matrix res2 = project*view*trans*Mat::Vec4(v2,1);
+		Matrix res3 = project*view*trans*Mat::Vec4(v3,1);
+		Matrix res4 = project*view*trans*Mat::Vec4(v4,1);
+
+		Matrix res5 = project*view*trans*Mat::Vec4(v5,1);
+		Matrix res6 = project*view*trans*Mat::Vec4(v6,1);
+		Matrix res7 = project*view*trans*Mat::Vec4(v7,1);
+		Matrix res8 = project*view*trans*Mat::Vec4(v8,1);
+		
+
 		SDL_WaitEvent(&event);
 
 		switch (event.type)
@@ -130,8 +180,21 @@ int main()
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
 
+		Point2D p1(res1[0][0]/res1[3][0], res1[1][0]/res1[3][0]);
+		Point2D p2(res2[0][0]/res2[3][0], res2[1][0]/res2[3][0]);
+		Point2D p3(res3[0][0]/res3[3][0], res3[1][0]/res3[3][0]);
+		Point2D p4(res4[0][0]/res4[3][0], res4[1][0]/res4[3][0]);
 
-		drawAxes(renderer);
+		Polygon pp(renderer, T(p1), T(p2), T(p3), T(p4), ColorRGBA(255,0,0,0));
+		pp.Draw();
+
+		Point2D p6(res6[0][0]/res6[3][0], res6[1][0]/res6[3][0]);
+		Point2D p7(res7[0][0]/res7[3][0], res7[1][0]/res7[3][0]);
+
+		Polygon pp1(renderer, T(p2), T(p3), T(p7), T(p6), ColorRGBA(0,255,0,0));
+		pp1.Draw();
+
+		//drawAxes(renderer);
 		//Circle(renderer, 400, 300, 100, ColorRGBA(255,0,0,0)).Draw();
 	
 		SDL_RenderPresent(renderer);
