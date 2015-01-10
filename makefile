@@ -21,9 +21,9 @@ FLAGS := -I$(INC_DIR)/ --std=c++11
 
 ## Build files
 
-all: output
+all: bin/output
 
-output: $(OBJ_FILES)
+bin/output: $(OBJ_FILES) | $(BIN_DIR)
 	$(CC) -o $@ $^ main.cpp $(LDLIBS) $(FLAGS)
 
 $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
@@ -31,6 +31,8 @@ $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
 
 $(OBJ_DIR):
 	mkdir $(OBJ_DIR)
+$(BIN_DIR):
+	mkdir $(BIN_DIR)
 
 clean:
 	rm $(OBJ_DIR)/*.o

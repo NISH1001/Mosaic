@@ -13,9 +13,9 @@
 #define Y(y) -y+HEIGHT/2
 
 // the vectors U, V, N
-double N[] = {0.f,0.f,0.f};
-double U[] = {0.f,0.f,0.f};
-double V[] = {0.f,0.f,0.f};
+Matrix N = Mat::Vec3(0,0,0);
+Matrix V = Mat::Vec3(0,1,0);
+Matrix U = Mat::Vec3(0,0,0);
 
 // the normal Vector
 Matrix norm; 
@@ -41,6 +41,7 @@ using namespace Transform;
 
 int main()
 {
+	
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_Window *window =SDL_CreateWindow("transform", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL);
 
@@ -52,16 +53,61 @@ int main()
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA color(123,123,123,255);
 
-	Matrix v1 = Mat::Vec4(0,0,1,1);
-	Matrix v2 = Mat::Vec4(1,0,1,1);
-	Matrix v3 = Mat::Vec4(1,1,1,1);
-	Matrix v4 = Mat::Vec4(0,1,1,1);
+	drawAxes(renderer);
 
-	setNvector(0,0,10);
-		
-	SDL_RenderPresent(renderer);
+	Matrix v1 = Mat::Vec4(0,0,10,1);
+	Matrix v2 = Mat::Vec4(10,0,10,1);
+	Matrix v3 = Mat::Vec4(10,10,10,1);
+	Matrix v4 = Mat::Vec4(0,10,10,1);
+	Matrix v5 = Mat::Vec4(0,0,0,1);
+	Matrix v6 = Mat::Vec4(10,0,0,1);
+	Matrix v7 = Mat::Vec4(10,10,0,1);
+	Matrix v8 = Mat::Vec4(0,10,0,1);
 
-	SDL_Delay(2000);
+	setNvector(20,0,20);
+	setUvector();
+	setVvector();
+
+	setRotationMatrix();
+	setProjectionMatrix(200); 
+	Matrix res1, res2, res3, res4;
+
+	res1 = project*rot*trans*v5;
+	res2 = project*rot*trans*v6;
+	res3 = project*rot*trans*v7;
+	res4 = project*rot*trans*v8;
+
+	Point2D p5(res1[0][0]/res1[3][0], res1[1][0]/res1[3][0]);
+	Point2D p6(res2[0][0]/res2[3][0], res2[1][0]/res2[3][0]);
+	Point2D p7(res3[0][0]/res3[3][0], res3[1][0]/res3[3][0]);
+	Point2D p8(res4[0][0]/res4[3][0], res4[1][0]/res4[3][0]);
+
+	Polygon pp(renderer, T(p5), T(p6), T(p7), T(p8), color);
+	pp.DrawFilled();
+
+
+	res1 = project*rot*trans*v1;
+	res2 = project*rot*trans*v2;
+	res3 = project*rot*trans*v3;
+	res4 = project*rot*trans*v4;
+
+	std::cout << "res1 : \n" << res1 << std::endl;
+	std::cout << "res2 : \n" << res2 << std::endl;
+	std::cout << "res3 : \n" << res3 << std::endl;
+	std::cout << "res4 : \n" << res4 << std::endl;
+
+	Point2D p1(res1[0][0]/res1[3][0], res1[1][0]/res1[3][0]);
+	Point2D p2(res2[0][0]/res2[3][0], res2[1][0]/res2[3][0]);
+	Point2D p3(res3[0][0]/res3[3][0], res3[1][0]/res3[3][0]);
+	Point2D p4(res4[0][0]/res4[3][0], res4[1][0]/res4[3][0]);
+
+	Polygon p(renderer, T(p1), T(p2), T(p3), T(p4), red);
+	p.DrawFilled();
+
+	
+		SDL_RenderPresent(renderer);
+
+	SDL_Delay(5000);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -86,12 +132,15 @@ Point2D T(Point2D p)
 	
 void setNvector(double x, double y, double z)
 {
-	norm = Mat::Vec4(x,y,z,1);
+	setTranslationMatrix(-x,-y,-z);
+
+	norm = Mat::Vec4(-x,-y,-z,1);
 	// normalize
 	double r = sqrtf(x*x+y*y+z*z);
-	N[0] = x/r;
-	N[1] = y/r;
-	N[2] = z/r;
+	N[0][0] = x/r;
+	N[1][0] = y/r;
+	N[2][0] = z/r;
+	std::cout << "Normal\n" << N << std::endl;
 }
 
 void setUvector()
@@ -99,26 +148,31 @@ void setUvector()
 	// first assuming V vector to be (0,1,0)
 	// U = V X N
 	// assuming V=(0,1,0)
-	V[0] = 0;
-	V[1] = 1;
-	V[2] = 0;
+	double a, b, c;
+	std::cout << "initial V\n" << V << std::endl;
 
-	U[0] = V[1]*N[2] - N[1]*V[2];
-	U[1] = V[2]*N[0] - N[2]*V[0];
-	U[2] = V[0]*N[1] - V[1]*N[0];
+	a = U[0][0] = V[1][0]*N[2][0] - N[1][0]*V[2][0];
+	b = U[1][0] = V[2][0]*N[0][0] - N[2][0]*V[0][0];
+	c = U[2][0] = V[0][0]*N[1][0] - V[1][0]*N[0][0];
+
+	std::cout << "initial U\n" << U << std::endl;
 	// normalize
-	double r = sqrtf(U[0]*U[0] + U[1]*U[1] + U[2]*U[2]);
-	U[0] /= r;
-	U[1] /= r;
-	U[2] /= r;
+	double r = sqrtf(a*a+b*b+c*c);
+	U[0][0] /= r;
+	U[1][0] /= r;
+	U[2][0] /= r;
+
+	std::cout << "normalized U\n" << U << std::endl;
 }
 
 void setVvector()
 {
 	// U and N are calculated by this time
-	V[0] = -N[1]*U[2] + U[1]*N[2];
-	V[1] = -N[2]*U[0] + U[2]*N[0];
-	V[2] = -N[0]*U[1] + U[1]*N[0];
+	V[0][0] = N[1][0]*U[2][0] - U[1][0]*N[2][0];
+	V[1][0] = N[2][0]*U[0][0] - U[2][0]*N[0][0];
+	V[2][0] = -N[0][0]*U[1][0] + U[0][0]*N[1][0];
+
+	std::cout << "Normalized V\n" << V <<  std::endl;
 }
 
 void setTranslationMatrix(double x, double y, double z)
@@ -126,32 +180,40 @@ void setTranslationMatrix(double x, double y, double z)
 	trans[0][3] = x;
 	trans[1][3] = y;
 	trans[2][3] = z;
+	std::cout << "translation\n" << trans << std::endl;
 }
 
 void setRotationMatrix()
 {
-	rot[0][0] = U[0];
-	rot[0][1] = U[1];
-	rot[0][2] = U[2];
+	rot[0][0] = U[0][0];
+	rot[0][1] = U[1][0];
+	rot[0][2] = U[2][0];
 
-	rot[1][0] = V[0];
-	rot[1][1] = V[1];
-	rot[1][2] = V[2];
+	rot[1][0] = V[0][0];
+	rot[1][1] = V[1][0];
+	rot[1][2] = V[2][0];
 
-	rot[2][0] = N[0];
-	rot[2][1] = N[1];
-	rot[2][2] = N[2];
+	rot[2][0] = N[0][0];
+	rot[2][1] = N[1][0];
+	rot[2][2] = N[2][0];
+	
+	std::cout << "rotation\n";
+	std::cout << rot << std::endl;
 }
 
 void setProjectionMatrix(double zvp)
 {
 	Matrix temp = rot*trans*norm;// obtaining the normal after translating and rotating in WC
-	double zprp = temp[2][0];
+	double zprp = temp[2][0]; // this is origin. of the viewing coordinate
+	std::cout << "zvp: " << zvp << std::endl;
 	double d = zprp - zvp; // as in book
 
 	project[2][2] = -zvp/d;
+	std::cout << "zprp: " << zprp << std::endl;
 	project[2][3] = zvp*(zprp/d);
-	project[2][3] = -1/d;
+	project[3][2] = -1/d;
 	project[3][3] = zprp/d;
+
+	std::cout << "projection\n" << project << std::endl;
 }
 	
