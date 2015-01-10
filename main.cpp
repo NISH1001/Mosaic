@@ -64,14 +64,21 @@ int main()
 	Matrix v7 = Mat::Vec4(10,10,0,1);
 	Matrix v8 = Mat::Vec4(0,10,0,1);
 
-	setNvector(20,0,20);
+	int nx=20,ny=0,nz=20;
+	bool quit = false;
+	Matrix res1, res2, res3, res4;
+	SDL_Event event;
+
+	setNvector(nx,ny,nz);
 	setUvector();
 	setVvector();
 
 	setRotationMatrix();
 	setProjectionMatrix(200); 
-	Matrix res1, res2, res3, res4;
 
+	while(!quit)
+	{
+		
 	res1 = project*rot*trans*v5;
 	res2 = project*rot*trans*v6;
 	res3 = project*rot*trans*v7;
@@ -85,16 +92,10 @@ int main()
 	Polygon pp(renderer, T(p5), T(p6), T(p7), T(p8), color);
 	pp.DrawFilled();
 
-
 	res1 = project*rot*trans*v1;
 	res2 = project*rot*trans*v2;
 	res3 = project*rot*trans*v3;
 	res4 = project*rot*trans*v4;
-
-	std::cout << "res1 : \n" << res1 << std::endl;
-	std::cout << "res2 : \n" << res2 << std::endl;
-	std::cout << "res3 : \n" << res3 << std::endl;
-	std::cout << "res4 : \n" << res4 << std::endl;
 
 	Point2D p1(res1[0][0]/res1[3][0], res1[1][0]/res1[3][0]);
 	Point2D p2(res2[0][0]/res2[3][0], res2[1][0]/res2[3][0]);
@@ -104,10 +105,39 @@ int main()
 	Polygon p(renderer, T(p1), T(p2), T(p3), T(p4), red);
 	p.DrawFilled();
 
-	
-		SDL_RenderPresent(renderer);
+	SDL_RenderDrawPoint(renderer, 100, 100);
 
-	SDL_Delay(5000);
+
+	SDL_RenderPresent(renderer);
+
+	SDL_WaitEvent(&event);
+	switch (event.type)
+	{
+		case SDL_QUIT:
+			quit = true;
+			break;
+		case SDL_KEYDOWN:
+			switch(event.key.keysym.sym)
+			{
+				case SDLK_LEFT: nx-=5;break;
+				case SDLK_RIGHT: nx+=5;break;
+				case SDLK_UP : ny+=5;break;
+				case SDLK_DOWN: ny-=5;break;
+				case SDLK_w:nz+=5;break;
+				case SDLK_s:nz-=5;break;
+			}
+			setNvector(nx,ny,nz);
+			setUvector();
+			setVvector();
+
+			setRotationMatrix();
+			setProjectionMatrix(200); 
+			SDL_SetRenderDrawColor(renderer, 255,255,255,255);
+			SDL_RenderClear(renderer);
+			break;
+	}
+	}
+
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
