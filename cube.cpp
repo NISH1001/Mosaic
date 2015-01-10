@@ -143,19 +143,22 @@ int main()
 	project[3][2] = -1/d;
 	project[3][3] = zprp/d;
 
-		
+	double angle = 0;
 
 	while(!quit)
 	{
-		Matrix res1 = project*view*trans*Mat::Vec4(v1,1);
-		Matrix res2 = project*view*trans*Mat::Vec4(v2,1);
-		Matrix res3 = project*view*trans*Mat::Vec4(v3,1);
-		Matrix res4 = project*view*trans*Mat::Vec4(v4,1);
+		Matrix rot = Transform::RotateX(angle);
+		Matrix res1 = project*view*rot*trans*Mat::Vec4(v1,1);
+		Matrix res2 = project*view*rot*trans*Mat::Vec4(v2,1);
+		Matrix res3 = project*view*rot*trans*Mat::Vec4(v3,1);
+		Matrix res4 = project*view*rot*trans*Mat::Vec4(v4,1);
 
-		Matrix res5 = project*view*trans*Mat::Vec4(v5,1);
-		Matrix res6 = project*view*trans*Mat::Vec4(v6,1);
-		Matrix res7 = project*view*trans*Mat::Vec4(v7,1);
-		Matrix res8 = project*view*trans*Mat::Vec4(v8,1);
+		Matrix res5 = project*view*rot*trans*Mat::Vec4(v5,1);
+		Matrix res6 = project*view*rot*trans*Mat::Vec4(v6,1);
+		Matrix res7 = project*view*rot*trans*Mat::Vec4(v7,1);
+		Matrix res8 = project*view*rot*trans*Mat::Vec4(v8,1);
+
+		angle += 1;
 		
 
 		SDL_WaitEvent(&event);
