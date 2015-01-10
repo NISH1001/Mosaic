@@ -142,11 +142,11 @@ int main()
 
 	while(!quit)
 	{
-<<<<<<< HEAD
+
 		Matrix rot = Transform::RotateY(angle);
-=======
+
 		Matrix rot = Transform::RotateX(angle);
->>>>>>> aae48c0bf7fe69135d67a60f7ab65c9291419693
+
 		Matrix res1 = project*view*trans*rot*Mat::Vec4(v1,1);
 		Matrix res2 = project*view*trans*rot*Mat::Vec4(v2,1);
 		Matrix res3 = project*view*trans*rot*Mat::Vec4(v3,1);
@@ -156,8 +156,6 @@ int main()
 		Matrix res6 = project*view*trans*rot*Mat::Vec4(v6,1);
 		Matrix res7 = project*view*trans*rot*Mat::Vec4(v7,1);
 		Matrix res8 = project*view*trans*rot*Mat::Vec4(v8,1);
-<<<<<<< HEAD
-=======
 
 		/*
 		Matrix res5 = project*view*rot*trans*Mat::Vec4(v5,1);
@@ -165,7 +163,6 @@ int main()
 		Matrix res7 = project*view*rot*trans*Mat::Vec4(v7,1);
 		Matrix res8 = project*view*rot*trans*Mat::Vec4(v8,1);
 		*/
->>>>>>> aae48c0bf7fe69135d67a60f7ab65c9291419693
 
 		angle += 1;
 		
