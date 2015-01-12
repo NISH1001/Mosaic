@@ -73,6 +73,25 @@ Matrix getViewMatrix(const Matrix & U, const Matrix & V, const Matrix & N)
 	return rot;
 }
 
+// for isometric
+Matrix getIsometricRotation(Matrix vec)
+{
+	Matrix unitvec = getUnitVector(vec);
+	double x = unitvec[0][0];
+	double z = unitvec[2][0];
+	double y = unitvec[1][0];
+	double r = sqrtf(z*z+y*y);
+	// now rotate to xz plane by rotation about x axis
+	double thetaX = acos(z/r);
+	// now in xz plane y = 0, need rotation about y axis
+	double thetaY = -asin(x/sqrtf(1+x*x));
+
+	Matrix mx = Transform::RotateX(thetaX);
+	Matrix my = Transform::RotateY(-thetaY);
+	return my*mx;
+}
+
+
 int main()
 {
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -108,6 +127,11 @@ int main()
 
 	double nx=20, ny=0, nz=20;
 
+	ColorRGBA red(255,0,0,255);
+	ColorRGBA blue(0,0,255,255);
+	ColorRGBA green(0,255,0,255);
+	ColorRGBA cyan(0,255,255,255);
+
 	/*
 	Matrix trans = Transform::Translate(Mat::Vec3(nx,ny,nz));
 	Matrix sc = Transform::Scale(Mat::Vec3(1,2,3), Mat::Vec3(4,5,6));
@@ -129,7 +153,7 @@ int main()
 
 	Matrix trans = Transform::Translate(Mat::Vec3(-20,0,-20));
 
-	double zvp = 200;
+	double zvp = 100;
 	double zprp = 0;
 	double d = zprp - zvp;
 	Matrix project = Mat::Mat4();
@@ -139,6 +163,10 @@ int main()
 	project[3][3] = zprp/d;
 
 	double angle = 0;
+	view = trans = Mat::Mat4();
+	project = getIsometricRotation(Mat::Vec3(10,10,10));
+	std::cout << project;
+	std::cout << "ulala: \n" << project*view*trans<<std::endl;
 
 	while(!quit)
 	{
@@ -160,7 +188,7 @@ int main()
 		Matrix res8 = project*view*rot*trans*Mat::Vec4(v8,1);
 		*/
 
-		angle += 1;
+		//angle += 1;
 		
 
 		SDL_WaitEvent(&event);
@@ -182,33 +210,33 @@ int main()
         }
 
 
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		SDL_RenderClear(renderer);
 
-		Point2D p1(res1[0][0]/res1[3][0], res1[1][0]/res1[3][0]);
-		Point2D p2(res2[0][0]/res2[3][0], res2[1][0]/res2[3][0]);
-		Point2D p3(res3[0][0]/res3[3][0], res3[1][0]/res3[3][0]);
-		Point2D p4(res4[0][0]/res4[3][0], res4[1][0]/res4[3][0]);
-		Point2D p5(res5[0][0]/res5[3][0], res5[1][0]/res5[3][0]);
-		Point2D p6(res6[0][0]/res6[3][0], res6[1][0]/res6[3][0]);
-		Point2D p7(res7[0][0]/res7[3][0], res7[1][0]/res7[3][0]);
-		Point2D p8(res8[0][0]/res8[3][0], res8[1][0]/res8[3][0]);
+		Point2D p1(res1[0][0]/res1[3][0]*15, res1[1][0]/res1[3][0]*15);
+		Point2D p2(res2[0][0]/res2[3][0]*15, res2[1][0]/res2[3][0]*15);
+		Point2D p3(res3[0][0]/res3[3][0]*15, res3[1][0]/res3[3][0]*15);
+		Point2D p4(res4[0][0]/res4[3][0]*15, res4[1][0]/res4[3][0]*15);
+		Point2D p5(res5[0][0]/res5[3][0]*15, res5[1][0]/res5[3][0]*15);
+		Point2D p6(res6[0][0]/res6[3][0]*15, res6[1][0]/res6[3][0]*15);
+		Point2D p7(res7[0][0]/res7[3][0]*15, res7[1][0]/res7[3][0]*15);
+		Point2D p8(res8[0][0]/res8[3][0]*15, res8[1][0]/res8[3][0]*15);
 
-		Polygon face1(renderer, T(p1), T(p2), T(p3), T(p4), ColorRGBA(255,0,0,0));
+		Polygon face1(renderer, T(p1), T(p2), T(p3), T(p4), red);
 		face1.Draw();
-		Polygon face2(renderer, T(p2), T(p3), T(p7), T(p6), ColorRGBA(0,255,0,0));
+		Polygon face2(renderer, T(p2), T(p3), T(p7), T(p6), cyan);
 		face2.Draw();
-		Polygon face3(renderer, T(p1), T(p5), T(p8), T(p4), ColorRGBA(0,255,0,0));
+		Polygon face3(renderer, T(p1), T(p5), T(p8), T(p4), blue);
 		face3.Draw();
-		Polygon face4(renderer, T(p4), T(p3), T(p7), T(p8), ColorRGBA(0,255,0,0));
+		Polygon face4(renderer, T(p4), T(p3), T(p7), T(p8), green);
 		face4.Draw();
-		Polygon face5(renderer, T(p1), T(p2), T(p6), T(p5), ColorRGBA(0,255,0,0));
+		Polygon face5(renderer, T(p1), T(p2), T(p6), T(p5), red);
 		face5.Draw();
-		Polygon face6(renderer, T(p5), T(p6), T(p7), T(p7), ColorRGBA(0,255,0,0));
+		Polygon face6(renderer, T(p5), T(p6), T(p7), T(p7), cyan);
 		face6.Draw();
 
 
-		//drawAxes(renderer);
+		drawAxes(renderer);
 		//Circle(renderer, 400, 300, 100, ColorRGBA(255,0,0,0)).Draw();
 	
 		SDL_RenderPresent(renderer);
