@@ -13,7 +13,7 @@ Matrix Transform::Translate(const Matrix & vec)
 
 Matrix Transform::RotateX(double angle)
 {
-	angle = M_PI * angle / 180;
+	//angle = M_PI * angle / 180;
 	Matrix res = Mat::Mat4();
 	double a = cos(angle);
 	double b = sin(angle);
@@ -27,7 +27,7 @@ Matrix Transform::RotateX(double angle)
 
 Matrix Transform::RotateY(double angle)
 {
-	angle = M_PI * angle / 180;
+	//angle = M_PI * angle / 180;
 	Matrix res = Mat::Mat4();
 	double a = cos(angle);
 	double b = sin(angle);
@@ -41,7 +41,7 @@ Matrix Transform::RotateY(double angle)
 
 Matrix Transform::RotateZ(double angle)
 {
-	angle = M_PI * angle / 180;
+	//angle = M_PI * angle / 180;
 	Matrix res = Mat::Mat4();
 	double a = cos(angle);
 	double b = sin(angle);
