@@ -143,8 +143,6 @@ int main()
 	while(!quit)
 	{
 
-		Matrix rot = Transform::RotateY(angle);
-
 		Matrix rot = Transform::RotateX(angle);
 
 		Matrix res1 = project*view*trans*rot*Mat::Vec4(v1,1);
