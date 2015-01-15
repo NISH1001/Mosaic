@@ -108,20 +108,21 @@ int main()
 
 	
 
-	Vec3 N = getUnitVector(Vec3(20,0,20));
+	Vec3 N = getUnitVector(Vec3(0,0,20));
 
 	Vec3 V(0,1,0);
 
-	Vec3 U(0,0,0);
+	Vec3 U;
 	U = getUnitVector(crossProduct(N,V));
 
 	V = crossProduct(N,U);
 
 	Mat4 view = getViewMatrix(U,V,N);
 
-	Mat4 trans = Transform::Translate(Vec3(-20,0,-20));
+	Mat4 trans = Transform::Translate(Vec3(0,0,-20));
+	//std::cout << trans << std::endl;
 
-	float zvp = 300;
+	float zvp = 200;
 	float zprp = -40;
 	float d = zprp - zvp;
 	Mat4 project;
@@ -129,7 +130,7 @@ int main()
 	project[2][3] = zvp*(zprp/d);
 	project[3][2] = -1/d;
 	project[3][3] = zprp/d;
-
+	std::cout << project << std::endl;
 	/*
 	double angle = 0;
 	view = trans = Mat::Mat4();
@@ -142,17 +143,17 @@ int main()
 	while(!quit)
 	{
 
-		Mat4 rot = Transform::RotateY(angle);
+		Mat4 rot = Transform::RotateX(angle);
 
-		Vec4 res1 = project*view*rot*trans*Vec4(v1);
-		Vec4 res2 = project*view*rot*trans*Vec4(v2);
-		Vec4 res3 = project*view*rot*trans*Vec4(v3);
-		Vec4 res4 = project*view*rot*trans*Vec4(v4);
+		Vec4 res1 = project*view*trans*rot*Vec4(v1);
+		Vec4 res2 = project*view*trans*rot*Vec4(v2);
+		Vec4 res3 = project*view*trans*rot*Vec4(v3);
+		Vec4 res4 = project*view*trans*rot*Vec4(v4);
 
-		Vec4 res5 = project*view*rot*trans*Vec4(v5);
-		Vec4 res6 = project*view*rot*trans*Vec4(v6);
-		Vec4 res7 = project*view*rot*trans*Vec4(v7);
-		Vec4 res8 = project*view*rot*trans*Vec4(v8);
+		Vec4 res5 = project*view*trans*rot*Vec4(v5);
+		Vec4 res6 = project*view*trans*rot*Vec4(v6);
+		Vec4 res7 = project*view*trans*rot*Vec4(v7);
+		Vec4 res8 = project*view*trans*rot*Vec4(v8);
 
 		/*
 		Matrix res5 = project*view*rot*trans*Mat::Vec4(v5,1);

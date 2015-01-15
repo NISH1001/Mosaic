@@ -9,26 +9,26 @@ public:
 	static Mat4 Translate(const Vec3 & vec)
 	{
 		return Mat4(
-					1.0f, 0.0f, 0.0f, vec.x,
-					0.0f, 1.0f, 0.0f, vec.y,
-					0.0f, 0.0f, 1.0f, vec.z,
-					0.0f, 0.0f, 0.0f, 1
+					1, 0, 0, vec.x,
+					0, 1, 0, vec.y,
+					0, 0, 1, vec.z,
+					0, 0, 0, 1
 					);
 	}
 
 	static Mat4 Translate(float tx, float ty, float tz)
 	{
 		return Mat4(
-					1.0f, 0.0f, 0.0f, tx,
-					0.0f, 1.0f, 0.0f, ty,
-					0.0f, 0.0f, 1.0f, tz,
-					0.0f, 0.0f, 0.0f, 1
+					1, 0, 0, tx,
+					0, 1, 0, ty,
+					0, 0, 1, tz,
+					0, 0, 0, 1
 					);	
 	}
 
 	static Mat4 RotateX(float angle)
 	{
-		angle = 3.14 * angle/180;
+		angle = M_PI * angle/180;
 		float a=cosf(angle),b=sinf(angle);
 
 		return Mat4(
@@ -41,6 +41,7 @@ public:
 
 	static Mat4 RotateY(float angle)
 	{
+		angle = M_PI * angle/180;
 		float a=cosf(angle),b=sinf(angle);
 
 		return Mat4(
@@ -53,6 +54,7 @@ public:
 
 	static Mat4 RotateZ(float angle)
 	{
+		angle = M_PI * angle/180;
 		float a=cosf(angle),b=sinf(angle);
 
 		return Mat4(
@@ -75,5 +77,5 @@ public:
 
 
 private:
-	Transform(){}
+	//Transform(){}
 };

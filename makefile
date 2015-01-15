@@ -16,7 +16,7 @@ OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(CPP_FILES:src/%.cpp=%.o))
 ##CC := clang++
 CC := g++
 LDLIBS := -lSDL2
-FLAGS := -I$(INC_DIR)/ --std=c++11
+FLAGS := -I$(INC_DIR)/ --std=c++11 -O3
 
 
 ## Build files
