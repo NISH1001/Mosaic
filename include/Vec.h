@@ -30,7 +30,10 @@ public:
 
 	float operator[] (size_t i) const
 	{
-		assert(i < 3);
+		if(i>=3)
+		{
+			throw "index access error...";
+		}
 		return (&x)[i];
 	}
 
@@ -69,7 +72,10 @@ public:
 
 	float operator[] (size_t i) const
 	{
-		assert(i < 4);
+		if(i>=4)
+		{
+			throw "index access error...";
+		}
 		return (&x)[i];
 	}
 
