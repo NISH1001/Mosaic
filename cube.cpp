@@ -4,7 +4,7 @@
 #include <Polygon.h>
 #include <Transform.h>
 #include <Point2D.h>
-#include <matrix.h>
+#include <Matrix.h>
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -44,7 +44,7 @@ Vec3 crossProduct(const Vec3 & a, const Vec3 &b)
 
 Mat4 getViewMatrix(const Vec3 & U, const Vec3 & V, const Vec3 & N)
 {
-	return Mat4(Vec4(U), Vec4(V), Vec4(N), Vec4(0,0,0,1));
+	return Mat4(Vec4(U,0), Vec4(V,0), Vec4(N,0), Vec4(0,0,0,1));
 }
 
 // for isometric
