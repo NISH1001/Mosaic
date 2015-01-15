@@ -59,12 +59,12 @@ public:
 
 	Vec4 operator * (float k) const 
 	{
-		return Vec3(k*x, k*y, k*z, k*w);
+		return Vec4(k*x, k*y, k*z, k*w);
 	}
 
 	Vec4 operator / (float k) const 
 	{
-		return Vec3(x/k, y/k, z/k, w/k);
+		return Vec4(x/k, y/k, z/k, w/k);
 	}
 
 	float operator[] (size_t i) const
