@@ -9,9 +9,9 @@ public:
 	static Mat4 Translate(const Vec3 & vec)
 	{
 		return Mat4(
-					1.0f, 1.0f, 1.0f, vec.x,
-					1.0f, 1.0f, 1.0f, vec.y,
-					1.0f, 1.0f, 1.0f, vec.z,
+					1.0f, 0.0f, 0.0f, vec.x,
+					0.0f, 1.0f, 0.0f, vec.y,
+					0.0f, 0.0f, 1.0f, vec.z,
 					0.0f, 0.0f, 0.0f, 1
 					);
 	}
@@ -19,9 +19,9 @@ public:
 	static Mat4 Translate(float tx, float ty, float tz)
 	{
 		return Mat4(
-					1.0f, 1.0f, 1.0f, tx,
-					1.0f, 1.0f, 1.0f, ty,
-					1.0f, 1.0f, 1.0f, tz,
+					1.0f, 0.0f, 0.0f, tx,
+					0.0f, 1.0f, 0.0f, ty,
+					0.0f, 0.0f, 1.0f, tz,
 					0.0f, 0.0f, 0.0f, 1
 					);	
 	}
