@@ -190,7 +190,7 @@ int main()
 		Matrix res8 = project*view*rot*trans*Mat::Vec4(v8,1);
 		*/
 
-		//angle += 1;
+		angle += 1;
 		
 
 		SDL_WaitEvent(&event);
@@ -234,7 +234,7 @@ int main()
 		face4.Draw();
 		Polygon face5(renderer, T(p1), T(p2), T(p6), T(p5), red);
 		face5.Draw();
-		Polygon face6(renderer, T(p5), T(p6), T(p7), T(p7), cyan);
+		Polygon face6(renderer, T(p5), T(p6), T(p7), T(p8), cyan);
 		face6.Draw();
 
 
