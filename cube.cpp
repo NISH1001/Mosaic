@@ -99,7 +99,7 @@ int main()
 	Vec3 v7(10,10,0);
 	Vec3 v8(0,10,0);
 
-	double nx=20, ny=0, nz=20;
+	double nx=1, ny=0, nz=10;
 
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA blue(0,0,255,255);
@@ -108,7 +108,7 @@ int main()
 
 	
 
-	Vec3 N = getUnitVector(Vec3(0,0,20));
+	Vec3 N = getUnitVector(Vec3(nx,ny,nz));
 
 	Vec3 V(0,1,0);
 
@@ -119,8 +119,7 @@ int main()
 
 	Mat4 view = getViewMatrix(U,V,N);
 
-	Mat4 trans = Transform::Translate(Vec3(0,0,-20));
-	//std::cout << trans << std::endl;
+	Mat4 trans = Transform::Translate(Vec3(-nx,-ny,-nz));
 
 	float zvp = 200;
 	float zprp = -40;
@@ -136,8 +135,6 @@ int main()
 	view = trans = Mat::Mat4();
 	project = getIsometricRotation(Mat::Vec3(10,10,10));
 	*/
-	//std::cout << project << std::endl;
-	//std::cout << "ulala: \n" << project*view*trans<<std::endl;
 	float angle = 0;
 
 	while(!quit)
@@ -154,13 +151,6 @@ int main()
 		Vec4 res6 = project*view*trans*rot*Vec4(v6);
 		Vec4 res7 = project*view*trans*rot*Vec4(v7);
 		Vec4 res8 = project*view*trans*rot*Vec4(v8);
-
-		/*
-		Matrix res5 = project*view*rot*trans*Mat::Vec4(v5,1);
-		Matrix res6 = project*view*rot*trans*Mat::Vec4(v6,1);
-		Matrix res7 = project*view*rot*trans*Mat::Vec4(v7,1);
-		Matrix res8 = project*view*rot*trans*Mat::Vec4(v8,1);
-		*/
 
 		angle += 1;
 		

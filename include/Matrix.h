@@ -3,6 +3,11 @@
 #include <iostream>
 #include <cstddef>
 
+/*
+    Matrix class
+*/
+
+// Matrix 3x3 class
 class Mat3
 {
 public:
@@ -12,18 +17,23 @@ public:
         Vec3 v[3];
     };
     
+    //use 3D vector for init
     Mat3(const Vec3& v1, const Vec3& v2, const Vec3& v3)
     {
         (*this)[0] = v1;
         (*this)[1] = v2;
         (*this)[2] = v3;
     }
+
+    // default 3x3 identity
     Mat3(float f = 1.0f)
     {
         (*this)[0] = Vec3(f, 0.0f, 0.0f);
         (*this)[1] = Vec3(0.0f, f, 0.0f);
         (*this)[2] = Vec3(0.0f, 0.0f, f);
     }
+
+    // use 9 elements to initialize
     Mat3(float m11, float m12, float m13,
          float m21, float m22, float m23,
          float m31, float m32, float m33)
@@ -33,11 +43,13 @@ public:
         m[2][0] = m31; m[2][1] = m32; m[2][2] = m33;
     }
 
+    //overload [] for assignment using index
     Vec3& operator[] (int n)
     {
         return v[n];
     }
 
+    //[] for member access, hence constant only
     const Vec3& operator[] (int n) const
     {
          return v[n];
@@ -61,6 +73,7 @@ public:
         );
     }
 
+    /*multiply with same type*/
     Mat3 operator* (const Mat3& m2) const
     {
         return Mat3(
@@ -75,6 +88,8 @@ public:
             (m[2][0]*m2.m[0][2] + m[2][1]*m2.m[1][2] + m[2][2]*m2.m[2][2])
         );
     }
+
+    /*multiply with vector type*/
     Vec3 operator* (const Vec3& v) const
     {
         return Vec3(
@@ -83,6 +98,8 @@ public:
             (m[2][0]*v.x + m[2][1]*v.y + m[2][2]*v.z)
         );
     }
+
+    /*multiply with scalar type*/
     Mat3 operator* (float f) const
     {
         return Mat3(
@@ -93,6 +110,8 @@ public:
     }
 };
 
+
+/*Matrix 4x4 class*/
 class Mat4
 {
 public:
@@ -102,6 +121,7 @@ public:
         Vec4 v[4];
     };
     
+    //use 4D vector to initialize
     Mat4(const Vec4& v1, const Vec4& v2, const Vec4& v3, const Vec4& v4)
     {
         (*this)[0] = v1;
@@ -109,6 +129,8 @@ public:
         (*this)[2] = v3;
         (*this)[3] = v4;
     }
+
+    // default 4x4 identity
     Mat4(float f = 1.0f)
     {
         (*this)[0] = Vec4(f, 0.0f, 0.0f, 0.0f);
@@ -116,6 +138,8 @@ public:
         (*this)[2] = Vec4(0.0f, 0.0f, f, 0.0f);
         (*this)[2] = Vec4(0.0f, 0.0f, 0.0f, f);
     }
+
+    //use 16 elements to initialize
     Mat4(float m11, float m12, float m13, float m14,
          float m21, float m22, float m23, float m24,
          float m31, float m32, float m33, float m34,
@@ -127,11 +151,13 @@ public:
         m[3][0] = m41; m[3][1] = m42; m[3][2] = m43; m[3][3] = m44;
     }
 
+    //overload [] for assignment using index
     Vec4& operator[] (int n)
     {
         return v[n];
     }
 
+    // overload [] for member access only, hence const
     const Vec4& operator[] (int n) const
     {
          return v[n];
@@ -157,6 +183,7 @@ public:
         );
     }
 
+    //multiply with same type
     Mat4 operator* (const Mat4& m2) const
     {
         return Mat4(
@@ -178,6 +205,8 @@ public:
             (m[3][0]*m2.m[0][3] + m[3][1]*m2.m[1][3] + m[3][2]*m2.m[2][3] + m[3][3]*m2.m[3][3])
         );
     }
+
+    //multiply with 4D vector type
     Vec4 operator* (const Vec4& v) const
     {
         return Vec4(
@@ -187,6 +216,8 @@ public:
             (m[3][0]*v.x + m[3][1]*v.y + m[3][2]*v.z + m[3][3]*v.w)
         );
     }
+
+    //multiply with a scalar type
     Mat4 operator* (float f) const
     {
         return Mat4(
@@ -198,6 +229,7 @@ public:
     }
 };
 
+//overload << for 3x3 matrix
 inline std::ostream& operator << (std::ostream &os, const Mat3 &m)
 {
     for (int i=0; i<3; ++i)
@@ -209,6 +241,7 @@ inline std::ostream& operator << (std::ostream &os, const Mat3 &m)
     return os;
 }
 
+//overload << for 4x4 matrix
 inline std::ostream& operator << (std::ostream &os, const Mat4 &m)
 {
     for (int i=0; i<4; ++i)
