@@ -28,7 +28,16 @@ public:
 		return Vec3(x/k, y/k, z/k);
 	}
 
-	float operator[] (size_t i) const
+	float  operator[] (size_t i) const
+	{
+		if(i>=3)
+		{
+			throw "index access error...";
+		}
+		return (&x)[i];
+	}
+
+	float & operator[] (size_t i)
 	{
 		if(i>=3)
 		{
@@ -70,7 +79,16 @@ public:
 		return Vec4(x/k, y/k, z/k, w/k);
 	}
 
-	float operator[] (size_t i) const
+	float  operator[] (size_t i) const
+	{
+		if(i>=4)
+		{
+			throw "index access error...";
+		}
+		return (&x)[i];
+	}
+
+	float & operator[] (size_t i)
 	{
 		if(i>=4)
 		{
