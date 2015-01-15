@@ -6,7 +6,7 @@
 #include <Point2D.h>
 #include <Matrix.h>
 #include <Mat.h>
-#include <Vec.h>
+#include <matrix.h>
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -95,6 +95,10 @@ Matrix getIsometricRotation(Matrix vec)
 
 int main()
 {
+	Mat3 mat(Vec3(1,2,3), Vec3(4,5,6), Vec3(7,8,9));
+	Mat4 mat1;
+	std::cout << mat << std::endl;
+
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		std::cout<<"cannot initialize"<<std::endl;
