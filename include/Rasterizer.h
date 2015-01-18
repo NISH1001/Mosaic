@@ -24,28 +24,31 @@ class Rasterizer
 			else return b;
 		}
 
-	void SortY(Point2D& m_p1, Point2D& m_p2, Point2D& m_p3)
+	void SortY(Point2D& p1, Point2D& p2, Point2D& p3)
 	{
-		if (m_p1.y < m_p2.y) 
+		if (p1.y < p2.y) 
 		{
-			std::swap(m_p1.x, m_p2.x);
-			std::swap(m_p1.y, m_p2.y);
+			std::swap(p1.x, p2.x);
+			std::swap(p1.y, p2.y);
 		}
-		if (m_p2.y < m_p3.y) 
+		if (p2.y < p3.y) 
 		{
-			std::swap(m_p2.x, m_p3.x);
-			std::swap(m_p2.y, m_p3.y);
+			std::swap(p2.x, p3.x);
+			std::swap(p2.y, p3.y);
 		} ///largest yvalue coord is at 1
-		if (m_p1.y < m_p2.y) 
+		if (p1.y < p2.y) 
 		{
-			std::swap(m_p1.x, m_p2.x);
-			std::swap(m_p1.y, m_p2.y);
+			std::swap(p1.x, p2.x);
+			std::swap(p1.y, p2.y);
 		}
 	}
 	// helper functions end.
 
 		void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
+			// check if depth clipping fails or not
+			if((p1.depth<0 or p1.depth>1) and (p2.depth<0 or p2.depth>1) and (p2.depth<0 or p2.depth>1)) return; 
+
 			// first sort the points in descending order a/c y coordinate
 			SortY(p1,p2,p3);
 
@@ -92,25 +95,36 @@ class Rasterizer
 
 			Vec3 attr1 = e1[0].attributes[0], attr2 = e2[0].attributes[0];	
 			Vec3 attr;
+			float depth1 =e1[0].depth, depth2 = e2[0].depth;
+			float depth;
 			// do until the scan line reaches the y value of lower point of e1
 			while(y-- > e1[1].y)
 			{
 				if (y>h) return; // if scanline is below the screen
 				if (y<0)continue;// if scanline is above the screen
 				dx = tempx2 - tempx1;
-				if (dx==0) attr = attr1;
-				else attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
-				std::cout << y << "::" << attr << std::endl;
+				if (dx==0)
+				{
+					attr = attr1;
+					depth = depth1;
+				}
+				else 
+				{
+					attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
+					depth = depth1 + (depth2-depth1)*(x1-tempx1)/dx;
+				}
 
 				for(int x=x1;x<=x2;x++)
 				{
 					attr += (attr2-attr1)*(x-x1)/dx;
+					depth += (depth2-depth1)*(x-x1)/dx;
 				}
-				//factorY1+=1/dy1;
-				//factorY2+=1/dy2;
+				// update attributes and depth for two edges points in next scan line
 				attr1-=(e1[0].attributes[0]-e1[1].attributes[0])/dy1;
 				attr2-=(e2[0].attributes[0]-e2[1].attributes[0])/dy2;
-				std::cout << "attr1:" << attr1 << " " << "attr2:" << attr2 << std::endl;
+				depth1-=(e1[0].depth-e1[1].depth)/dy1;
+				depth2-=(e2[0].depth-e2[1].depth)/dy2;
+
 				tempx1 += 1/inv_m1;
 				tempx2 += 1/inv_m2;
 
@@ -125,15 +139,15 @@ class Rasterizer
 					x2 = Max(tempx2, 0);
 				}
 			}
-			std::cout << " end of first loopp\n";
 			// now do until the scan line reaches the y value of lower point of e2
 			if (e2[1].y == e1[1].y)return;
-			inv_m1 = (e2[1].x-e1[1].x)/(e2[1].y-e1[1].y); // now, the edge contains second point of e1 and second point of e2, other edge is the same
-			dy1 = e1[1].y-e2[1].y; 
+			inv_m1 = (e2[1].x-e1[1].x)/(e2[1].y-e1[1].y); // now, the edge e1 contains second point of e1 and second point of e2, other edge is the same
+			dy1 = e1[1].y-e2[1].y; // it is a new dy1 because the edge is changed now, for end point of previous e1 is already reached
+
 			attr1 = e1[1].attributes[0] - (e1[1].attributes[0]-e2[1].attributes[0])/dy1; // other edge is one step below
-			std::cout << attr1<< ">>attr1\n";
+			depth1 = e1[1].depth - (e1[1].depth - e2[1].depth)/dy1; // other edge is one step below
+
 			tempx1 = e1[1].x + 1/inv_m1; // for e2, all things are the same
-			std::cout << "begin second loopp\n";
 			// now into the loop
 			while(y-- >= e2[1].y)
 			{
@@ -141,17 +155,19 @@ class Rasterizer
 				if (y<0)continue;// if scanline is above the screen
 				dx = tempx2 - tempx1;
 				attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
-				std::cout << attr << std::endl;
-				std::cout << y << "::" << attr << std::endl;
+				depth = depth1 +(depth2-depth1)*(x1-tempx1)/dx;
 
 				for(int x=x1;x<=x2;x++)
 				{
 					attr += (attr2-attr1)*(x-x1)/dx;
+					depth += (depth2-depth1)*(x-x1)/dx;
 				}
-				//factorY1+=1/dy1;
-				//factorY2+=1/dy2;
+				// update attributes and depth for two edges points in next scan line
 				attr1-=(e1[1].attributes[0]-e2[1].attributes[0])/dy1;
 				attr2-=(e2[0].attributes[0]-e2[1].attributes[0])/dy2;
+				depth1-=(e1[0].depth-e1[1].depth)/dy1;
+				depth2-=(e2[0].depth-e2[1].depth)/dy2;
+
 				tempx1 += 1/inv_m1;
 				tempx2 += 1/inv_m2;
 
