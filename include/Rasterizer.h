@@ -6,10 +6,45 @@
 class Rasterizer
 {
 	public:
-		Rasterizer();
-		~Rasterizer();
+		Rasterizer(){}
+		~Rasterizer(){}
 
-		void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer);
+		// helper functions
+		template <class t>
+		t Max(t a, t b)
+		{
+			if (a>b) return a;
+			else return b;
+		}
+		
+		template <class t>
+		t Min(t a, t b)
+		{
+			if (a<b) return a;
+			else return b;
+		}
+
+	void SortY(Point2D& m_p1, Point2D& m_p2, Point2D& m_p3)
+	{
+		if (m_p1.y < m_p2.y) 
+		{
+			std::swap(m_p1.x, m_p2.x);
+			std::swap(m_p1.y, m_p2.y);
+		}
+		if (m_p2.y < m_p3.y) 
+		{
+			std::swap(m_p2.x, m_p3.x);
+			std::swap(m_p2.y, m_p3.y);
+		} ///largest yvalue coord is at 1
+		if (m_p1.y < m_p2.y) 
+		{
+			std::swap(m_p1.x, m_p2.x);
+			std::swap(m_p1.y, m_p2.y);
+		}
+	}
+	// helper functions end.
+
+		void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
 			SortY(p1,p2,p3);
@@ -19,7 +54,7 @@ class Rasterizer
 				// make two edges, (p1,p3) and (p2,p3)
 				Point2D e1[] = {p1,p3};
 				Point2D e2[] = {p2,p3};
-				InterpolateEdges(e1,e2,w,h,fragShader, depthbuffer);
+				InterpolateEdges(e1,e2,w,h,fragShader, depthBuffer);
 			}
 			else // the two upper points are not at same level
 			{
@@ -30,7 +65,7 @@ class Rasterizer
 		}
 		
 
-		void interpolateEdges(Point2D* e1, Point2D* e2, int w, int h, void(*fragShader)(Point2D&), float* depthBuffer)
+		void InterpolateEdges(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			float inv_m1 = (e1[1].x-e1[0].x)/(e1[1].y-e1[0].y);
 			float inv_m2 = (e2[1].x-e2[0].x)/(e2[1].y-e2[0].y);
@@ -58,12 +93,14 @@ class Rasterizer
 			Vec3 attr1 = e1[0].attributes[0], attr2 = e2[0].attributes[0];	
 			Vec3 attr;
 			// do until the scan line reaches the y value of lower point of e1
-			while(y-- >= e1[1].y)
+			while(y-- > e1[1].y)
 			{
 				if (y>h) return; // if scanline is below the screen
 				if (y<0)continue;// if scanline is above the screen
 				dx = tempx2 - tempx1;
-				attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
+				if (dx==0) attr = attr1;
+				else attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
+				std::cout << y << "::" << attr << std::endl;
 
 				for(int x=x1;x<=x2;x++)
 				{
@@ -73,6 +110,7 @@ class Rasterizer
 				//factorY2+=1/dy2;
 				attr1-=(e1[0].attributes[0]-e1[1].attributes[0])/dy1;
 				attr2-=(e2[0].attributes[0]-e2[1].attributes[0])/dy2;
+				std::cout << "attr1:" << attr1 << " " << "attr2:" << attr2 << std::endl;
 				tempx1 += 1/inv_m1;
 				tempx2 += 1/inv_m2;
 
@@ -86,21 +124,25 @@ class Rasterizer
 					x1 = Min(tempx1, w);
 					x2 = Max(tempx2, 0);
 				}
-
-				y--;
 			}
+			std::cout << " end of first loopp\n";
 			// now do until the scan line reaches the y value of lower point of e2
+			if (e2[1].y == e1[1].y)return;
 			inv_m1 = (e2[1].x-e1[1].x)/(e2[1].y-e1[1].y); // now, the edge contains second point of e1 and second point of e2, other edge is the same
 			dy1 = e1[1].y-e2[1].y; 
 			attr1 = e1[1].attributes[0] - (e1[1].attributes[0]-e2[1].attributes[0])/dy1; // other edge is one step below
+			std::cout << attr1<< ">>attr1\n";
 			tempx1 = e1[1].x + 1/inv_m1; // for e2, all things are the same
+			std::cout << "begin second loopp\n";
 			// now into the loop
-			while(y-- >= e1[1].y)
+			while(y-- >= e2[1].y)
 			{
 				if (y>h) return; // if scanline is below the screen
 				if (y<0)continue;// if scanline is above the screen
 				dx = tempx2 - tempx1;
 				attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
+				std::cout << attr << std::endl;
+				std::cout << y << "::" << attr << std::endl;
 
 				for(int x=x1;x<=x2;x++)
 				{
@@ -108,7 +150,7 @@ class Rasterizer
 				}
 				//factorY1+=1/dy1;
 				//factorY2+=1/dy2;
-				attr1-=(e1[0].attributes[0]-e1[1].attributes[0])/dy1;
+				attr1-=(e1[1].attributes[0]-e2[1].attributes[0])/dy1;
 				attr2-=(e2[0].attributes[0]-e2[1].attributes[0])/dy2;
 				tempx1 += 1/inv_m1;
 				tempx2 += 1/inv_m2;
@@ -125,5 +167,4 @@ class Rasterizer
 				}
 			}
 		}
-
 };

@@ -25,6 +25,16 @@ public:
 		return Vec3(x-other.x, y-other.y, z-other.z);
 	}
 
+	void operator-=(const Vec3 & other)
+	{
+		x = x-other.x; y=y-other.y; z=z-other.z;
+	}
+
+	void operator+=(const Vec3 & other)
+	{
+		x = x+other.x; y=y+other.y; z=z+other.z;
+	}
+
 	Vec3 operator * (float k) const 
 	{
 		return Vec3(k*x, k*y, k*z);

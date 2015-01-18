@@ -9,7 +9,7 @@
 
 struct Point2D
 {
-	struct { int x, y; } // for contagious storage in memory
+	struct { int x, y; }; // for contagious storage in memory
 	float depth;
 	Vec3 attributes[1]; // point has only one attribute now, that is normal
 
@@ -23,3 +23,4 @@ struct Point2D
 	Point2D operator+(const Point2D & point);
 	Point2D operator-(const Point2D & point);
 };
+
