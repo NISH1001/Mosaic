@@ -1,6 +1,7 @@
 *.out
 *.o
 *.swp
+*.d
 makefile~
 bin/
 

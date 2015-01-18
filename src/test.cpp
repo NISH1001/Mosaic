@@ -2,6 +2,7 @@
 
 void fragShad(Point2D&p1)
 {
+	int a;
 	return;
 }
 
