@@ -23,3 +23,4 @@ struct Point2D
 	Point2D operator+(const Point2D & point);
 	Point2D operator-(const Point2D & point);
 };
+
