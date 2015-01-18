@@ -5,6 +5,7 @@
 class Polygon : public Primitive // only convex polygon
 {
 	public:
+		Polygon();
 		Polygon(SDL_Renderer*, Point2D, Point2D, Point2D, Point2D, ColorRGBA);
 		~Polygon();
 

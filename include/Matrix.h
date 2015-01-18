@@ -136,7 +136,7 @@ public:
         (*this)[0] = Vec4(f, 0.0f, 0.0f, 0.0f);
         (*this)[1] = Vec4(0.0f, f, 0.0f, 0.0f);
         (*this)[2] = Vec4(0.0f, 0.0f, f, 0.0f);
-        (*this)[2] = Vec4(0.0f, 0.0f, 0.0f, f);
+        (*this)[3] = Vec4(0.0f, 0.0f, 0.0f, f);
     }
 
     //use 16 elements to initialize

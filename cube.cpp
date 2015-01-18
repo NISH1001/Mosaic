@@ -5,6 +5,7 @@
 #include <Transform.h>
 #include <Point2D.h>
 #include <Matrix.h>
+#include <vector>
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -90,16 +91,13 @@ int main()
 	bool quit = false;
 	SDL_Event event;
 
-	Vec3 v1(0,0,10);
-	Vec3 v2(10,0,10);
-	Vec3 v3(10,10,10);
-	Vec3 v4(0,10,10);
-	Vec3 v5(0,0,0);
-	Vec3 v6(10,0,0);
-	Vec3 v7(10,10,0);
-	Vec3 v8(0,10,0);
+	std::vector<Vec3> cube = {Vec3(0,0,10), Vec3(10,0,10), Vec3(10,10,10), Vec3(0,10,10),
+								Vec3(0,0,0), Vec3(10,0,0), Vec3(10,10,0), Vec3(0,10,0) };
 
-	double nx=1, ny=0, nz=10;
+	std::vector<Vec4> res;
+	res.resize(cube.size());
+
+	double nx=1, ny=1, nz=10;
 
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA blue(0,0,255,255);
@@ -129,7 +127,7 @@ int main()
 	project[2][3] = zvp*(zprp/d);
 	project[3][2] = -1/d;
 	project[3][3] = zprp/d;
-	std::cout << project << std::endl;
+	//std::cout << project << std::endl;
 	/*
 	double angle = 0;
 	view = trans = Mat::Mat4();
@@ -137,20 +135,22 @@ int main()
 	*/
 	float angle = 0;
 
+	//Mat4 rot;
+	//std::cout << rot << std::endl;
+
+	std::vector<Point2D> points(cube.size());
+
 	while(!quit)
 	{
+		Mat4 rot = Transform::RotateY(angle);
+		Mat4 final = project * view * trans * rot;
 
-		Mat4 rot = Transform::RotateX(angle);
-
-		Vec4 res1 = project*view*trans*rot*Vec4(v1);
-		Vec4 res2 = project*view*trans*rot*Vec4(v2);
-		Vec4 res3 = project*view*trans*rot*Vec4(v3);
-		Vec4 res4 = project*view*trans*rot*Vec4(v4);
-
-		Vec4 res5 = project*view*trans*rot*Vec4(v5);
-		Vec4 res6 = project*view*trans*rot*Vec4(v6);
-		Vec4 res7 = project*view*trans*rot*Vec4(v7);
-		Vec4 res8 = project*view*trans*rot*Vec4(v8);
+		for(int i=0; i<cube.size(); i++)
+		{
+			res[i] = final * Vec4(cube[i]);
+			res[i].NormalizeByW();
+			points[i] = Point2D(res[i].x, res[i].y);
+		}
 
 		angle += 1;
 		
@@ -177,40 +177,20 @@ int main()
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderClear(renderer);
 
-		/*
-		res1 = res1/res1.w;
-		res2 = res2/res2.w;
-		res3 = res3/res3.w;
-		res4 = res4/res4.w;
-		res5 = res5/res5.w;
-		res6 = res6/res6.w;
-		res7 = res7/res7.w;
-		res8 = res8/res8.w;
-		*/
 
-		Point2D p1(res1.x/res1.w, res1.y/res1.w);
-		Point2D p2(res2.x/res2.w, res2.y/res2.w);
-		Point2D p3(res3.x/res3.w, res3.y/res3.w);
-		Point2D p4(res4.x/res4.w, res4.y/res4.w);
-		Point2D p5(res5.x/res5.w, res5.y/res5.w);
-		Point2D p6(res6.x/res6.w, res6.y/res6.w);
-		Point2D p7(res7.x/res7.w, res7.y/res7.w);
-		Point2D p8(res8.x/res8.w, res8.y/res8.w);
+		std::vector<Polygon> face = {
+								Polygon(renderer, T(points[0]), T(points[1]), T(points[2]), T(points[3]), red),
+								Polygon(renderer, T(points[1]), T(points[2]), T(points[6]), T(points[5]), green),
+								Polygon(renderer, T(points[0]), T(points[4]), T(points[7]), T(points[3]), blue),
+								Polygon(renderer, T(points[3]), T(points[2]), T(points[6]), T(points[7]), cyan),
+								Polygon(renderer, T(points[0]), T(points[1]), T(points[5]), T(points[4]), ColorRGBA(255,255,0,0)),
+								Polygon(renderer, T(points[4]), T(points[5]), T(points[6]), T(points[7]), ColorRGBA(255,0,255,0))
+							};
 
-		Polygon face1(renderer, T(p1), T(p2), T(p3), T(p4), ColorRGBA(255,0,0,0));
-		face1.Draw();
-		Polygon face2(renderer, T(p2), T(p3), T(p7), T(p6), ColorRGBA(0,255,0,0));
-		face2.Draw();
-		Polygon face3(renderer, T(p1), T(p5), T(p8), T(p4), ColorRGBA(0,255,0,0));
-		face3.Draw();
-		Polygon face4(renderer, T(p4), T(p3), T(p7), T(p8), ColorRGBA(0,255,0,0));
-		face4.Draw();
-		Polygon face5(renderer, T(p1), T(p2), T(p6), T(p5), ColorRGBA(0,255,0,0));
-		face5.Draw();
-		Polygon face6(renderer, T(p5), T(p6), T(p7), T(p8), ColorRGBA(0,255,0,0));
-		face6.Draw();
-
-		//Circle(renderer, 400, 300, 100, ColorRGBA(255,0,0,0)).Draw();
+		for(int i=0; i<face.size(); i++)
+		{
+			face[i].Draw();
+		}
 	
 		SDL_RenderPresent(renderer);
 	}
