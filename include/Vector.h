@@ -105,6 +105,17 @@ public:
 		return (&x)[i];
 	}
 
+	void NormalizeByW(void)
+	{
+		if(w!=1 && w!=0)
+		{
+			x = x/w;
+			y = y/w;
+			z = z/w;
+			w = 1;
+		}
+	}
+
 private:
 };
 

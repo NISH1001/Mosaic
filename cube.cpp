@@ -129,7 +129,7 @@ int main()
 	project[2][3] = zvp*(zprp/d);
 	project[3][2] = -1/d;
 	project[3][3] = zprp/d;
-	std::cout << project << std::endl;
+	//std::cout << project << std::endl;
 	/*
 	double angle = 0;
 	view = trans = Mat::Mat4();
@@ -137,10 +137,12 @@ int main()
 	*/
 	float angle = 0;
 
+	//Mat4 rot = Transform::RotateX(angle);
+	Mat4 rot;
+	std::cout << rot << std::endl;
+
 	while(!quit)
 	{
-
-		Mat4 rot = Transform::RotateX(angle);
 
 		Vec4 res1 = project*view*trans*rot*Vec4(v1);
 		Vec4 res2 = project*view*trans*rot*Vec4(v2);
@@ -152,7 +154,7 @@ int main()
 		Vec4 res7 = project*view*trans*rot*Vec4(v7);
 		Vec4 res8 = project*view*trans*rot*Vec4(v8);
 
-		angle += 1;
+		//angle += 1;
 		
 
 		SDL_WaitEvent(&event);
