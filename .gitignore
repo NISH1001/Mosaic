@@ -3,4 +3,5 @@
 *.swp
 makefile~
 bin/
+obj/
 
