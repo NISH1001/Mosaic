@@ -50,10 +50,11 @@ public:
 		/*
 		we may have some unsimulated time left over at the end of each frame
 		due to the lag or boost in CPU process
-		so to compensate that we use thie accumulator value
 
 		This left over time is passed on to the next 
 		frame via the accumulator variable and is not thrown away.
+		
+		so to compensate that we use thie accumulator value
 		
 		update a frame by the ideal delta time: 
 		if more time has passed than ideal delta time, update more than once
