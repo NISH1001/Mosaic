@@ -7,7 +7,7 @@
 class Renderer
 {
 	public:
-		Renderer(void) : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), m_timer(200) {}
+		Renderer(void) : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), m_timer(150) {}
 		~Renderer() {}
 		bool Initialize(const char*title, int x, int y, int width, int height);
 		void MainLoop();
