@@ -6,6 +6,7 @@
 #include <Point2D.h>
 #include <Matrix.h>
 #include <vector>
+#include <Renderer.h>
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;

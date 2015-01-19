@@ -14,8 +14,8 @@ INC_FILES := $(wildcard $(INC_DIR:%=%/*.h))
 OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(CPP_FILES:src/%.cpp=%.o))
 
 ## Compiler and linker flags and libraries to use
-CC := clang++
-##CC := g++
+##CC := clang++
+CC := g++
 LDLIBS := -lSDL2
 FLAGS := -I$(INC_DIR)/ --std=c++11 -O3
 
@@ -25,7 +25,7 @@ FLAGS := -I$(INC_DIR)/ --std=c++11 -O3
 all: bin/output
 
 bin/output: $(OBJ_FILES) | $(BIN_DIR) 
-	$(CC) -o $@ $^ test.cpp $(LDLIBS) $(FLAGS)
+	$(CC) -o $@ $^ rendertest.cpp $(LDLIBS) $(FLAGS)
 
 $(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
 	$(CC) -c -o $@ $< $(LDLIBS) $(FLAGS)
