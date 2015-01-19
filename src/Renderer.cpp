@@ -83,7 +83,7 @@ void Renderer::MainLoop(void)
 		
 
 		SDL_RenderPresent(m_renderer);
-		SDL_Delay(2);
+		SDL_Delay(1);
 		//std::cout << "MainLoop" << std::endl;
 	}
 }
