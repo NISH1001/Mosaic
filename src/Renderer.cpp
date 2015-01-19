@@ -68,11 +68,14 @@ void Renderer::MainLoop(void)
         std::string title = "FPS: " + std::to_string(m_timer.GetFPS());
         SDL_SetWindowTitle(m_window, title.c_str());
 
+        /*
 		m_timer.Update([this](double dt)
 		{ 
             if (m_update)
                 m_update(dt); 
-        });
+        });*/
+
+        m_timer.Update(m_update);
 
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 		SDL_RenderClear(m_renderer);
@@ -80,7 +83,7 @@ void Renderer::MainLoop(void)
 		
 
 		SDL_RenderPresent(m_renderer);
-		//SDL_Delay(40);
+		SDL_Delay(2);
 		//std::cout << "MainLoop" << std::endl;
 	}
 }

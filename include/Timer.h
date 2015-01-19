@@ -30,7 +30,7 @@ public:
 		double current_time = SDL_GetTicks();
 
 		//calculate the elapsed time or delta time or time between two updates
-		double delta_time = current_time - m_prevTime;
+		double delta_time = (current_time - m_prevTime)/1000.0f;
 
 		//set previous time
 		m_prevTime = current_time;
@@ -38,8 +38,8 @@ public:
 		// Second counter to keep track of whether we have crossed a second
         m_secondCounter += static_cast<uint32_t>(delta_time * 1000.0f);
 
-		if (delta_time > 1)
-        	delta_time = 1;
+		if (delta_time > 1.0f)
+        	delta_time = 1.0f;
 
         //RIP small errors
         if(fabs(delta_time - m_idealDeltaTime) < m_precision)
