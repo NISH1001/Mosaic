@@ -8,9 +8,9 @@ void fragShad(Point2D&p1)
 
 int main()
 {
-	Point2D p1(10,10);
-	Point2D p2(5, 5);
-	Point2D p3(15, 0);
+	Point2D p1(5,5);
+	Point2D p2(10, 10);
+	Point2D p3(15, 8);
 	Vec3 v1(100,100,100);
 	Vec3 v2(25,50,125);
 	Vec3 v3(200,-200,200);

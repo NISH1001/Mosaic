@@ -73,9 +73,14 @@ class Rasterizer
 			float inv_m1 = (e1[1].x-e1[0].x)/(e1[1].y-e1[0].y);
 			float inv_m2 = (e2[1].x-e2[0].x)/(e2[1].y-e2[0].y);
 
+			int inc=1;
+			// check direction of x increment, if e1 has x values smaller
+			// than that of e2, x in increment positively,else -vely
+			if(e1[0].x<e2[0].x or e1[1].x<e2[1].x) inc = 1;
+			//else inc = -1;
+			if(e1[0].x>e2[0].x or e1[1].x>e2[1].x) inc = -1;
+
 			int y = e1[0].y; // both the first point of edges have same y value
-			float factorY1 = 0.f, factorY2 = 0.f;
-			float factorX1, factorX2;
 			int dx;
 			int tempx1 = e1[0].x, tempx2 = e2[0].x; // tempx1 and tempx2 are the x values for respective edges(which may be outside x=0 and x=w).
 			float x1, x2;  // x1 and x2 are the x values that are inside the window, probably visible on the surface(if they pass depth test)
@@ -98,6 +103,7 @@ class Rasterizer
 			float depth1 =e1[0].depth, depth2 = e2[0].depth;
 			float depth;
 			// do until the scan line reaches the y value of lower point of e1
+			std::cout << "y and e1[1].y >> " << y << " " << e1[1].y << std::endl;
 			while(y-- > e1[1].y)
 			{
 				if (y>h) return; // if scanline is below the screen
@@ -110,14 +116,17 @@ class Rasterizer
 				}
 				else 
 				{
-					attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
+					attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;		
 					depth = depth1 + (depth2-depth1)*(x1-tempx1)/dx;
 				}
 
-				for(int x=x1;x<=x2;x++)
+				int tot = inc*(x2-x1);// making positive tot
+				std::cout << "tot " << tot << std::endl;
+				for(int c=0;c<=tot;c++)
 				{
-					attr += (attr2-attr1)*(x-x1)/dx;
-					depth += (depth2-depth1)*(x-x1)/dx;
+					attr += (attr2-attr1)*(inc)/dx;
+					depth += (depth2-depth1)*(inc)/dx;
+					std::cout << y << " &&" << attr<< std::endl;
 				}
 				// update attributes and depth for two edges points in next scan line
 				attr1-=(e1[0].attributes[0]-e1[1].attributes[0])/dy1;
@@ -127,6 +136,7 @@ class Rasterizer
 
 				tempx1 += 1/inv_m1;
 				tempx2 += 1/inv_m2;
+				std::cout << "tempx1 :" << tempx1 << " tempx2 :" << tempx2 << std::endl;
 
 				if(tempx2>=tempx1)
 				{
@@ -138,6 +148,7 @@ class Rasterizer
 					x1 = Min(tempx1, w);
 					x2 = Max(tempx2, 0);
 				}
+				std::cout << "x1 :" << x1 << " x2 :" << x2 << std::endl;
 			}
 			// now do until the scan line reaches the y value of lower point of e2
 			if (e2[1].y == e1[1].y)return;
@@ -157,10 +168,12 @@ class Rasterizer
 				attr = attr1 +(attr2-attr1)*(x1-tempx1)/dx;						// depth buffer interpolation is remaining.
 				depth = depth1 +(depth2-depth1)*(x1-tempx1)/dx;
 
-				for(int x=x1;x<=x2;x++)
+				int tot = inc*(x2-x1);// making positive tot
+				for(int c=0;c<=tot;c++)
 				{
-					attr += (attr2-attr1)*(x-x1)/dx;
-					depth += (depth2-depth1)*(x-x1)/dx;
+					attr += (attr2-attr1)*(inc)/dx;
+					depth += (depth2-depth1)*(inc)/dx;
+					std::cout << y << "  " << attr<< std::endl;
 				}
 				// update attributes and depth for two edges points in next scan line
 				attr1-=(e1[1].attributes[0]-e2[1].attributes[0])/dy1;
