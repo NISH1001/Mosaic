@@ -21,6 +21,7 @@ bool Renderer::Initialize(const char* title, int x, int y, int width, int height
 		return false;
 	}
 
+	/*
 	if(!m_renderer)
 		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -31,6 +32,10 @@ bool Renderer::Initialize(const char* title, int x, int y, int width, int height
 		SDL_Quit();
 		return false;
 	}
+	*/
+
+	if(!m_screen)
+		m_screen = SDL_GetWindowSurface(m_window);
 
 	m_depthBuffer = new float[m_width*m_height];
 
@@ -42,7 +47,7 @@ void Renderer::MainLoop(void)
 {
 	bool quit = false;
 	SDL_Event event;
-	double current_time = SDL_GetTicks();
+
 	while(!quit)
 	{
 		while(SDL_PollEvent(&event))
@@ -68,23 +73,22 @@ void Renderer::MainLoop(void)
         std::string title = "FPS: " + std::to_string(m_timer.GetFPS());
         SDL_SetWindowTitle(m_window, title.c_str());
 
-        /*
-		m_timer.Update([this](double dt)
-		{ 
-            if (m_update)
-                m_update(dt); 
-        });*/
+        SDL_LockSurface(m_screen);
+        this->Clear();
+        SetPixel(10,10, ColorRGBA(255,0,0,0));
 
         m_timer.Update(m_update);
 
+
+        /*
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 		SDL_RenderClear(m_renderer);
-
-		
-
 		SDL_RenderPresent(m_renderer);
+		*/
+
+		SDL_UnlockSurface(m_screen);
+		SDL_UpdateWindowSurface(m_window);
 		SDL_Delay(1);
-		//std::cout << "MainLoop" << std::endl;
 	}
 }
 

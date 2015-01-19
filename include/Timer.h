@@ -53,7 +53,7 @@ public:
 
 		This left over time is passed on to the next 
 		frame via the accumulator variable and is not thrown away.
-		
+
 		so to compensate that we use thie accumulator value
 		
 		update a frame by the ideal delta time: 
@@ -76,7 +76,7 @@ public:
 		 // Calculate FPS using frameCounter and secondCounter
         if (m_secondCounter > 1000)
         {
-            m_fps = m_frameCounter;
+            m_fps = m_frameCounter	;
             m_frameCounter = 0;
             m_secondCounter %= 1000;
         }
