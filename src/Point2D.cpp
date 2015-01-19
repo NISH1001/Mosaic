@@ -25,10 +25,10 @@ Point2D Point2D::operator-(const Point2D & point)
 	return Point2D(x - point.x, y - point.y);
 }
 
-/*
+
 inline std::ostream& operator << (std::ostream& os, const Point2D & point)
 {
-	os << point.x << " " << point.y << std::endl;
+	os << point.x << std::endl;
 	return os;
 }
-*/
+
