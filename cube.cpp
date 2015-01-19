@@ -6,6 +6,7 @@
 #include <Point2D.h>
 #include <Matrix.h>
 #include <vector>
+#include <Renderer.h>
 
 const int SCREEN_WIDTH = 1024;
 const int SCREEN_HEIGHT = 768;
@@ -83,6 +84,7 @@ int main()
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(!renderer)
 	{
+		
 		SDL_DestroyWindow(window);
 		SDL_Quit();
 		return -1;
@@ -97,7 +99,7 @@ int main()
 	std::vector<Vec4> res;
 	res.resize(cube.size());
 
-	double nx=1, ny=1, nz=10;
+	double nx=0, ny=1, nz=5;
 
 	ColorRGBA red(255,0,0,255);
 	ColorRGBA blue(0,0,255,255);
