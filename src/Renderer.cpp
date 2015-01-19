@@ -1,5 +1,6 @@
 #include <Renderer.h>
 #include <iostream>
+#include <Polygon.h>
 
 bool Renderer::Initialize(const char* title, int x, int y, int width, int height)
 {
@@ -31,6 +32,8 @@ bool Renderer::Initialize(const char* title, int x, int y, int width, int height
 		return false;
 	}
 
+	m_depthBuffer = new float[m_width*m_height];
+
 	return true;
 
 }
@@ -39,7 +42,7 @@ void Renderer::MainLoop(void)
 {
 	bool quit = false;
 	SDL_Event event;
-
+	double current_time = SDL_GetTicks();
 	while(!quit)
 	{
 		while(SDL_PollEvent(&event))
@@ -61,9 +64,23 @@ void Renderer::MainLoop(void)
         		}
 		}
 
+
+        std::string title = "FPS: " + std::to_string(m_timer.GetFPS());
+        SDL_SetWindowTitle(m_window, title.c_str());
+
+		m_timer.Update([this](double dt)
+		{ 
+            if (m_update)
+                m_update(dt); 
+        });
+
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 		SDL_RenderClear(m_renderer);
+
+		
+
 		SDL_RenderPresent(m_renderer);
+		//SDL_Delay(40);
 		//std::cout << "MainLoop" << std::endl;
 	}
 }
