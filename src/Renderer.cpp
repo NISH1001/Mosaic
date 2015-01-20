@@ -75,7 +75,9 @@ void Renderer::MainLoop(void)
 
         SDL_LockSurface(m_screen);
         this->Clear();
-        SetPixel(10,10, ColorRGBA(255,0,0,0));
+		//for(int i=0;i<100;i++)
+        //SetPixel(i,i, ColorRGBA(255,0,0,0));
+		m_render();
 
         m_timer.Update(m_update);
 
@@ -88,7 +90,7 @@ void Renderer::MainLoop(void)
 
 		SDL_UnlockSurface(m_screen);
 		SDL_UpdateWindowSurface(m_window);
-		SDL_Delay(1);
+		//SDL_Delay(10);
 	}
 }
 

@@ -18,13 +18,13 @@ class Renderer
 		void CleanUp();
 		
 		// callbacks
-		//void SetRenderCallback(std::function<void()> renderCallback) { m_render = renderCallback; }
+		void SetRenderCallback(std::function<void()> renderCallback) { m_render = renderCallback; }
 		void SetUpdateCallback(std::function<void(double)> updateCallback) { m_update = updateCallback; }
 		//void SetResizeCallback(std::function<void(int, int)> resizeCallback) { m_resize = resizeCallback; }
 
 		void SetPixel(int x, int y, ColorRGBA color)
 		{
-			if (x >= 0 && m_width && y >= 0 && y < m_height)
+			if (x >= 0 && x <= m_width && y >= 0 && y <= m_height)
             {
             	uint32_t* p = (Uint32*)m_screen->pixels;
             	p[y*m_width + x] = (0xFF << 24) | (color.R << 16) | (color.G << 8) | color.B;
@@ -58,7 +58,7 @@ class Renderer
 
 		
 		std::function<void(double)> m_update;
-		//std::function<void()> m_render;
+		std::function<void()> m_render;
 		//std::function<void(int,int)> m_resize;
 		
 };

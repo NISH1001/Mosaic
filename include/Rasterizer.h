@@ -109,7 +109,7 @@ class Rasterizer
 
 			float inv_m1 = (e1[0].x-e1[1].x)/float(e1[0].y-e1[1].y);
 			float inv_m2 = (e2[0].x-e2[1].x)/float(e2[0].y-e2[1].y);
-			std::cout << "inv_m1 : " << inv_m1 << "  inv_m2 : " << inv_m2 << std::endl;
+//			std::cout << "inv_m1 : " << inv_m1 << "  inv_m2 : " << inv_m2 << std::endl;
 
 			int yScan = e1[0].y; // both the first point of edges have same y value
 			// starting from topmost y
@@ -130,7 +130,7 @@ class Rasterizer
 			dDepth2 = (e2[0].depth - e2[1].depth)/dy;
 			depth1 = e1[0].depth;
 			depth2 = e2[0].depth;
-			std::cout << "test\n";
+//			std::cout << "test\n";
 			while(yScan >= e1[1].y) 	// both edges have lower y value same, we can take any y
 			{
 				dx = x2-x1;
@@ -163,7 +163,7 @@ class Rasterizer
 							fragShader(temp);
 						}
 					}
-					std::cout << "y : " << yScan << " x : " << x << " attr : " << attr << std::endl;
+//					std::cout << "y : " << yScan << " x : " << x << " attr : " << attr << std::endl;
 					x++;
 					attr += (attr2-attr1)/dx;
 					depth += (depth2-depth1)/dx;
