@@ -11,20 +11,22 @@ void Update(double dt)
 
 void FragmentShader(Point2D& p)
 {
-	renderer.SetPixel(p.x, p.y, ColorRGBA(100,200,255,255));
+	Vec3 att = p.attributes[0];
+	renderer.SetPixel(p.x, p.y, ColorRGBA(att[0],att[1],att[2],0));
 }
 
 
 void Render()
 {
-	Point2D p1(10,100);
-	Point2D p2(200, 100);
-	Point2D p3(15, 50);
-	Vec3 v1(100,100,100);
-	Vec3 v2(25,50,125);
+	Point2D p1(100,200);
+	Point2D p2(0, 200);
+	Point2D p3(50, 20);
+	Vec3 v1(255,0,0);
+	Vec3 v2(111,255,0);
+	Vec3 v3(0,200,255);
 	p1.attributes[0] = v1;
 	p2.attributes[0] = v2;
-	p3.attributes[0] = v1-v2; // (75, 50, -25)
+	p3.attributes[0] = v3;
 	Rasterizer rast;
 	float *t;
 	int a =  500;
