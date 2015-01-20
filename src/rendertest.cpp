@@ -17,9 +17,9 @@ void FragmentShader(Point2D& p)
 
 void Render()
 {
-	Point2D p1(0,0);
-	Point2D p2(480, 10);
-	Point2D p3(100, 480);
+	Point2D p1(10,100);
+	Point2D p2(200, 100);
+	Point2D p3(15, 50);
 	Vec3 v1(100,100,100);
 	Vec3 v2(25,50,125);
 	p1.attributes[0] = v1;
@@ -29,7 +29,6 @@ void Render()
 	float *t;
 	int a =  500;
 	rast.DrawTriangle(p1,p2,p3,a,a, &FragmentShader, t);// test only
-
 }
 
 int main()

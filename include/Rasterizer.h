@@ -55,6 +55,7 @@ class Rasterizer
 
 			if(p1.y == p2.y)  // the two upper points are at same y level
 			{
+				std::cout << "upper base";
 				// make two edges, (p1,p3) and (p2,p3)
 				Point2D e1[] = {p1,p3};
 				Point2D e2[] = {p2,p3};
@@ -62,6 +63,7 @@ class Rasterizer
 			}
 			else if (p2.y == p3.y) // the two lower points are at same y level
 			{
+				std::cout << "lower base";
 				Point2D e1[] = {p1, p2};
 				Point2D e2[] = {p1, p3};
 				Interpolate(e1,e2,w,h,fragShader, depthBuffer);
@@ -109,12 +111,12 @@ class Rasterizer
 
 			float inv_m1 = (e1[0].x-e1[1].x)/float(e1[0].y-e1[1].y);
 			float inv_m2 = (e2[0].x-e2[1].x)/float(e2[0].y-e2[1].y);
-//			std::cout << "inv_m1 : " << inv_m1 << "  inv_m2 : " << inv_m2 << std::endl;
+			//std::cout << "inv_m1 : " << inv_m1 << "  inv_m2 : " << inv_m2 << std::endl;
 
 			int yScan = e1[0].y; // both the first point of edges have same y value
 			// starting from topmost y
 
-			int x1 = e1[0].x, x2 = e2[0].x; // tempx1 and tempx2 are the x values for respective edges(which may be outside x=0 and x=w).
+			int x1 = e1[0].x, x2 = e2[0].x; // x1 and x2 are the x values for respective edges(which may be outside x=0 and x=w).
 			int clipx1, clipx2; // clipped x values
 			int dx;
 			int dy = e1[1].y - e1[0].y;
@@ -149,7 +151,7 @@ class Rasterizer
 				int x = clipx1;
 				do 
 				{
-					if (depth<0 and depth > 1) // discard the point
+					if (/*depth<0 and depth > 1*/0/* 0 for testing only*/) // discard the point
 						continue;
 					else
 					{
@@ -157,17 +159,18 @@ class Rasterizer
 							{
 							// update depthBuffer value
 							//depthBuffer[yScan*w + x] = depth;
-							Point2D temp(yScan, x);
+							Point2D temp(x, yScan);
 							temp.attributes[0] = attr;
-							temp.depth = depth;
+				//			temp.depth = depth;
 							fragShader(temp);
 						}
 					}
-//					std::cout << "y : " << yScan << " x : " << x << " attr : " << attr << std::endl;
+					std::cout << "( " << yScan << " , " << x<< ") .. ";
 					x++;
 					attr += (attr2-attr1)/dx;
 					depth += (depth2-depth1)/dx;
 				}while(x <= clipx2);
+				std::cout << std::endl;
 
 				attr1 += dAttr1;
 				attr2 += dAttr2;
