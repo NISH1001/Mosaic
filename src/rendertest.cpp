@@ -29,8 +29,10 @@ void Render()
 	p3.attributes[0] = v3;
 	Rasterizer rast;
 	float *t;
-	int a =  500;
-	rast.DrawTriangle(p1,p2,p3,a,a, &FragmentShader, t);// test only
+	int w = 800;
+	int h = 600;
+	rast.DrawTriangle(p1,p2,p3,w,h, &FragmentShader, t);// test only
+
 }
 
 int main()

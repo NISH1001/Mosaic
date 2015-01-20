@@ -37,6 +37,12 @@ bool Renderer::Initialize(const char* title, int x, int y, int width, int height
 	if(!m_screen)
 		m_screen = SDL_GetWindowSurface(m_window);
 
+	if(!m_screen)
+	{
+		std::cout << "cannot get window surface" << std::endl;
+		return false;
+	}
+
 	m_depthBuffer = new float[m_width*m_height];
 
 	return true;
@@ -75,13 +81,15 @@ void Renderer::MainLoop(void)
 
         SDL_LockSurface(m_screen);
         this->Clear();
-		//for(int i=0;i<100;i++)
-        //SetPixel(i,i, ColorRGBA(255,0,0,0));
-		m_render();
+
+        /*
+		for(int i=0;i<100;i++)
+        	SetPixel(i,i, ColorRGBA(255,0,0,0));
+        */
 
         m_timer.Update(m_update);
 
-
+        m_render();
         /*
 		SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
 		SDL_RenderClear(m_renderer);
@@ -90,7 +98,7 @@ void Renderer::MainLoop(void)
 
 		SDL_UnlockSurface(m_screen);
 		SDL_UpdateWindowSurface(m_window);
-		//SDL_Delay(10);
+		//SDL_Delay(1);
 	}
 }
 
