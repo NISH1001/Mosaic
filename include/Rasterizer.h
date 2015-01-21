@@ -149,9 +149,11 @@ class Rasterizer
 
 			while(1)
 			{
+				//check if no further calculation
 				if((line1.m_currentPoint.x == p2.x) && (line2.m_currentPoint.x==p3.x))
 					break;
 
+				//to have same y level on both line1 and line2
 				while(line1.m_currentPoint.y != line2.m_currentPoint.y)
 				{
 					if(!line1.NextPoint())
@@ -159,8 +161,13 @@ class Rasterizer
 				}
 				
 				int scany = line1.m_currentPoint.y;
+
+				//rasterline coord at line1
 				int x1 = line1.m_currentPoint.x;
+				//rasterline coord at line2
 				int x2 = line2.m_currentPoint.x;
+
+				//this shouldnt be the case but dont know where it is wrong
 				int dx = x2 - x1;
 				if(dx == 0)
 				{
@@ -170,10 +177,14 @@ class Rasterizer
 
 				//std::cout << "y : " << y << " " <<x1 <<" "<<x2 << std::endl;
 
+				//just clip 
 				int clipx1 = Max(Min(x1,w), 0);
 				int clipx2 = Min(Max(x2,0), w);
 
+				//attribute at x1
 				Vec3 attrx1 = (attr1-attr2)/(p2.y-p1.y) * (scany-p1.y) + attr1;
+
+				//attribute at x2
 				Vec3 attrx2 = (attr1-attr3)/(p3.y-p1.y) * (scany-p3.y) + attr1;
 
 				int x = clipx1;
@@ -200,7 +211,7 @@ class Rasterizer
 				temp1.attributes[0] = attrx2;
 				fragShader(temp1);
 				
-
+				//now increase on line2
 				if(!line2.NextPoint()) break;
 
 			}
