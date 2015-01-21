@@ -163,6 +163,9 @@ class Rasterizer
 				int x = clipx1;
 				do
 				{
+					if(yScan >= h)
+						break;
+
 //					std::cout << "x: " << x << " y: " << yScan <<std::endl;
 					if (/*depth<0 and depth > 1*/0/* 0 for testing only*/) // discard the point
 						continue;
@@ -217,12 +220,7 @@ class Rasterizer
 						x2-=xinc2;
 					}
 				}
-				if(yScan >= h)
-				{
-					yScan--;
-					continue;
-				}
-
+				
 				yScan--;
 			}
 		}
