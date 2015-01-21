@@ -189,7 +189,7 @@ class Rasterizer
 				depth1 -= dDepth1;
 				depth2 -= dDepth2;
 
-				if(absdx1>dy)
+	/*			if(absdx1>dy)
 				{
 					cnty1+=dy;
 					x1-=(dx1/dy);
@@ -200,7 +200,7 @@ class Rasterizer
 					}
 				}
 				else 
-				{
+	*/			{
 					cnt1+=2*absdx1;
 					if(cnt1>=dy)
 					{
@@ -209,7 +209,7 @@ class Rasterizer
 					}
 				}
 
-				if(absdx2>dy)
+	/*			if(absdx2>dy)
 				{
 					cnty2+=dy;
 					x2-=(dx2/dy);
@@ -220,7 +220,7 @@ class Rasterizer
 					}
 				}
 				else 
-				{
+	*/			{
 					cnt2+=2*absdx2;
 					if(cnt2>=dy)
 					{
