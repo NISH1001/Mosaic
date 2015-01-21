@@ -63,6 +63,20 @@ public:
 		return (&x)[i];
 	}
 
+	static float Dot(Vec3& v1, Vec3& v2)
+	{
+		return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+	}
+
+	static Vec3 Cross(Vec3& a, Vec3& b)
+	{
+		return Vec3(
+				a.y * b.z - b.y * a.z,
+				a.z * b.x - b.z * b.x,
+				a.x * b.y - b.x * a.y
+				);
+	}
+
 private:
 };
 
