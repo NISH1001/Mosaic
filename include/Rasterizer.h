@@ -189,7 +189,7 @@ class Rasterizer
 
 				int x = clipx1;
 
-				/*
+				/* dont know where it is wrong as dx shouldnt be zero
 				while(x<=clipx2)
 				{
 					x++;
