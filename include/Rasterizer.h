@@ -1,7 +1,7 @@
 #pragma once
 #define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 #include <Point2D.h>
-#include <Line.h>
+
 
 class Rasterizer
 {
@@ -51,8 +51,8 @@ class Rasterizer
 		void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
-			//SortY(p1,p2,p3);
-			/*
+			SortY(p1,p2,p3);
+
 			if(p1.y == p2.y)  // the two upper points are at same y level
 			{
 				//std::cout << "upper base";
@@ -93,116 +93,6 @@ class Rasterizer
 				e2[0] = p2; e2[1] = p3;
 				Interpolate(e1, e2, w,h,fragShader, depthBuffer);
 				
-			}
-			*/
-
-			sortY(p1.x, p1.y, p2.x,p2.y, p3.x,p3.y);
-
-			if(p2.y == p3.y)
-			{
-				Interpolation(p1, p2, p3, w, h, fragShader, depthBuffer); //non-horizontal, horizontal 2,3
-			}
-
-			if(p1.y == p2.y)
-			{
-				Interpolation(p3, p2, p1, w, h, fragShader, depthBuffer); //non-horizontal, horizontal 2,3
-			}
-
-		}
-
-
-		void sortY(int & x1, int & y1, int & x2, int & y2, int & x3, int & y3) 
-		{
-			if (y1 > y2) 
-			{
-				std::swap(x1, x2);
-				std::swap(y1, y2);
-			}
-			if (y2 > y3) 
-			{
-				std::swap(x2, x3);
-				std::swap(y2, y3);
-			} ///largest yvalue coord is at 3
-			if (y1 > y2) 
-			{
-				std::swap(x1, x2);
-				std::swap(y1, y2);
-			}
-		}
-
-		void Interpolation(Point2D & p1, Point2D & p2, Point2D &p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
-		{
-			// first point p1 is always the point on non-horizontal side
-
-			Vec3 attr1 = p1.attributes[0];
-			Vec3 attr2 = p2.attributes[0];
-			Vec3 attr3 = p3.attributes[0];
-
-			float depth1 = p1.depth;
-			float depth2 = p2.depth;
-			float depth3 = p3.depth;
-
-			Line line1(p1.x, p1.y , p2.x, p2.y);
-			line1.NextPoint();
-			Line line2(p1.x, p1.y, p3.x, p3.y);
-			line2.NextPoint();
-
-			while(1)
-			{
-				if((line1.m_currentPoint.x == p2.x) && (line2.m_currentPoint.x==p3.x))
-					break;
-
-				while(line1.m_currentPoint.y != line2.m_currentPoint.y)
-				{
-					if(!line1.NextPoint())
-						break;
-				}
-				
-				int scany = line1.m_currentPoint.y;
-				int x1 = line1.m_currentPoint.x;
-				int x2 = line2.m_currentPoint.x;
-				int dx = x2 - x1;
-				if(dx == 0)
-				{
-					std::cout << "x1 = x2 = " << x1 << std::endl;
-				}
-
-
-				//std::cout << "y : " << y << " " <<x1 <<" "<<x2 << std::endl;
-
-				int clipx1 = Max(Min(x1,w), 0);
-				int clipx2 = Min(Max(x2,0), w);
-
-				Vec3 attrx1 = (attr1-attr2)/(p2.y-p1.y) * (scany-p1.y) + attr1;
-				Vec3 attrx2 = (attr1-attr3)/(p3.y-p1.y) * (scany-p3.y) + attr1;
-
-				int x = clipx1;
-
-				/*
-				while(x<=clipx2)
-				{
-					x++;
-					std::cout << x2-x1 << std::endl;
-					Vec3 attrx = attrx1 * (x2-x)/(x2-x1) + attrx2 * (x-x1)/(x2-x1);
-					Point2D temp(x,scany);
-					temp.attributes[0] = attrx;
-					fragShader(temp);
-					std::cout << attrx << std::endl;
-				}
-				*/
-
-				
-				Point2D temp(clipx1,scany);
-				temp.attributes[0] = attrx1;
-				fragShader(temp);
-
-				Point2D temp1(clipx2,scany);
-				temp1.attributes[0] = attrx2;
-				fragShader(temp1);
-				
-
-				if(!line2.NextPoint()) break;
-
 			}
 		}
 		
@@ -300,12 +190,12 @@ class Rasterizer
 				depth1 -= dDepth1;
 				depth2 -= dDepth2;
 
-	/*			if(absdx1>dy)
+				if(absdx1>dy)
 				{
 					x1-=inv_m1;
 				}
 				else 
-	*/			{
+				{
 					cnt1+=2*absdx1;
 					if(cnt1>=dy)
 					{
@@ -314,12 +204,12 @@ class Rasterizer
 					}
 				}
 
-	/*			if(absdx2>dy)
+				if(absdx2>dy)
 				{
 					x2-=inv_m2;
 				}
 				else 
-	*/			{
+				{
 					cnt2+=2*absdx2;
 					if(cnt2>=dy)
 					{
