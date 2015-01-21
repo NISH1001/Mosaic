@@ -16,7 +16,25 @@ Line::Line(SDL_Renderer* renderer, int xstart, int ystart, int xend, int yend, C
 	p = (slope_less_one) ? (twody-dx) : (twodx - dy);
 }
 
+Line::Line(int xstart, int ystart, int xend, int yend) : m_currentPoint(Point2D(xstart,ystart)),
+	m_endPoint(Point2D(xend, yend))
+{
+	dx = abs(xend - xstart);
+	dy = abs(yend - ystart);
+	twodx = 2*dx;
+	twody = 2*dy;
+	twodydx = twody - twodx;
+	slope_less_one = (dx>dy) ? true : false;
+	xinc = (xend>xstart ? 1 : -1);
+	yinc = (yend>ystart ? 1 : -1);	
+	p = (slope_less_one) ? (twody-dx) : (twodx - dy);
+}
+
 Line::Line(SDL_Renderer*renderer, const Point2D & start, const Point2D & end, ColorRGBA color) : Line(renderer, start.x, start.y, end.x, end.y, color)
+{
+}
+
+Line::Line(const Point2D & start, const Point2D & end) : Line(start.x, start.y, end.x, end.y)
 {
 }
 

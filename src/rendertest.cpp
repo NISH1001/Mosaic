@@ -27,15 +27,15 @@ int numvertices = sizeof(vertices)/sizeof(Point2D);
 int indices[] = {
 				0,1,2,
 				3,4,5,
-				5,3,1
+				0,1,3
 			};
 int numindices = sizeof(indices)/sizeof(int);
 
 void Render()
 {
 	Vec3 v1(255,0,0);
-	Vec3 v2(111,255,0);
-	Vec3 v3(0,200,255);
+	Vec3 v2(0,255,0);
+	Vec3 v3(0,0,255);
 	
 	Rasterizer rast;
 	float *t;
@@ -63,7 +63,6 @@ int main()
 		renderer.SetUpdateCallback(&Update);
 		renderer.SetRenderCallback(&Render);
 		renderer.MainLoop();
+		renderer.CleanUp();
 	}
-
-	renderer.CleanUp();
 }

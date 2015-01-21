@@ -15,6 +15,8 @@ class Line : public Primitive
 public:
 	Line(SDL_Renderer * renderer,int xstart, int ystart, int xend, int yend, ColorRGBA color);
 	Line(SDL_Renderer* Renderer,const Point2D & start, const Point2D & end, ColorRGBA color);
+	Line(int xstart, int ystart, int xend, int yend);
+	Line(const Point2D & start, const Point2D & end);
 
 	/*check to see if next point is available one the line
 		Also calculates next point and stores as current one
