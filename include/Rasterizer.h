@@ -92,7 +92,6 @@ class Rasterizer
 				e1[0] = p; e1[1] = p3;
 				e2[0] = p2; e2[1] = p3;
 				Interpolate(e1, e2, w,h,fragShader, depthBuffer);
-
 			}
 		}
 
