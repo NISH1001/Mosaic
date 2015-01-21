@@ -23,12 +23,12 @@ void FragmentShader(Point2D& p)
 	renderer.SetPixel(p.x, p.y, ColorRGBA(att[0],att[1],att[2],0));
 }
 
-Point2D vertices [] = { {Point2D(100,200)},
-						{Point2D(0,200)},
-						{Point2D(50,20)},
-						{Point2D(400,0)},
-						{Point2D(600,100)},
-						{Point2D(200,200)},
+Point2D vertices [6] = { Point2D(100,200),
+						Point2D(0,200),
+						Point2D(50,20),
+						Point2D(400,0),
+						Point2D(600,100),
+						Point2D(200,200),
 					};
 int numvertices = sizeof(vertices)/sizeof(Point2D);
 

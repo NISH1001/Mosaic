@@ -18,8 +18,8 @@ class Renderer
 		void CleanUp();
 		
 		// callbacks
-		void SetRenderCallback(std::function<void()> renderCallback) { m_render = renderCallback; }
-		void SetUpdateCallback(std::function<void(double)> updateCallback) { m_update = updateCallback; }
+		void SetRenderCallback(void(*renderCallback)(void)) { m_render = renderCallback; }
+		void SetUpdateCallback(void(* updateCallback)(double)) { m_update = updateCallback; }
 		//void SetResizeCallback(std::function<void(int, int)> resizeCallback) { m_resize = resizeCallback; }
 
 		void SetPixel(int x, int y, ColorRGBA color)

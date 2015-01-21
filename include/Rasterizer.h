@@ -16,7 +16,7 @@ class Rasterizer
 			if (a>b) return a;
 			else return b;
 		}
-		
+
 		template <class t>
 		t Min(t a, t b)
 		{
@@ -26,20 +26,20 @@ class Rasterizer
 
 	void SortY(Point2D& m_p1, Point2D& m_p2, Point2D& m_p3)
 	{
-		if (m_p1.y < m_p2.y) 
+		if (m_p1.y < m_p2.y)
 		{
 			Point2D temp = m_p1;
 			m_p1 = m_p2;
 			m_p2 = temp;
 		}
-		if (m_p2.y < m_p3.y) 
+		if (m_p2.y < m_p3.y)
 		{
 			Point2D temp = m_p2;
 			m_p2 = m_p3;
 			m_p3 = temp;
 
 		} ///largest yvalue coord is at 1
-		if (m_p1.y < m_p2.y) 
+		if (m_p1.y < m_p2.y)
 		{
 			Point2D temp = m_p1;
 			m_p1 = m_p2;
@@ -48,7 +48,7 @@ class Rasterizer
 	}
 	// helper functions end.
 
-		void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
+	void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
 			SortY(p1,p2,p3);
@@ -92,10 +92,10 @@ class Rasterizer
 				e1[0] = p; e1[1] = p3;
 				e2[0] = p2; e2[1] = p3;
 				Interpolate(e1, e2, w,h,fragShader, depthBuffer);
-				
+
 			}
 		}
-		
+
 		void Interpolate(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// this function assumes flat bottom or top
@@ -117,7 +117,7 @@ class Rasterizer
 			float inv_m2 = float(dx2)/dy;
 			int xinc1=1, xinc2=1;
 
-			if(dx1<0) 
+			if(dx1<0)
 				xinc1 = -1;
 			if(dx2<0)
 				xinc2 = -1;
@@ -149,19 +149,19 @@ class Rasterizer
 			{
 				dx = x2-x1;
 				clipx1 = Max(Min(ROUND(x1),w), 0);
-				clipx2 = Min(Max(ROUND(x2),0), w); 
+				clipx2 = Min(Max(ROUND(x2),0), w);
 				if (dx !=0)
 				{
 					attr = attr1 + (attr2-attr1)*(clipx1-x1)/dx; // attribute of the first point of clipped scan line
 					depth = depth1 + (depth2-depth1)*(clipx1-x1)/dx;
 				}
-				else 
+				else
 				{
 					attr = attr1;
 					depth = depth1;
 				}
 				int x = clipx1;
-				do 
+				do
 				{
 //					std::cout << "x: " << x << " y: " << yScan <<std::endl;
 					if (/*depth<0 and depth > 1*/0/* 0 for testing only*/) // discard the point
@@ -194,7 +194,7 @@ class Rasterizer
 				{
 					x1-=inv_m1;
 				}
-				else 
+				else
 				{
 					cnt1+=2*absdx1;
 					if(cnt1>=dy)
@@ -208,7 +208,7 @@ class Rasterizer
 				{
 					x2-=inv_m2;
 				}
-				else 
+				else
 				{
 					cnt2+=2*absdx2;
 					if(cnt2>=dy)
