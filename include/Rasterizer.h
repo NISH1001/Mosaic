@@ -100,12 +100,12 @@ class Rasterizer
 
 			if(p2.y == p3.y)
 			{
-				Interpolation(p1, p2, p3, w, h, fragShader, depthBuffer); //non-horizontal, horizontal 2,3
+				Interpolation(p1, p2, p3, w, h, fragShader, depthBuffer); //non-horizontal 1, horizontal 2,3
 			}
 
 			if(p1.y == p2.y)
 			{
-				Interpolation(p3, p2, p1, w, h, fragShader, depthBuffer); //non-horizontal, horizontal 2,3
+				Interpolation(p3, p2, p1, w, h, fragShader, depthBuffer); //non-horizontal 3, horizontal 2,1
 			}
 
 		}
