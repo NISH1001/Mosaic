@@ -1,5 +1,5 @@
 #pragma once
-
+#define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 #include <Point2D.h>
 
 
@@ -111,8 +111,10 @@ class Rasterizer
 
 			int dx1 = e1[0].x-e1[1].x; // dx for first edge
 			int dx2 = e2[0].x-e2[1].x; // dx for second edge
+			int dy = e1[0].y - e1[1].y;
 			int cnt1 = 0, cnt2 = 0;    // counter for increment of x value(but this works only when dy>dx)
-			int cnty1=0, cnty2=0;
+			float inv_m1 = float(dx1)/dy;
+			float inv_m2 = float(dx2)/dy;
 			int xinc1=1, xinc2=1;
 
 			if(dx1<0) 
@@ -127,10 +129,9 @@ class Rasterizer
 			int yScan = e1[0].y; // both the first point of edges have same y value
 			// starting from topmost y
 
-			int x1 = e1[0].x, x2 = e2[0].x; // x1 and x2 are the x values for respective edges(which may be outside x=0 and x=w).
-			int clipx1, clipx2; // clipped x values
+			float x1 = e1[0].x, x2 = e2[0].x; // x1 and x2 are the x values for respective edges(which may be outside x=0 and x=w).
+			float clipx1, clipx2; // clipped x values
 			int dx;
-			int dy = e1[0].y - e1[1].y;
 			// attributes
 			Vec3 attr1, attr2, attr, dAttr1, dAttr2;
 			attr1 = e1[0].attributes[0]; // attribute on the starting point of scan line
@@ -147,8 +148,8 @@ class Rasterizer
 			while(yScan >= e1[1].y) 	// both edges have lower y value same, we can take any y
 			{
 				dx = x2-x1;
-				clipx1 = Max(Min(x1,w), 0);
-				clipx2 = Min(Max(x2,0), w); 
+				clipx1 = Max(Min(ROUND(x1),w), 0);
+				clipx2 = Min(Max(ROUND(x2),0), w); 
 				if (dx !=0)
 				{
 					attr = attr1 + (attr2-attr1)*(clipx1-x1)/dx; // attribute of the first point of clipped scan line
@@ -191,13 +192,7 @@ class Rasterizer
 
 				if(absdx1>dy)
 				{
-					cnty1+=dy;
-					x1-=(dx1/dy);
-					if(cnty1>=absdx1)
-					{
-					//	yScan++;
-						cnty1=0;
-					}
+					x1-=inv_m1;
 				}
 				else 
 				{
@@ -211,13 +206,7 @@ class Rasterizer
 
 				if(absdx2>dy)
 				{
-					cnty2+=dy;
-					x2-=(dx2/dy);
-					if(cnty2>=absdx2)
-					{
-					//	yScan++;
-						cnty2=0;
-					}
+					x2-=inv_m2;
 				}
 				else 
 				{
