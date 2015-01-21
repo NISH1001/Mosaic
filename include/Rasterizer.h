@@ -112,6 +112,7 @@ class Rasterizer
 			int dx1 = e1[0].x-e1[1].x; // dx for first edge
 			int dx2 = e2[0].x-e2[1].x; // dx for second edge
 			int cnt1 = 0, cnt2 = 0;    // counter for increment of x value(but this works only when dy>dx)
+			int cnty1=0, cnty2=0;
 			int xinc1=1, xinc2=1;
 
 			if(dx1<0) 
@@ -190,7 +191,13 @@ class Rasterizer
 
 				if(absdx1>dy)
 				{
+					cnty1+=dy;
 					x1-=(dx1/dy);
+					if(cnty1>=absdx1)
+					{
+					//	yScan++;
+						cnty1=0;
+					}
 				}
 				else 
 				{
@@ -204,7 +211,13 @@ class Rasterizer
 
 				if(absdx2>dy)
 				{
+					cnty2+=dy;
 					x2-=(dx2/dy);
+					if(cnty2>=absdx2)
+					{
+					//	yScan++;
+						cnty2=0;
+					}
 				}
 				else 
 				{
