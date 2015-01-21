@@ -3,6 +3,9 @@
 #include <Rasterizer.h>
 
 Renderer renderer; 
+int w = 400;
+int h = 50;
+
 
 struct Vertex 
 {
@@ -47,9 +50,6 @@ void Render()
 	
 	Rasterizer rast;
 	float *t;
-	int w = 800;
-	int h = 600;
-
 	for(int i=0; i<numindices; i+=3)
 	{
 		Point2D p1 = vertices[indices[i]];
@@ -66,7 +66,7 @@ void Render()
 
 int main()
 {
-	if(renderer.Initialize("rendertest", 50, 100, 800, 600))
+	if(renderer.Initialize("rendertest", 50, 100, w, h))
 	{
 		renderer.SetUpdateCallback(&Update);
 		renderer.SetRenderCallback(&Render);

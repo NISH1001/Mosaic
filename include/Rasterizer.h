@@ -147,7 +147,6 @@ class Rasterizer
 			while(yScan >= e1[1].y) 	// both edges have lower y value same, we can take any y
 			{
 				if(yScan <0) break;
-				if(yScan >= h) break;
 				dx = x2-x1;
 				clipx1 = Max(Min(ROUND(x1),w), 0);
 				clipx2 = Min(Max(ROUND(x2),0), w);
@@ -218,6 +217,12 @@ class Rasterizer
 						x2-=xinc2;
 					}
 				}
+				if(yScan >= h)
+				{
+					yScan--;
+					continue;
+				}
+
 				yScan--;
 			}
 		}
