@@ -9,7 +9,7 @@ class Renderer
 {
 	public:
 		Renderer(void) : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), 
-							m_timer(150) , m_frameBuffer(NULL), m_clearColor(255,255,255,255)
+							m_timer(150) , m_frameBuffer(NULL), m_clearColor(0,0,0,255)
 		{}
 
 		~Renderer() {}

@@ -1,6 +1,7 @@
 #pragma once
 #define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 #include <Point2D.h>
+#include <fstream>
 
 
 class Rasterizer
@@ -97,6 +98,7 @@ class Rasterizer
 
 		void Interpolate(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
+			std::ofstream f("abc.txt");
 			// this function assumes flat bottom or top
 			// make sure that e1 is left edge
 			if(e1[0].x > e2[0].x or e1[1].x > e2[1].x) // means if e1 is on the right
@@ -143,13 +145,14 @@ class Rasterizer
 			dDepth2 = (e2[0].depth - e2[1].depth)/dy;
 			depth1 = e1[0].depth;
 			depth2 = e2[0].depth;
-//			std::cout << "test\n";
+			std::cout << "test\n";
 			while(yScan >= e1[1].y) 	// both edges have lower y value same, we can take any y
 			{
 				if(yScan <0) break;
 				dx = x2-x1;
 				clipx1 = Max(Min(ROUND(x1),w), 0);
 				clipx2 = Min(Max(ROUND(x2),0), w);
+
 				if (dx !=0)
 				{
 					attr = attr1 + (attr2-attr1)*(clipx1-x1)/dx; // attribute of the first point of clipped scan line
@@ -166,7 +169,7 @@ class Rasterizer
 					if(yScan >= h)
 						break;
 
-//					std::cout << "x: " << x << " y: " << yScan <<std::endl;
+					//std::cout << "x: " << x << " y: " << yScan <<std::endl;
 					if (/*depth<0 and depth > 1*/0/* 0 for testing only*/) // discard the point
 						continue;
 					else

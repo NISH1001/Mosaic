@@ -1,10 +1,16 @@
 #include <iostream>
 #include <Renderer.h>
+#include <Matrix.h>
+#include <Transform.h>
 #include <Rasterizer.h>
 
+int WIDTH = 640;
+int HEIGHT = 480;
+
+// projection and view matrices
+Mat4 PROJECTION, VIEW;
+// main renderer
 Renderer renderer; 
-int w = 400;
-int h = 50;
 
 
 struct Vertex 
@@ -36,9 +42,9 @@ Point2D vertices [6] = { Point2D(100,200),
 int numvertices = sizeof(vertices)/sizeof(Point2D);
 
 int indices[] = {
-				0,1,2,
-				3,4,5,
-				0,1,3
+				//0,1,2,
+				3,4,5//,
+				//0,1,3
 			};
 int numindices = sizeof(indices)/sizeof(int);
 
@@ -58,15 +64,16 @@ void Render()
 		p1.attributes[0] = v1;
 		p2.attributes[0] = v2;
 		p3.attributes[0] = v3;
-		rast.DrawTriangle(p1, p2, p3,
-						w, h , &FragmentShader, t);
+		rast.DrawTriangle(p1, p2, p3, WIDTH, HEIGHT, &FragmentShader, t);
 	}
 
 }
 
 int main()
 {
-	if(renderer.Initialize("rendertest", 50, 100, w, h))
+	PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 10.f, 200.f);
+
+	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
 		renderer.SetUpdateCallback(&Update);
 		renderer.SetRenderCallback(&Render);

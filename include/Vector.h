@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 /*
 	Vector classes : 3D vector and 4D vector
@@ -142,6 +143,24 @@ public:
 
 private:
 };
+
+// vector helper functions
+inline Vec3 GetUnitVector(const Vec3 & mat)
+{
+	float r = sqrtf(mat.x*mat.x + mat.y*mat.y + mat.z*mat.z);
+	return mat/r;
+}
+
+inline Vec3 GetCrossProduct(const Vec3 & a, const Vec3 &b)
+{
+	return Vec3(
+				a.y * b.z - b.y * a.z,
+				a.z * b.x - b.z * b.x,
+				a.x * b.y - b.x * a.y
+				);
+}
+
+
 
 inline std::ostream& operator << (std::ostream &os, const Vec3 &v3)
 {
