@@ -1,7 +1,6 @@
 #pragma once
 #define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 #include <Point2D.h>
-#include <fstream>
 
 
 class Rasterizer
@@ -12,20 +11,20 @@ class Rasterizer
 
 		// helper functions
 		template <class t>
-		t Max(t a, t b)
+		static t Max(t a, t b)
 		{
 			if (a>b) return a;
 			else return b;
 		}
 
 		template <class t>
-		t Min(t a, t b)
+		static t Min(t a, t b)
 		{
 			if (a<b) return a;
 			else return b;
 		}
 
-	void SortY(Point2D& m_p1, Point2D& m_p2, Point2D& m_p3)
+	static void SortY(Point2D& m_p1, Point2D& m_p2, Point2D& m_p3)
 	{
 		if (m_p1.y < m_p2.y)
 		{
@@ -49,7 +48,7 @@ class Rasterizer
 	}
 	// helper functions end.
 
-	static void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
+	static void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
 			SortY(p1,p2,p3);
@@ -60,14 +59,14 @@ class Rasterizer
 				// make two edges, (p1,p3) and (p2,p3)
 				Point2D e1[] = {p1,p3};
 				Point2D e2[] = {p2,p3};
-				Interpolate(e1,e2,w,h,fragShader, depthBuffer);
+				Interpolate(e1,e2,fragShader, depthBuffer);
 			}
 			else if (p2.y == p3.y) // the two lower points are at same y level
 			{
 				//std::cout << "lower base";
 				Point2D e1[] = {p1, p2};
 				Point2D e2[] = {p1, p3};
-				Interpolate(e1,e2,w,h,fragShader, depthBuffer);
+				Interpolate(e1,e2,fragShader, depthBuffer);
 			}
 			else // all the vertices are at different y level
 			{
@@ -88,17 +87,16 @@ class Rasterizer
 				// now form two pairs of edges and send to interpolate each
 				Point2D e1[] = {p1,p2};
 				Point2D e2[] = {p1, p};
-				Interpolate(e1, e2, w,h,fragShader, depthBuffer);
+				Interpolate(e1, e2,fragShader, depthBuffer);
 				// reassign other points to the edges
 				e1[0] = p; e1[1] = p3;
 				e2[0] = p2; e2[1] = p3;
-				Interpolate(e1, e2, w,h,fragShader, depthBuffer);
+				Interpolate(e1, e2,fragShader, depthBuffer);
 			}
 		}
 
-		void Interpolate(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
+		static void Interpolate(Point2D* e1, Point2D* e2, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
-			std::ofstream f("abc.txt");
 			// this function assumes flat bottom or top
 			// make sure that e1 is left edge
 			if(e1[0].x > e2[0].x or e1[1].x > e2[1].x) // means if e1 is on the right

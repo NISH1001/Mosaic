@@ -102,7 +102,7 @@ void Renderer::MainLoop(void)
 	}
 }
 
-void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3D), void(*fShader)(void))
+void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3D), void(*fShader)(Point2D&))
 {
 	std::vector<Vertex3D> tVertices; // to store vertices after transformation
 	int numVertices;
@@ -121,17 +121,27 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 				b = models[i].m_indices[j+1],
 				c = models[i].m_indices[j+2];
 			// calculate c for backface culling
-			float c = tVertices[a].position.x * (tVertices[b].position.y - tVertices[c].position.y) +
+			float C = tVertices[a].position.x * (tVertices[b].position.y - tVertices[c].position.y) +
 					  tVertices[b].position.x * (tVertices[c].position.y - tVertices[a].position.y) +
 					  tVertices[c].position.x * (tVertices[a].position.y - tVertices[b].position.y);
 			// since the view vector is along z axis(0,0,1), we may just check 
 			//  the sign of c because, the dot product result is c
 			// NOW, if c is +ve, ignore the triangle and do not draw it
 			// if c is -ve, draw the triangle
-			if (c < 0)
+			if (C < 0)
 			{
+				// create point2D s and send to DrawTriangle
+				Point2D p1(tVertices[a].position.x, tVertices[a].position.y),
+					p2(tVertices[b].position.x, tVertices[b].position.y),
+					p3(tVertices[c].position.x, tVertices[b].position.y);
+				p1.depth = tVertices[a].position.z;
+				p2.depth = tVertices[b].position.z;
+				p3.depth = tVertices[c].position.z;
+				p1.attributes[0] = tVertices[a].normal.ToVec3();
+				p2.attributes[0] = tVertices[b].normal.ToVec3();
+				p3.attributes[0] = tVertices[c].normal.ToVec3();
 				// send to Rasterizer::drawtriangle the three normalized vertices
-				Rasterizer::DrawTriangle(tVertices[a], tVertices[b], tVertices[c], fShader);
+				Rasterizer::DrawTriangle(p1,p2,p3,fShader,m_depthBuffer);
 			}
 		}
 	}

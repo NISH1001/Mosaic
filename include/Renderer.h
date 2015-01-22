@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 #include <Rasterizer.h>
+#include <functional>
+#include <pixel.h>
 #include <Timer.h>
 #include <Model.h>
 
@@ -33,7 +35,7 @@ class Renderer
 		}
 
 		// for rendering the models loaded, this renders the overall scene of the program
-		void DrawModels(std::vector<Model>&models, Vertex3D(*v)(Vertex3D), void(*s)(void));
+		void DrawModels(std::vector<Model>&models, Vertex3D(*v)(Vertex3D), void(*s)(Point2D&));
 
 	private:
 		void Clear(void)
