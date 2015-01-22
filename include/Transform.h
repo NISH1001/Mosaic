@@ -92,7 +92,7 @@ public:
 	static Mat4 LookAt(Vec3 from, Vec3 to) 
 	{
 		// first set up the translate matrix
-		Vec3 translate = Translate(from * (-1)); // negative of looking point
+		Mat4 translate = Translate(from * (-1)); // negative of looking point
 
 		Vec3 v(0,1,0); // initially V is upwards
 		Vec3 N = to - from;

@@ -143,6 +143,12 @@ public:
 		}
 	}
 
+	Vec3 ToVec3()
+	{
+		NormalizeByW();
+		return Vec3(x, y, z);
+	}
+
 private:
 };
 
