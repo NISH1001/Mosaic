@@ -73,7 +73,10 @@ inline std::ostream& operator << (std::ostream &os, const Surface & s)
 	return os;
 }
 
-
+/*
+	A general Model Class
+	consists of Surfaces
+*/
 class Model
 {
 public:
@@ -84,6 +87,8 @@ public:
 		iter = m_surfaces.begin();
 		return iter;
 	}
+
+	void AddSurface(const Surface & surface) { m_surfaces.push_back(surface); }
 public:
 	std::vector<Surface> m_surfaces;
 	std::vector<int> m_indicesSurface;
