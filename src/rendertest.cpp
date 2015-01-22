@@ -41,15 +41,11 @@ void FragmentShader(Point2D& p)
 }
 
 // vertex shader, receives a vertex and multiplies it with modelview and projection matrix
-Point2D VertexShader(Vertex3D vertex)
+Vertex3D VertexShader(Vertex3D vertex)
 {
-	Vec4 image = PROJECTION * MODELVIEW * Vec4(vertex.pos);
+	Vec4 image = PROJECTION * MODELVIEW * vertex.pos;
 	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
-	image.NormalizeByW(); // we have normalized x, y, z coordinates 
-	Point2D p(image.x, image.y);
-	p.attributes[0] = normal.ToVec3();
-	p.attributes[1] = vertex.color;
-	return p;
+	return Vertex3D(image, normal, vertex.color);
 }
 
 Point2D vertices [6] = { Point2D(100,200),
@@ -92,6 +88,7 @@ void Render()
 		p3.attributes[0] = v3;
 		rast.DrawTriangle(p1, p2, p3, WIDTH, HEIGHT, &FragmentShader, t);
 	}
+	// renderer.DrawModels(model, &VertexShader, &FragmentShader);
 
 }
 

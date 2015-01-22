@@ -102,6 +102,42 @@ void Renderer::MainLoop(void)
 	}
 }
 
+void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3D), void(*fShader)(void))
+{
+	std::vector<Vertex3D> tVertices; // to store vertices after transformation
+	int numVertices;
+	for(int i=0;i<models.size(); i++)
+	{
+		numVertices = models[i].m_vertices.size();
+		tVertices.resize(numVertices);
+
+		for(int j=0;j<numVertices;j++)
+			tVertices[j] = vShader(models[i].m_vertices[j]);
+		// backface culling and rendering triangles
+		// checking in indexbuffer
+		for(int j=0;j<models[i].m_indices.size();j+=3)
+		{
+			int a = models[i].m_indices[j],
+				b = models[i].m_indices[j+1],
+				c = models[i].m_indices[j+2];
+			// calculate c for backface culling
+			float c = tVertices[a].position.x * (tVertices[b].position.y - tVertices[c].position.y) +
+					  tVertices[b].position.x * (tVertices[c].position.y - tVertices[a].position.y) +
+					  tVertices[c].position.x * (tVertices[a].position.y - tVertices[b].position.y);
+			// since the view vector is along z axis(0,0,1), we may just check 
+			//  the sign of c because, the dot product result is c
+			// NOW, if c is +ve, ignore the triangle and do not draw it
+			// if c is -ve, draw the triangle
+			if (c < 0)
+			{
+				// send to Rasterizer::drawtriangle the three normalized vertices
+				Rasterizer::DrawTriangle(tVertices[a], tVertices[b], tVertices[c], fShader);
+			}
+		}
+	}
+
+}
+
 void Renderer::CleanUp(void)
 {
 	SDL_DestroyRenderer(m_renderer);

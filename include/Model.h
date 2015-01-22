@@ -12,8 +12,11 @@
 
 struct Vertex3D
 {
-	Vec3 pos; // the x,y,z coordinates
-	Vec3 normal; // for normal
+	Vertex3D(){}
+	~Vertex3D(){}
+	Vertex3D(Vec4 pos, Vec4 norm, Vec3 col):position(pos), normal(norm), color(col){}
+	Vec4 position; // the x,y,z,w coordinates
+	Vec4 normal; // for normal
 	Vec3 color; // for the color
 };
 
@@ -36,22 +39,22 @@ public:
 private:
 	void Store(Vertex3D  v1, Vertex3D  v2, Vertex3D  v3)
 	{
-		if(v1.pos.x < v2.pos.x)
+		if(v1.position.x < v2.position.x)
 		{
 			std::swap(v1,v2);
 		}
 
-		if(v2.pos.x < v3.pos.x)
+		if(v2.position.x < v3.position.x)
 		{
 			std::swap(v2,v3);
 		}
 
-		if(v1.pos.x < v2.pos.x)
+		if(v1.position.x < v2.position.x)
 		{
 			std::swap(v1,v2);
 		}
 
-		if(v2.pos.y > v3.pos.y)
+		if(v2.position.y > v3.position.y)
 		{
 			std::swap(v2,v3);
 		}
@@ -65,11 +68,11 @@ private:
 
 inline std::ostream& operator << (std::ostream &os, const Surface & s)
 {
-	os <<"(" << s.vertex[0].pos.x << "," << s.vertex[0].pos.y << "," << s.vertex[0].pos.z << ")";
+	os <<"(" << s.vertex[0].position.x << "," << s.vertex[0].position.y << "," << s.vertex[0].position.z << ")";
 	os << ", ";
-	os <<"(" << s.vertex[1].pos.x << "," << s.vertex[1].pos.y << "," << s.vertex[1].pos.z << ")";
+	os <<"(" << s.vertex[1].position.x << "," << s.vertex[1].position.y << "," << s.vertex[1].position.z << ")";
 	os << ", ";
-	os <<"(" << s.vertex[2].pos.x << "," << s.vertex[2].pos.y << "," << s.vertex[2].pos.z << ")";
+	os <<"(" << s.vertex[2].position.x << "," << s.vertex[2].position.y << "," << s.vertex[2].position.z << ")";
 	return os;
 }
 
@@ -95,6 +98,6 @@ public:
 	void AddSurfaces(Surface *surfaces, unsigned numsurfaces);
 public:
 	std::vector<Surface> m_surfaces;
-	std::vector<int> m_indicesSurface;
+	std::vector<int> m_indices;
 	std::vector<Vertex3D> m_vertices;
 };

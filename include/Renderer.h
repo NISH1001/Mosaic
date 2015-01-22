@@ -1,9 +1,9 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include <functional>
+#include <Rasterizer.h>
 #include <Timer.h>
-#include <pixel.h>
+#include <Model.h>
 
 class Renderer
 {
@@ -31,6 +31,9 @@ class Renderer
            	}
 
 		}
+
+		// for rendering the models loaded, this renders the overall scene of the program
+		void DrawModels(std::vector<Model>&models, Vertex3D(*v)(Vertex3D), void(*s)(void));
 
 	private:
 		void Clear(void)
