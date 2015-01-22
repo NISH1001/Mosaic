@@ -1,19 +1,26 @@
 #include <iostream>
 #include <Renderer.h>
 #include <Rasterizer.h>
+#include <Model.h>
 
 Renderer renderer; 
-int w = 400;
-int h = 50;
+int w = 800;
+int h = 600;
 
+/*make sure it is multiple of 3
+	pos,normal,color
+*/
+Vertex3D vertices3d[] = {
+				{ Vec3(0,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(100,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(0,100,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(200,0,200), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(0,50,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(300,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+			};
+unsigned numvertices3D = sizeof(vertices3d)/sizeof(Vertex3D);
 
-struct Vertex 
-{
-	Vec3 v; // the x,y,z coordinates
-	Vec3 color; // for the color
-	Vec3 normal; // for normal
-//	Vec2 texture; // for texture coordinate
-};
+Model triangles(vertices3d, numvertices3D);
 
 void Update(double dt)
 {
@@ -44,6 +51,12 @@ int numindices = sizeof(indices)/sizeof(int);
 
 void Render()
 {
+	std::vector<Surface>::iterator iter = triangles.GetSurfaceIterator();
+	for(;iter != triangles.m_surfaces.end(); ++iter)
+	{
+		std::cout << (*iter) << std::endl;
+	}
+	
 	Vec3 v1(255,0,0);
 	Vec3 v2(0,255,0);
 	Vec3 v3(0,0,255);
