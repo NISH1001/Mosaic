@@ -1,6 +1,8 @@
 #pragma once
 #include <cmath>
 
+//#include <cstddef>
+#include <iostream>
 /*
 	Vector classes : 3D vector and 4D vector
 */
