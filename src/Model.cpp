@@ -1,10 +1,11 @@
 #include <Model.h>
 
+//accepts vertices array
 Model::Model(Vertex3D *vertices, unsigned numvertices) 
 {
-	if(numvertices%3 != 0)
+	if(numvertices%3 != 0 || numvertices==0)
 	{
-		std::cout << "numvertices is not multiple of 3" << std::endl;
+		std::cout << "invalid no. of vertices" << std::endl;
 		return;
 	}
 
@@ -18,4 +19,34 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		Vertex3D v3 = vertices[i+2];
 		m_surfaces.push_back(Surface(v1,v2,v3));
 	}
+}
+
+//accepts surfaces array
+Model::Model(Surface* surfaces, unsigned numsurfaces)
+{
+	if(numsurfaces == 0)
+	{
+		std::cout << "null surfaces..." << std::endl;
+		return ;
+	}
+
+	for(int i=0; i<numsurfaces; i++)
+	{
+		m_surfaces.push_back(surfaces[i]);
+	}
+}
+
+//add surfaces 
+inline void Model::AddSurfaces(Surface *surfaces, unsigned numsurfaces)
+{
+	if(numsurfaces == 0)
+	{
+		std::cout << "null surfaces..." << std::endl;
+		return ;
+	}
+
+	for(int i=0; i<numsurfaces; i++)
+	{
+		m_surfaces.push_back(surfaces[i]);
+	}	
 }
