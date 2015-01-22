@@ -76,19 +76,23 @@ inline std::ostream& operator << (std::ostream &os, const Surface & s)
 /*
 	A general Model Class
 	consists of Surfaces
+	Accepts an array of 3d vertices that has triangles in continuous way
+	or Accepts an array of surfaces
 */
 class Model
 {
 public:
 	Model(Vertex3D *vertices, unsigned numvertices);
+	Model(Surface *surfaces, unsigned numsurfaces);
 	std::vector<Surface>::iterator GetSurfaceIterator(void)
 	{
 		std::vector<Surface>::iterator iter;
 		iter = m_surfaces.begin();
 		return iter;
 	}
-
+	// a surface or surfaces
 	void AddSurface(const Surface & surface) { m_surfaces.push_back(surface); }
+	void AddSurfaces(Surface *surfaces, unsigned numsurfaces);
 public:
 	std::vector<Surface> m_surfaces;
 	std::vector<int> m_indicesSurface;
