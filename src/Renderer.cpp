@@ -85,18 +85,17 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 	int numVertices;
 	for(int i=0;i<models.size(); i++)
 	{
-		numVertices = models[i].m_vertices.size();
-		tVertices.resize(numVertices);
+		numVertices = models[i].m_vertexBuffer.size();
 
 		for(int j=0;j<numVertices;j++)
-			tVertices[j] = vShader(models[i].m_vertices[j]);
+			tVertices.push_back(vShader(models[i].m_vertexBuffer[j]));
 		// backface culling and rendering triangles
 		// checking in indexbuffer
-		for(int j=0;j<models[i].m_indices.size();j+=3)
+		for(int j=0;j<models[i].m_indexBuffer.size();j+=3)
 		{
-			int a = models[i].m_indices[j],
-				b = models[i].m_indices[j+1],
-				c = models[i].m_indices[j+2];
+			int a = models[i].m_indexBuffer[j],
+				b = models[i].m_indexBuffer[j+1],
+				c = models[i].m_indexBuffer[j+2];
 			// calculate C for backface culling
 			float C = tVertices[a].position.x * (tVertices[b].position.y - tVertices[c].position.y) +
 					  tVertices[b].position.x * (tVertices[c].position.y - tVertices[a].position.y) +

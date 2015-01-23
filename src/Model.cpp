@@ -11,10 +11,10 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 	}
 
 	//we dont need this variable now
-	unsigned numsurfaces = numvertices/3;
+//	unsigned numsurfaces = numvertices/3;
 
 	//this too
-	m_surfaces.resize(numsurfaces);
+//	m_surfaces.resize(numsurfaces);
 
 	//first create the VB and IB
 	for(unsigned i=0; i<numvertices; ++i)
@@ -39,7 +39,7 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		//std::cout << v << std::endl;
 	}
 
-	std::cout << m_indexBuffer.size() << std::endl;
+	//std::cout << m_indexBuffer.size() << std::endl;
 	//std::cout << m_vertexBuffer.size() << std::endl;
 	size_t ibsize = m_indexBuffer.size();
 
@@ -55,19 +55,20 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		Vertex3D v1 = m_vertexBuffer[m_indexBuffer[i]];
 		Vertex3D v2 = m_vertexBuffer[m_indexBuffer[i+1]];
 		Vertex3D v3 = m_vertexBuffer[m_indexBuffer[i+2]];
-		std::cout << v1 << std::endl;
-		std::cout << v2 << std::endl;
-		std::cout << v3 << std::endl;
+		//std::cout << v1 << std::endl;
+		//std::cout << v2 << std::endl;
+		//std::cout << v3 << std::endl;
 	}
 
 	//we dont need this now
-	for(int i=0; i<numsurfaces; i+=3)
+/*	for(int i=0; i<numsurfaces; i+=3)
 	{
 		Vertex3D v1 = vertices[i];
 		Vertex3D v2 = vertices[i+1];
 		Vertex3D v3 = vertices[i+2];
 		m_surfaces.push_back(Surface(v1,v2,v3));
 	}
+	*/
 }
 
 /*

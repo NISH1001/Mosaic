@@ -57,8 +57,6 @@ private:
 		{
 			std::swap(v2,v3);
 		}
-
-		if(v1.position.x < v2.position.x)
 		{
 			std::swap(v1,v2);
 		}
@@ -106,7 +104,7 @@ public:
 	Model(Surface *surfaces, unsigned numsurfaces);
 
 	//we dont need this now
-	std::vector<Surface>::iterator GetSurfaceIterator(void)
+	/*std::vector<Surface>::iterator GetSurfaceIterator(void)
 	{
 		std::vector<Surface>::iterator iter;
 		iter = m_surfaces.begin();
@@ -116,6 +114,7 @@ public:
 	//not needed void AddSurface(const Surface & surface) { m_surfaces.push_back(surface); }
 	//not needed void AddSurfaces(Surface *surfaces, unsigned numsurfaces);
 
+	 */
 	//check if the point v is in VB
 	std::pair<bool,unsigned> Lookup(const Vertex3D & v)
 	{
@@ -151,7 +150,7 @@ public:
 			std::swap(i1,i2);
 		}
 
-		if(m_vertexBuffer[i2].position.y > m_vertexBuffer[32].position.y)
+		if(m_vertexBuffer[i2].position.y > m_vertexBuffer[i3].position.y)
 		{
 			std::swap(i2,i3);
 		}
@@ -160,9 +159,11 @@ public:
 
 public:
 	//we dont need this now
+	/*
 	std::vector<Vertex3D> m_vertices;
 	std::vector<unsigned> m_indices;
 	std::vector<Surface> m_surfaces;
+	*/
 
 	//we only need this
 	std::vector<unsigned> m_indexBuffer;
