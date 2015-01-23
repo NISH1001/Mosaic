@@ -3,6 +3,8 @@
 #include <Vector.h>
 #include <Matrix.h>
 #include <iostream>
+#include <tuple>
+#include <utility>
 
 /*a 3D vertex struct
 	a vertex has its position
@@ -12,9 +14,14 @@
 
 struct Vertex3D
 {
-	Vec3 pos; // the x,y,z coordinates
+	Vec4 pos; // the x,y,z coordinates
 	Vec3 normal; // for normal
 	Vec3 color; // for the color
+
+	bool operator == (const Vertex3D & v)
+	{
+		return (pos.x==v.pos.x && pos.y==v.pos.y && pos.z==v.pos.z);
+	}
 };
 
 
@@ -63,6 +70,12 @@ private:
 	}
 };
 
+inline std::ostream& operator << (std::ostream & os, const Vertex3D & v)
+{
+	os<< v.pos.x << " " << v.pos.y << " " << v.pos.z;
+	return os;
+}
+
 inline std::ostream& operator << (std::ostream &os, const Surface & s)
 {
 	os <<"(" << s.vertex[0].pos.x << "," << s.vertex[0].pos.y << "," << s.vertex[0].pos.z << ")";
@@ -93,8 +106,48 @@ public:
 	// a surface or surfaces
 	void AddSurface(const Surface & surface) { m_surfaces.push_back(surface); }
 	void AddSurfaces(Surface *surfaces, unsigned numsurfaces);
+
+	std::pair<bool,unsigned> Lookup(const Vertex3D & v)
+	{
+		size_t vbsize = m_vertexBuffer.size();
+
+		for(unsigned i=0; i<vbsize; ++i)
+		{
+			if(m_vertexBuffer[i] == v)
+			{
+				//std::cout << v.pos.x << ", " << v.pos.y << " " <<i << std::endl;
+				return std::make_pair(true, i);
+			}
+		}
+		return std::make_pair(false, vbsize);
+	}
+
+	void Order(unsigned &i1, unsigned & i2, unsigned & i3)
+	{
+		if(m_vertexBuffer[i1].pos.x < m_vertexBuffer[i2].pos.x)
+		{
+			std::swap(i1,i2);
+		}
+
+		if(m_vertexBuffer[i2].pos.x < m_vertexBuffer[i3].pos.x)
+		{
+			std::swap(i2,i3);
+		}
+
+		if(m_vertexBuffer[i1].pos.x < m_vertexBuffer[i2].pos.x)
+		{
+			std::swap(i1,i2);
+		}
+
+		if(m_vertexBuffer[i2].pos.y > m_vertexBuffer[32].pos.y)
+		{
+			std::swap(i2,i3);
+		}
+	}
+
+
 public:
 	std::vector<Surface> m_surfaces;
-	std::vector<int> m_indicesSurface;
-	std::vector<Vertex3D> m_vertices;
+	std::vector<unsigned> m_indexBuffer;
+	std::vector<Vertex3D> m_vertexBuffer;
 };

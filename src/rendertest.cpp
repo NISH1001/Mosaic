@@ -17,6 +17,9 @@ Vertex3D vertices3d[] = {
 				{ Vec3(200,0,200), Vec3(0,0,0), Vec3(255,0,0)},
 				{ Vec3(0,50,0), Vec3(0,0,0), Vec3(255,0,0)},
 				{ Vec3(300,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(300,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(0,50,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(200,0,200), Vec3(0,0,0), Vec3(255,0,0)},
 			};
 unsigned numvertices3D = sizeof(vertices3d)/sizeof(Vertex3D);
 
@@ -54,9 +57,8 @@ void Render()
 	std::vector<Surface>::iterator iter = triangles.GetSurfaceIterator();
 	for(;iter != triangles.m_surfaces.end(); ++iter)
 	{
-		std::cout << (*iter) << std::endl;
+		//std::cout << (*iter) << std::endl;
 	}
-	
 	Vec3 v1(255,0,0);
 	Vec3 v2(0,255,0);
 	Vec3 v3(0,0,255);
