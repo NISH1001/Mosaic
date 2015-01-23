@@ -1,6 +1,6 @@
 #pragma once
-#define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 #include <Point2D.h>
+#include <helper.h>
 
 
 class Rasterizer
@@ -10,48 +10,12 @@ class Rasterizer
 		~Rasterizer(){}
 
 		// helper functions
-		template <class t>
-		t Max(t a, t b)
-		{
-			if (a>b) return a;
-			else return b;
-		}
+			// helper functions end.
 
-		template <class t>
-		t Min(t a, t b)
-		{
-			if (a<b) return a;
-			else return b;
-		}
-
-	void SortY(Point2D& m_p1, Point2D& m_p2, Point2D& m_p3)
-	{
-		if (m_p1.y < m_p2.y)
-		{
-			Point2D temp = m_p1;
-			m_p1 = m_p2;
-			m_p2 = temp;
-		}
-		if (m_p2.y < m_p3.y)
-		{
-			Point2D temp = m_p2;
-			m_p2 = m_p3;
-			m_p3 = temp;
-
-		} ///largest yvalue coord is at 1
-		if (m_p1.y < m_p2.y)
-		{
-			Point2D temp = m_p1;
-			m_p1 = m_p2;
-			m_p2 = temp;
-		}
-	}
-	// helper functions end.
-
-	void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
+	static void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
-			SortY(p1,p2,p3);
+			Helper::SortY(p1,p2,p3);
 
 			if(p1.y == p2.y)  // the two upper points are at same y level
 			{
@@ -59,14 +23,14 @@ class Rasterizer
 				// make two edges, (p1,p3) and (p2,p3)
 				Point2D e1[] = {p1,p3};
 				Point2D e2[] = {p2,p3};
-				Interpolate(e1,e2,w,h,fragShader, depthBuffer);
+				Interpolate(e1,e2,w, h,fragShader, depthBuffer);
 			}
 			else if (p2.y == p3.y) // the two lower points are at same y level
 			{
 				//std::cout << "lower base";
 				Point2D e1[] = {p1, p2};
 				Point2D e2[] = {p1, p3};
-				Interpolate(e1,e2,w,h,fragShader, depthBuffer);
+				Interpolate(e1,e2,w, h,fragShader, depthBuffer);
 			}
 			else // all the vertices are at different y level
 			{
@@ -87,24 +51,22 @@ class Rasterizer
 				// now form two pairs of edges and send to interpolate each
 				Point2D e1[] = {p1,p2};
 				Point2D e2[] = {p1, p};
-				Interpolate(e1, e2, w,h,fragShader, depthBuffer);
+				Interpolate(e1, e2,w,h,fragShader, depthBuffer);
 				// reassign other points to the edges
 				e1[0] = p; e1[1] = p3;
 				e2[0] = p2; e2[1] = p3;
-				Interpolate(e1, e2, w,h,fragShader, depthBuffer);
+				Interpolate(e1, e2,w,h,fragShader, depthBuffer);
 			}
 		}
 
-		void Interpolate(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
+		static void Interpolate(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// this function assumes flat bottom or top
 			// make sure that e1 is left edge
 			if(e1[0].x > e2[0].x or e1[1].x > e2[1].x) // means if e1 is on the right
 			{
 				// swap the edges
-				Point2D* temp = e1;
-				e1 = e2;
-				e2 = temp;
+				Helper::Swap(e1,e2);
 			}
 			// now we have e1 on the left of e2
 
@@ -143,13 +105,13 @@ class Rasterizer
 			dDepth2 = (e2[0].depth - e2[1].depth)/dy;
 			depth1 = e1[0].depth;
 			depth2 = e2[0].depth;
-//			std::cout << "test\n";
 			while(yScan >= e1[1].y) 	// both edges have lower y value same, we can take any y
 			{
 				if(yScan <0) break;
 				dx = x2-x1;
-				clipx1 = Max(Min(ROUND(x1),w), 0);
-				clipx2 = Min(Max(ROUND(x2),0), w);
+				clipx1 = Helper::Max(Helper::Min(ROUND(x1),w), 0);
+				clipx2 = Helper::Min(Helper::Max(ROUND(x2),0), w);
+
 				if (dx !=0)
 				{
 					attr = attr1 + (attr2-attr1)*(clipx1-x1)/dx; // attribute of the first point of clipped scan line
@@ -166,7 +128,7 @@ class Rasterizer
 					if(yScan >= h)
 						break;
 
-//					std::cout << "x: " << x << " y: " << yScan <<std::endl;
+					//std::cout << "x: " << x << " y: " << yScan <<std::endl;
 					if (/*depth<0 and depth > 1*/0/* 0 for testing only*/) // discard the point
 						continue;
 					else

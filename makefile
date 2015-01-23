@@ -14,7 +14,7 @@ INC_FILES := $(wildcard $(INC_DIR)/*.h)
 OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(CPP_FILES:$(SRC_DIR)/%.cpp=%.o))
 
 ## Compiler and linker flags and libraries to use
-##CC := clang++
+## CC := clang++
 CC := g++
 CXXLIBS := 
 LDLIBS := -lSDL2

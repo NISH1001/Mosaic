@@ -3,15 +3,20 @@
 //accepts vertices array
 Model::Model(Vertex3D *vertices, unsigned numvertices) 
 {
+	// if ... return immediately
 	if(numvertices%3 != 0 || numvertices==0)
 	{
 		std::cout << "invalid no. of vertices" << std::endl;
 		return;
 	}
 
+	//we dont need this variable now
 	unsigned numsurfaces = numvertices/3;
+
+	//this too
 	m_surfaces.resize(numsurfaces);
 
+	//first create the VB and IB
 	for(unsigned i=0; i<numvertices; ++i)
 	{
 		Vertex3D currentpoint = vertices[i];
@@ -30,7 +35,7 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		}
 		
 
-		Vertex3D v = m_vertexBuffer[m_indexBuffer.back()];
+		//Vertex3D v = m_vertexBuffer[m_indexBuffer.back()];
 		//std::cout << v << std::endl;
 	}
 
@@ -38,11 +43,13 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 	//std::cout << m_vertexBuffer.size() << std::endl;
 	size_t ibsize = m_indexBuffer.size();
 
+	// now order the indices
 	for(unsigned i=0; i<ibsize; i+=3)
 	{
 		Order(m_indexBuffer[i], m_indexBuffer[i+1], m_indexBuffer[i+2]);
 	}
 
+	//for test
 	for(unsigned i=0; i<ibsize; i+=3)
 	{
 		Vertex3D v1 = m_vertexBuffer[m_indexBuffer[i]];
@@ -53,7 +60,8 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		std::cout << v3 << std::endl;
 	}
 
-	for(int i=0; i<numsurfaces; ++i)
+	//we dont need this now
+	for(int i=0; i<numsurfaces; i+=3)
 	{
 		Vertex3D v1 = vertices[i];
 		Vertex3D v2 = vertices[i+1];
@@ -62,7 +70,8 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 	}
 }
 
-//accepts surfaces array
+/*
+//not needed now
 Model::Model(Surface* surfaces, unsigned numsurfaces)
 {
 	if(numsurfaces == 0)
@@ -78,6 +87,7 @@ Model::Model(Surface* surfaces, unsigned numsurfaces)
 }
 
 //add surfaces 
+// not needed now
 inline void Model::AddSurfaces(Surface *surfaces, unsigned numsurfaces)
 {
 	if(numsurfaces == 0)
@@ -91,3 +101,5 @@ inline void Model::AddSurfaces(Surface *surfaces, unsigned numsurfaces)
 		m_surfaces.push_back(surfaces[i]);
 	}	
 }
+
+*/

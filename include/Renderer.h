@@ -1,15 +1,17 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <Rasterizer.h>
 #include <functional>
-#include <Timer.h>
 #include <pixel.h>
+#include <Timer.h>
+#include <Model.h>
 
 class Renderer
 {
 	public:
 		Renderer(void) : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), 
-							m_timer(150) , m_frameBuffer(NULL), m_clearColor(255,255,255,255)
+							m_timer(150) , m_frameBuffer(NULL), m_clearColor(0,0,0,255)
 		{}
 
 		~Renderer() {}
@@ -31,6 +33,9 @@ class Renderer
            	}
 
 		}
+
+		// for rendering the models loaded, this renders the overall scene of the program
+		void DrawModels(std::vector<Model>&models, Vertex3D(*v)(Vertex3D), void(*s)(Point2D&));
 
 	private:
 		void Clear(void)

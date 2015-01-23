@@ -1,4 +1,6 @@
 #pragma once
+#include <cmath>
+
 //#include <cstddef>
 #include <iostream>
 /*
@@ -87,7 +89,7 @@ public:
 	struct{float x, y, z, w;}; // used struct so that x,y,z,w are contagious in memory
 
 	Vec4(void) : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {} 
-	Vec4(float xx, float yy, float zz, float ww) : x(xx), y(yy), z(zz), w(ww) {}
+	Vec4(float xx, float yy, float zz, float ww=1.f) : x(xx), y(yy), z(zz), w(ww) {}
 
 	//use 3D vector and another element to init
 	Vec4(const Vec3& v, float ww=1.0f) : x(v.x), y(v.y), z(v.z) , w(ww) {}
@@ -141,8 +143,32 @@ public:
 		}
 	}
 
+	Vec3 ToVec3()
+	{
+		NormalizeByW();
+		return Vec3(x, y, z);
+	}
+
 private:
 };
+
+// vector helper functions
+inline Vec3 GetUnitVector(const Vec3 & mat)
+{
+	float r = sqrtf(mat.x*mat.x + mat.y*mat.y + mat.z*mat.z);
+	return mat/r;
+}
+
+inline Vec3 GetCrossProduct(const Vec3 & a, const Vec3 &b)
+{
+	return Vec3(
+				a.y * b.z - b.y * a.z,
+				a.z * b.x - b.z * b.x,
+				a.x * b.y - b.x * a.y
+				);
+}
+
+
 
 inline std::ostream& operator << (std::ostream &os, const Vec3 &v3)
 {
