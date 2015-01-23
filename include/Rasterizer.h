@@ -1,6 +1,6 @@
 #pragma once
-#define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 #include <Point2D.h>
+#include <helper.h>
 
 
 class Rasterizer
@@ -48,7 +48,7 @@ class Rasterizer
 	}
 	// helper functions end.
 
-	static void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, void(*fragShader)(Point2D&), float* depthBuffer)
+	static void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
 			SortY(p1,p2,p3);
@@ -59,14 +59,14 @@ class Rasterizer
 				// make two edges, (p1,p3) and (p2,p3)
 				Point2D e1[] = {p1,p3};
 				Point2D e2[] = {p2,p3};
-				Interpolate(e1,e2,fragShader, depthBuffer);
+				Interpolate(e1,e2,w, h,fragShader, depthBuffer);
 			}
 			else if (p2.y == p3.y) // the two lower points are at same y level
 			{
 				//std::cout << "lower base";
 				Point2D e1[] = {p1, p2};
 				Point2D e2[] = {p1, p3};
-				Interpolate(e1,e2,fragShader, depthBuffer);
+				Interpolate(e1,e2,w, h,fragShader, depthBuffer);
 			}
 			else // all the vertices are at different y level
 			{
@@ -87,15 +87,15 @@ class Rasterizer
 				// now form two pairs of edges and send to interpolate each
 				Point2D e1[] = {p1,p2};
 				Point2D e2[] = {p1, p};
-				Interpolate(e1, e2,fragShader, depthBuffer);
+				Interpolate(e1, e2,w,h,fragShader, depthBuffer);
 				// reassign other points to the edges
 				e1[0] = p; e1[1] = p3;
 				e2[0] = p2; e2[1] = p3;
-				Interpolate(e1, e2,fragShader, depthBuffer);
+				Interpolate(e1, e2,w,h,fragShader, depthBuffer);
 			}
 		}
 
-		static void Interpolate(Point2D* e1, Point2D* e2, void(*fragShader)(Point2D&), float* depthBuffer)
+		static void Interpolate(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// this function assumes flat bottom or top
 			// make sure that e1 is left edge
@@ -143,7 +143,6 @@ class Rasterizer
 			dDepth2 = (e2[0].depth - e2[1].depth)/dy;
 			depth1 = e1[0].depth;
 			depth2 = e2[0].depth;
-			std::cout << "test\n";
 			while(yScan >= e1[1].y) 	// both edges have lower y value same, we can take any y
 			{
 				if(yScan <0) break;

@@ -37,14 +37,14 @@ void Update(double dt)
 void FragmentShader(Point2D& p)
 {
 	Vec3 att = p.attributes[0];
-	renderer.SetPixel(p.x, p.y, ColorRGBA(att[0],att[1],att[2],0));
+	renderer.SetPixel(p.x, p.y, ColorRGBA(123,234,45,255));
 }
 
 // vertex shader, receives a vertex and multiplies it with modelview and projection matrix
 Vertex3D VertexShader(Vertex3D vertex)
 {
-	Vec4 image = PROJECTION * MODELVIEW * vertex.pos;
-	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
+	Vec4 image = PROJECTION * MODELVIEW * vertex.position;
+	Vec4 normal = MODELVIEW * vertex.normal;
 	return Vertex3D(image, normal, vertex.color);
 }
 
@@ -89,13 +89,18 @@ void Render()
 		rast.DrawTriangle(p1, p2, p3, WIDTH, HEIGHT, &FragmentShader, t);
 	}
 	// renderer.DrawModels(model, &VertexShader, &FragmentShader);
-
 }
+
 
 int main()
 {
-	PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 10.f, 200.f);
-	MODELVIEW  = Transform::LookAt(Vec3(10, 10, 10), Vec3(0,0,0));
+	PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
+	MODELVIEW  = Transform::LookAt(Vec3(0, 0, 100), Vec3(0,0,0));
+
+	Vec4 v1(10,10,10,1 );
+	std::cout << "modelview " << MODELVIEW << std::endl;
+	std::cout << PROJECTION*MODELVIEW * v1 << std::endl;
+	return 1;
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{

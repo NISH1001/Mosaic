@@ -83,10 +83,11 @@ public:
 		float nMinusF = near-far,nPlusf = near+far;
 		return Mat4(invAR*cot, 0, 0, 0,
 				0, cot, 0, 0,
-				0, 0, -nPlusf/nMinusF, 2*far*near/nMinusF,
+				0, 0, nPlusf/nMinusF, 2*far*near/nMinusF,
 				0,0, -1, 0
 				);
 	}
+
 
 	// LookAt returns model view matrix
 	static Mat4 LookAt(Vec3 from, Vec3 to) 
@@ -95,13 +96,14 @@ public:
 		Mat4 translate = Translate(from * (-1)); // negative of looking point
 
 		Vec3 v(0,1,0); // initially V is upwards
-		Vec3 N = to - from;
+		Vec3 N = from - to;
 		Vec3 n = GetUnitVector(N);
 		Vec3 crossVN = GetCrossProduct(v, n);
 		Vec3 u = GetUnitVector(crossVN);
 		v = GetCrossProduct(n, u);
 
-		return Mat4(Vec4(u,0), Vec4(v,0), Vec4(n,0), Vec4(0,0,0,1)) * translate;
+		Mat4 rotate = Mat4(Vec4(u,0), Vec4(v,0), Vec4(n,0), Vec4(0,0,0,1)); 
+		return rotate* translate;
 	}
 
 
