@@ -8,6 +8,8 @@
 int WIDTH = 640;
 int HEIGHT = 480;
 
+std::string filename = "cube.obj";
+
 // projection and view matrices
 Mat4 PROJECTION, MODELVIEW;
 // main renderer
@@ -68,6 +70,8 @@ void Render()
 
 int main()
 {
+	ObjLoader cube(filename);
+
 	PROJECTION = Transform::GetPerspective(120.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
 	MODELVIEW  = Transform::LookAt(Vec3(0, 0, 100), Vec3(0,0,0));
 

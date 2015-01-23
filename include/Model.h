@@ -5,6 +5,7 @@
 #include <iostream>
 #include <tuple>
 #include <utility>
+#include <ObjLoader.h>
 
 /*a 3D vertex struct
 	a vertex has its positionition
