@@ -103,6 +103,10 @@ public:
 		v = GetCrossProduct(n, u);
 
 		Mat4 rotate = Mat4(Vec4(u,0), Vec4(v,0), Vec4(n,0), Vec4(0,0,0,1)); 
+		//Mat4 rotate = Mat4(u[0],v[0],n[0],0,
+		//		u[1],v[1],n[1],0,
+		//		u[2],v[2],n[2],0,
+		//		0,0,0,1)
 		return rotate* translate;
 	}
 

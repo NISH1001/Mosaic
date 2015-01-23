@@ -17,7 +17,7 @@ Renderer renderer;
 	position,normal,color
 */
 Vertex3D vertices3d[] = {
-				{ Vec3(0,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(-4000,0,0), Vec3(0,0,0), Vec3(255,0,0)},
 				{ Vec3(100,0,0), Vec3(0,0,0), Vec3(255,0,0)},
 				{ Vec3(0,100,0), Vec3(0,0,0), Vec3(255,0,0)},/*
 				{ Vec3(200,0,200), Vec3(0,0,0), Vec3(255,0,0)},
@@ -68,14 +68,15 @@ void Render()
 
 int main()
 {
-	PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
-	MODELVIEW  = Transform::LookAt(Vec3(100, 100, 100), Vec3(0,0,0));
+	PROJECTION = Transform::GetPerspective(120.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
+	MODELVIEW  = Transform::LookAt(Vec3(0, 0, 100), Vec3(0,0,0));
 
 	models.push_back(Model(vertices3d, numvertices3D));
+	std::cout << models[0].m_vertexBuffer[0].position << std::endl;
 
 	Vec4 v1(10,10,10,1 );
-	std::cout << "modelview " << MODELVIEW << std::endl;
-	std::cout << PROJECTION*MODELVIEW * v1 << std::endl;
+	//std::cout << "modelview " << MODELVIEW << std::endl;
+	//std::cout << PROJECTION*MODELVIEW * v1 << std::endl;
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
