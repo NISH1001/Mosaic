@@ -19,13 +19,12 @@ Renderer renderer;
 	position,normal,color
 */
 Vertex3D vertices3d[] = {
-				{ Vec3(-50,0,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(50,0,0), Vec3(0,0,0), Vec3(0,255,0)},
-				{ Vec3(0,50,0), Vec3(0,0,0), Vec3(0,0,255)},
-				// triangle behind the upper triangle
-				{ Vec3(-200,0,50), Vec3(0,0,0), Vec3(55,0,0)},
-				{ Vec3(0,200,50), Vec3(0,0,0), Vec3(0,0,55)},
-				{ Vec3(200,0,50), Vec3(0,0,0), Vec3(0,55,0)},
+				{ Vec3(0,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(100,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(0,100,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(0,0,200), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(0,50,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(300,0,0), Vec3(0,0,0), Vec3(255,0,0)},
 			};
 unsigned numvertices3D = sizeof(vertices3d)/sizeof(Vertex3D);
 
