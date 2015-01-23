@@ -45,11 +45,13 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 	//std::cout << m_vertexBuffer.size() << std::endl;
 	size_t ibsize = m_indexBuffer.size();
 
+	/*
 	// now order the indices
 	for(unsigned i=0; i<ibsize; i+=3)
 	{
 		Order(m_indexBuffer[i], m_indexBuffer[i+1], m_indexBuffer[i+2]);
 	}
+	*/
 
 	//for test
 	for(unsigned i=0; i<ibsize; i+=3)
@@ -57,9 +59,9 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		Vertex3D v1 = m_vertexBuffer[m_indexBuffer[i]];
 		Vertex3D v2 = m_vertexBuffer[m_indexBuffer[i+1]];
 		Vertex3D v3 = m_vertexBuffer[m_indexBuffer[i+2]];
-		//std::cout << v1 << std::endl;
-		//std::cout << v2 << std::endl;
-		//std::cout << v3 << std::endl;
+		std::cout << v1 << std::endl;
+		std::cout << v2 << std::endl;
+		std::cout << v3 << std::endl;
 	}
 
 	//we dont need this now
