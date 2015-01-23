@@ -23,11 +23,13 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		size_t vsize = m_vertexBuffer.size();
 		std::pair<bool, unsigned> status = Lookup(currentpoint);
 
+		//if current point is already in VB only store the index in IB
 		if(status.first == true)
 		{
 			m_indexBuffer.push_back(status.second);
 		}
 
+		//if nwew point then store both vertex and index
 		else
 		{
 			m_vertexBuffer.push_back(currentpoint);
