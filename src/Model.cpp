@@ -12,7 +12,7 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 	unsigned numsurfaces = numvertices/3;
 	m_surfaces.resize(numsurfaces);
 
-	for(int i=0; i<numsurfaces; ++i)
+	for(int i=0; i<numsurfaces; i+=3)
 	{
 		Vertex3D v1 = vertices[i];
 		Vertex3D v2 = vertices[i+1];

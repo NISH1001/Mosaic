@@ -10,48 +10,12 @@ class Rasterizer
 		~Rasterizer(){}
 
 		// helper functions
-		template <class t>
-		static t Max(t a, t b)
-		{
-			if (a>b) return a;
-			else return b;
-		}
-
-		template <class t>
-		static t Min(t a, t b)
-		{
-			if (a<b) return a;
-			else return b;
-		}
-
-	static void SortY(Point2D& m_p1, Point2D& m_p2, Point2D& m_p3)
-	{
-		if (m_p1.y < m_p2.y)
-		{
-			Point2D temp = m_p1;
-			m_p1 = m_p2;
-			m_p2 = temp;
-		}
-		if (m_p2.y < m_p3.y)
-		{
-			Point2D temp = m_p2;
-			m_p2 = m_p3;
-			m_p3 = temp;
-
-		} ///largest yvalue coord is at 1
-		if (m_p1.y < m_p2.y)
-		{
-			Point2D temp = m_p1;
-			m_p1 = m_p2;
-			m_p2 = temp;
-		}
-	}
-	// helper functions end.
+			// helper functions end.
 
 	static void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
-			SortY(p1,p2,p3);
+			Helper::SortY(p1,p2,p3);
 
 			if(p1.y == p2.y)  // the two upper points are at same y level
 			{
@@ -102,9 +66,7 @@ class Rasterizer
 			if(e1[0].x > e2[0].x or e1[1].x > e2[1].x) // means if e1 is on the right
 			{
 				// swap the edges
-				Point2D* temp = e1;
-				e1 = e2;
-				e2 = temp;
+				Helper::Swap(e1,e2);
 			}
 			// now we have e1 on the left of e2
 
@@ -147,8 +109,8 @@ class Rasterizer
 			{
 				if(yScan <0) break;
 				dx = x2-x1;
-				clipx1 = Max(Min(ROUND(x1),w), 0);
-				clipx2 = Min(Max(ROUND(x2),0), w);
+				clipx1 = Helper::Max(Helper::Min(ROUND(x1),w), 0);
+				clipx2 = Helper::Min(Helper::Max(ROUND(x2),0), w);
 
 				if (dx !=0)
 				{

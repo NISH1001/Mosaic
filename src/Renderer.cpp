@@ -115,9 +115,9 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 				p1.depth = tVertices[a].position.z;
 				p2.depth = tVertices[b].position.z;
 				p3.depth = tVertices[c].position.z;
-				p1.attributes[0] = tVertices[a].normal.ToVec3();
-				p2.attributes[0] = tVertices[b].normal.ToVec3();
-				p3.attributes[0] = tVertices[c].normal.ToVec3();
+				p1.attributes[0] = tVertices[a].normal;
+				p2.attributes[0] = tVertices[b].normal;
+				p3.attributes[0] = tVertices[c].normal;
 				// send to Rasterizer::drawtriangle the three normalized vertices
 				Rasterizer::DrawTriangle(p1,p2,p3,m_width, m_height,fShader,m_depthBuffer);
 			}

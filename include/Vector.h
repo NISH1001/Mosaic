@@ -89,7 +89,7 @@ public:
 	struct{float x, y, z, w;}; // used struct so that x,y,z,w are contagious in memory
 
 	Vec4(void) : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {} 
-	Vec4(float xx, float yy, float zz, float ww) : x(xx), y(yy), z(zz), w(ww) {}
+	Vec4(float xx, float yy, float zz, float ww=1.f) : x(xx), y(yy), z(zz), w(ww) {}
 
 	//use 3D vector and another element to init
 	Vec4(const Vec3& v, float ww=1.0f) : x(v.x), y(v.y), z(v.z) , w(ww) {}

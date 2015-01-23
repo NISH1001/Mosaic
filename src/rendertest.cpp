@@ -14,7 +14,7 @@ Mat4 PROJECTION, MODELVIEW;
 Renderer renderer; 
 
 /*make sure it is multiple of 3
-	pos,normal,color
+	position,normal,color
 */
 Vertex3D vertices3d[] = {
 				{ Vec3(0,0,0), Vec3(0,0,0), Vec3(255,0,0)},
@@ -44,25 +44,10 @@ void FragmentShader(Point2D& p)
 Vertex3D VertexShader(Vertex3D vertex)
 {
 	Vec4 image = PROJECTION * MODELVIEW * vertex.position;
-	Vec4 normal = MODELVIEW * vertex.normal;
-	return Vertex3D(image, normal, vertex.color);
+	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
+	return Vertex3D(image, normal.ToVec3(), vertex.color);
 }
 
-Point2D vertices [6] = { Point2D(100,200),
-						Point2D(0,200),
-						Point2D(50,20),
-						Point2D(400,0),
-						Point2D(600,100),
-						Point2D(200,200),
-					};
-int numvertices = sizeof(vertices)/sizeof(Point2D);
-
-int indices[] = {
-				//0,1,2,
-				3,4,5//,
-				//0,1,3
-			};
-int numindices = sizeof(indices)/sizeof(int);
 
 void Render()
 {
@@ -77,6 +62,7 @@ void Render()
 	Vec3 v3(0,0,255);
 	
 	Rasterizer rast;
+	/*
 	float *t;
 	for(int i=0; i<numindices; i+=3)
 	{
@@ -88,6 +74,7 @@ void Render()
 		p3.attributes[0] = v3;
 		rast.DrawTriangle(p1, p2, p3, WIDTH, HEIGHT, &FragmentShader, t);
 	}
+	*/
 	// renderer.DrawModels(model, &VertexShader, &FragmentShader);
 }
 
@@ -100,8 +87,6 @@ int main()
 	Vec4 v1(10,10,10,1 );
 	std::cout << "modelview " << MODELVIEW << std::endl;
 	std::cout << PROJECTION*MODELVIEW * v1 << std::endl;
-	return 1;
-
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
 		renderer.SetUpdateCallback(&Update);

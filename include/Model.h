@@ -14,9 +14,9 @@ struct Vertex3D
 {
 	Vertex3D(){}
 	~Vertex3D(){}
-	Vertex3D(Vec4 pos, Vec4 norm, Vec3 col):position(pos), normal(norm), color(col){}
+	Vertex3D(Vec4 pos, Vec3 norm, Vec3 col):position(pos), normal(norm), color(col){}
 	Vec4 position; // the x,y,z,w coordinates
-	Vec4 normal; // for normal
+	Vec3 normal; // for normal
 	Vec3 color; // for the color
 };
 
