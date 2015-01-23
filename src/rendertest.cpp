@@ -17,12 +17,13 @@ Renderer renderer;
 	position,normal,color
 */
 Vertex3D vertices3d[] = {
-				{ Vec3(-4000,0,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(100,0,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(0,100,0), Vec3(0,0,0), Vec3(255,0,0)},/*
-				{ Vec3(200,0,200), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(0,50,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(300,0,0), Vec3(0,0,0), Vec3(255,0,0)},*/
+			/*	{ Vec3(-100,0,0), Vec3(0,0,0), Vec3(255,0,0)},
+				{ Vec3(100,0,0), Vec3(0,0,0), Vec3(0,255,0)},
+				{ Vec3(0,100,0), Vec3(0,0,0), Vec3(0,0,255)},*/
+				// triangle behind the upper triangle
+				{ Vec3(-200,0,50), Vec3(0,0,0), Vec3(55,0,0)},
+				{ Vec3(0,200,50), Vec3(0,0,0), Vec3(0,0,55)},
+				{ Vec3(200,0,50), Vec3(0,0,0), Vec3(0,55,0)},
 			};
 unsigned numvertices3D = sizeof(vertices3d)/sizeof(Vertex3D);
 // models
@@ -37,14 +38,14 @@ void Update(double dt)
 void FragmentShader(Point2D& p)
 {
 	Vec3 att = p.attributes[0];
-	renderer.SetPixel(p.x, p.y, ColorRGBA(123,234,45,255));
+	renderer.SetPixel(p.x, p.y, ColorRGBA(att.x,att.y,att.z,255));
 }
 
 // vertex shader, receives a vertex and multiplies it with modelview and projection matrix
 Vertex3D VertexShader(Vertex3D vertex)
 {
 	Vec4 image = PROJECTION * MODELVIEW * vertex.position;
-	image.NormalizeByW();
+	//image.NormalizeByW();
 	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
 	return Vertex3D(image, normal.ToVec3(), vertex.color);
 }
@@ -69,14 +70,13 @@ void Render()
 int main()
 {
 	PROJECTION = Transform::GetPerspective(120.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
-	MODELVIEW  = Transform::LookAt(Vec3(0, 0, 100), Vec3(0,0,0));
+	MODELVIEW  = Transform::LookAt(Vec3(100, 100, 100), Vec3(0,0,0));
 
 	models.push_back(Model(vertices3d, numvertices3D));
-	std::cout << models[0].m_vertexBuffer[0].position << std::endl;
 
-	Vec4 v1(10,10,10,1 );
-	//std::cout << "modelview " << MODELVIEW << std::endl;
-	//std::cout << PROJECTION*MODELVIEW * v1 << std::endl;
+	Vec4 v(0,100,50,1);
+	std::cout << MODELVIEW*v;
+	return 2;
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{

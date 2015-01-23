@@ -36,4 +36,16 @@ namespace Helper
 		 ///largest yvalue coord is at 1
 		if (m_p1.y < m_p2.y) Swap(m_p1, m_p2);
 	}
+
+	// function to find C of a plane, input must be something having x, y, z attributes
+	// and input must be in anticlockwise order
+	template <class t>
+	float GetC(t& a, t& b, t& c)
+	{
+		float C = a.x * (b.y - c.y) +
+			  b.x * (c.y - a.y) +
+			  c.x * (a.y - b.y);
+		return C;
+	}
+
 }

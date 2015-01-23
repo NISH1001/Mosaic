@@ -96,16 +96,20 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 			int a = models[i].m_indexBuffer[j],
 				b = models[i].m_indexBuffer[j+1],
 				c = models[i].m_indexBuffer[j+2];
+
 			// calculate C for backface culling
-			float C = tVertices[a].position.x * (tVertices[b].position.y - tVertices[c].position.y) +
-					  tVertices[b].position.x * (tVertices[c].position.y - tVertices[a].position.y) +
-					  tVertices[c].position.x * (tVertices[a].position.y - tVertices[b].position.y);
+			float C = Helper::GetC(tVertices[a].position, tVertices[b].position, tVertices[c].position);
+
 			// since the view vector is along z axis(0,0,1), we may just check 
 			//  the sign of c because, the dot product result is c
 			// NOW, if c is +ve, ignore the triangle and do not draw it
 			// if c is -ve, draw the triangle
 			if (C < 0)
 			{
+				//first normalize
+				tVertices[a].position.NormalizeByW();
+				tVertices[b].position.NormalizeByW();
+				tVertices[c].position.NormalizeByW();
 				// create point2D s and send to DrawTriangle, here we convert to device coordinates so that in Rasteriser::
 				//  DrawTriangle, we can do clippint with respect to device coordinates
 				Point2D p1(ROUND(tVertices[a].position.x*m_width/2.f+m_width/2.f), ROUND(tVertices[a].position.y*(-m_height/2.f)+m_height/2.f)),
@@ -114,12 +118,14 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 				p1.depth = tVertices[a].position.z;
 				p2.depth = tVertices[b].position.z;
 				p3.depth = tVertices[c].position.z;
-				p1.attributes[0] = tVertices[a].normal;
-				p2.attributes[0] = tVertices[b].normal;
-				p3.attributes[0] = tVertices[c].normal;
+				p1.attributes[0] = tVertices[a].color;
+				p2.attributes[0] = tVertices[b].color;
+				p3.attributes[0] = tVertices[c].color;
 				// send to Rasterizer::drawtriangle the three normalized vertices
 				Rasterizer::DrawTriangle(p1,p2,p3,m_width, m_height,fShader,m_depthBuffer);
 			}
+			else 
+				std::cout << "hidden\n ";
 		}
 	}
 
