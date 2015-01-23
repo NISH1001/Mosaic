@@ -46,9 +46,9 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 	size_t ibsize = m_indexBuffer.size();
 
 	// now order the indices
-	for(unsigned i=0; i<ibsize; i+=3)
+//	for(unsigned i=0; i<ibsize; i+=3)
 	{
-		Order(m_indexBuffer[i], m_indexBuffer[i+1], m_indexBuffer[i+2]);
+//		Order(m_indexBuffer[i], m_indexBuffer[i+1], m_indexBuffer[i+2]); commented because this wont let backface culling as all are arranged clockwise
 	}
 
 	//for test
