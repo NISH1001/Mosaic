@@ -4,8 +4,13 @@
 //#include <cstddef>
 #include <iostream>
 /*
-	Vector classes : 3D vector and 4D vector
+	Vector classes : 2D vector , 3D vector and 4D vector
 */
+
+struct Vec2
+{
+	float x, y;
+};
 
 class Vec3
 {
@@ -168,7 +173,11 @@ inline Vec3 GetCrossProduct(const Vec3 & a, const Vec3 &b)
 				);
 }
 
-
+inline std::ostream& operator << (std::ostream &os, const Vec2 &v2)
+{
+	os << v2.x << " " << v2.y;
+	return os;
+}
 
 inline std::ostream& operator << (std::ostream &os, const Vec3 &v3)
 {

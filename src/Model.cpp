@@ -47,12 +47,13 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 
 	/*
 	// now order the indices
-	for(unsigned i=0; i<ibsize; i+=3)
+//	for(unsigned i=0; i<ibsize; i+=3)
 	{
-		Order(m_indexBuffer[i], m_indexBuffer[i+1], m_indexBuffer[i+2]);
+//		Order(m_indexBuffer[i], m_indexBuffer[i+1], m_indexBuffer[i+2]); commented because this wont let backface culling as all are arranged clockwise
 	}
 	*/
 
+	/*
 	//for test
 	for(unsigned i=0; i<ibsize; i+=3)
 	{
@@ -63,6 +64,7 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		std::cout << v2 << std::endl;
 		std::cout << v3 << std::endl;
 	}
+	*/
 
 	//we dont need this now
 /*	for(int i=0; i<numsurfaces; i+=3)

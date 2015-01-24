@@ -6,27 +6,8 @@
 #include <tuple>
 #include <utility>
 #include <ObjLoader.h>
+#include <Point2D.h>
 
-/*a 3D vertex struct
-	a vertex has its positionition
-	a color attribute
-	a normal attribute
-*/
-
-struct Vertex3D
-{
-	Vec4 position; // the x,y,z coordinates
-	Vec3 normal; // for normal
-	Vec3 color; // for the color
-
-	Vertex3D () {}
-	Vertex3D(const Vec4 & p, const Vec3 & n, const Vec3 & c) : position(p), normal(n), color(c) {}
-
-	bool operator == (const Vertex3D & v)
-	{
-		return (position.x==v.position.x && position.y==v.position.y && position.z==v.position.z);
-	}
-};
 
 
 /*a triangular surface struct
@@ -74,12 +55,6 @@ private:
 	}
 };
 
-inline std::ostream& operator << (std::ostream & os, const Vertex3D & v)
-{
-	os<< v.position.x << " " << v.position.y << " " << v.position.z;
-	return os;
-}
-
 inline std::ostream& operator << (std::ostream &os, const Surface & s)
 {
 	os <<"(" << s.vertex[0].position.x << "," << s.vertex[0].position.y << "," << s.vertex[0].position.z << ")";
@@ -100,6 +75,17 @@ class Model
 {
 public:
 	Model(Vertex3D *vertices, unsigned numvertices);
+
+	Model(const std::string & filename)
+	{
+		if(obj.Load(filename))
+		{
+			m_indexBuffer = obj.m_indexBuffer;
+			m_vertexBuffer = obj.m_vertexBuffer;
+			m_hasTexture = obj.m_hasTexture;
+		}
+		
+	}
 
 	//we dont need this now
 	Model(Surface *surfaces, unsigned numsurfaces);
@@ -169,4 +155,7 @@ public:
 	//we only need this
 	std::vector<unsigned> m_indexBuffer;
 	std::vector<Vertex3D> m_vertexBuffer;
+	bool m_hasTexture;
+private:
+	ObjLoader obj;	
 };
