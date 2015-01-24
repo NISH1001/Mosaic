@@ -172,9 +172,16 @@ public:
 			v3d[2].normal = normals[v[2].z-1];
 			v3d[2].color = Vec3(0,0,255);
 
-			m_vertexBuffer[faceindices[i].x-1] = v3d[0];
-			m_vertexBuffer[faceindices[i+1].x-1] = v3d[1];
-			m_vertexBuffer[faceindices[i+2].x-1] = v3d[2];
+			v3d[0].normal = (v3d[0].normal + m_vertexBuffer[v[0].x-1].normal);
+			v3d[0].normal.NormalizeToUnit();
+			v3d[1].normal = (v3d[1].normal + m_vertexBuffer[v[1].x-1].normal);
+			v3d[1].normal.NormalizeToUnit();
+			v3d[2].normal = (v3d[2].normal + m_vertexBuffer[v[2].x-1].normal);
+			v3d[2].normal.NormalizeToUnit();
+
+			m_vertexBuffer[v[0].x-1] = v3d[0];
+			m_vertexBuffer[v[1].x-1] = v3d[1];
+			m_vertexBuffer[v[2].x-1] = v3d[2];
 
 			m_indexBuffer.push_back(faceindices[i].x-1);
 			m_indexBuffer.push_back(faceindices[i+1].x-1);
