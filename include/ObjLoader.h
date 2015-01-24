@@ -92,7 +92,7 @@ public:
 				linestream >> v.x;
 				linestream >> v.y;
 				linestream >> v.z;
-				std::cout << v << std::endl;
+				//std::cout << v << std::endl;
 				normals.push_back(v);
 			}
 
@@ -182,8 +182,9 @@ public:
 		}
 		size_t ibsize = m_indexBuffer.size();
 		size_t vbsize = m_vertexBuffer.size();
-		std::cout << ibsize << std::endl;
-		std::cout << vbsize << std::endl;
+		std::cout << "IndexBuffer size : " << ibsize << std::endl;
+		std::cout << "VertexBuffer size : " << vbsize << std::endl;
+		/*
 		for(unsigned i=0; i<ibsize; i+=3)
 		{
 			Vertex3D v1 = m_vertexBuffer[m_indexBuffer[i]];
@@ -193,6 +194,7 @@ public:
 			std::cout << v2 << std::endl;
 			std::cout << v3 << std::endl;
 		}
+		*/
 
 		return true;
 	}

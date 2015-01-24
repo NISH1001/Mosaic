@@ -88,6 +88,16 @@ public:
 				);
 	}
 
+	static Mat4 GetOrthographic(float right, float left, float top, float bottom, float near, float far)
+	{
+		return Mat4(
+					2/(right-left), 0, 0, -(right+left)/(right-left),
+					0, 2/(top-bottom), 0, -(top+bottom)/(top-bottom),
+					0, 0, -2/(far-near), (far+near)/(far-near),
+					0, 0, 0, 1
+					);
+	}
+
 
 	// LookAt returns model view matrix
 	static Mat4 LookAt(Vec3 from, Vec3 to) 

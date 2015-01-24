@@ -99,13 +99,14 @@ void Render()
 
 int main()
 {
-	PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
-	MODELVIEW = Transform::LookAt(Vec3(0, 100, 200), Vec3(0,0,0));
+	//PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
+	PROJECTION = Transform::GetOrthographic(500,-500,500,-500,-500,500);
+	MODELVIEW = Transform::LookAt(Vec3(0, 100, 100), Vec3(0,0,0));
 
 	models.push_back(Model("cube.obj"));
 
 	Vec4 v(0,100,50,1);
-	std::cout << MODELVIEW*v;
+	//std::cout << MODELVIEW*v;
 //	return 2;
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
