@@ -100,8 +100,8 @@ void Render()
 int main()
 {
 	//PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
-	PROJECTION = Transform::GetOrthographic(500,-500,500,-500,-500,500);
-	MODELVIEW = Transform::LookAt(Vec3(0, 100, 100), Vec3(0,0,0));
+	PROJECTION = Transform::GetOrthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
+	MODELVIEW = Transform::LookAt(Vec3(0, 50, 100), Vec3(0,0,0));
 
 	models.push_back(Model("cube.obj"));
 
