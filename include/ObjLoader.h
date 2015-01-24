@@ -189,9 +189,9 @@ public:
 			Vertex3D v1 = m_vertexBuffer[m_indexBuffer[i]];
 			Vertex3D v2 = m_vertexBuffer[m_indexBuffer[i+1]];
 			Vertex3D v3 = m_vertexBuffer[m_indexBuffer[i+2]];
-			//std::cout << v1 << std::endl;
-			//std::cout << v2 << std::endl;
-			//std::cout << v3 << std::endl;
+			std::cout << v1 << std::endl;
+			std::cout << v2 << std::endl;
+			std::cout << v3 << std::endl;
 		}
 
 		return true;
