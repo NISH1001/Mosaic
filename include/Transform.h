@@ -76,7 +76,7 @@ public:
 					);
 	}
 
-	static Mat4 GetPerspective(float fieldView, float aspectRatio, float near, float far)
+	static Mat4 Perspective(float fieldView, float aspectRatio, float near, float far)
 	{
 		float cot = 1.f/tanf(fieldView/2.f);
 		float invAR = 1.f/aspectRatio;
@@ -88,7 +88,7 @@ public:
 				);
 	}
 
-	static Mat4 GetOrthographic(float right, float left, float top, float bottom, float near, float far)
+	static Mat4 Orthographic(float right, float left, float top, float bottom, float near, float far)
 	{
 		return Mat4(
 					2/(right-left), 0, 0, -(right+left)/(right-left),
@@ -106,18 +106,23 @@ public:
 		Mat4 translate = Translate(from * (-1)); // negative of looking point
 
 		Vec3 v(0,1,0); // initially V is upwards
-		Vec3 N = from - to;
-		Vec3 n = GetUnitVector(N);
-		Vec3 crossVN = GetCrossProduct(v, n);
-		Vec3 u = GetUnitVector(crossVN);
-		v = GetCrossProduct(n, u);
+		Vec3 n = from - to;
+		n.NormalizeToUnit();
+		
+		Vec3 crossvn = Vec3::Cross(v,n);
+		crossvn.NormalizeToUnit();
+		//crossvn = Vec3::NormalizeToUnit(crossvn);
+
+		Vec3 u = crossvn;
+		
+		v= Vec3::Cross(n,u);
 
 		Mat4 rotate = Mat4(Vec4(u,0), Vec4(v,0), Vec4(n,0), Vec4(0,0,0,1)); 
 		/*Mat4 rotate = Mat4(u[0],v[0],n[0],0,
 				u[1],v[1],n[1],0,
 				u[2],v[2],n[2],0,
 				0,0,0,1); */
-		return rotate* translate;
+		return rotate * translate;
 	}
 
 

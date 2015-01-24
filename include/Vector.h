@@ -71,12 +71,31 @@ public:
 		return (&x)[i];
 	}
 
-	static float Dot(Vec3& v1, Vec3& v2)
+	float Length() const
+    {
+        return sqrtf(x*x+y*y+z*z);
+    }
+
+    void NormalizeToUnit(void)
+    {
+    	float invlen = 1/Length();
+    	x *= invlen;
+    	y *= invlen;
+    	z *= invlen;
+    }
+
+    static Vec3 NormalizeToUnit(const Vec3 &  v)
+    {
+    	float invlen = 1/v.Length();
+    	return Vec3(v.x*invlen, v.y*invlen, v.z*invlen);
+    }
+
+	static float Dot(const Vec3& v1, const Vec3& v2)
 	{
 		return v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
 	}
 
-	static Vec3 Cross(Vec3& a, Vec3& b)
+	static Vec3 Cross(const Vec3& a, const Vec3& b)
 	{
 		return Vec3(
 				a.y * b.z - b.y * a.z,
@@ -137,6 +156,20 @@ public:
 		return (&x)[i];
 	}
 
+	float Length(void) const
+	{
+		return sqrtf(x*x+y*y+z*z+w*w);
+	}
+
+	float NormalizeToUnit(void)
+	{
+		float invlen = 1/Length();
+    	x *= invlen;
+    	y *= invlen;
+    	z *= invlen;
+    	w *= invlen;
+	}
+
 	void NormalizeByW(void)
 	{
 		if(w!=1 && w!=0)
@@ -157,6 +190,7 @@ public:
 private:
 };
 
+/*
 // vector helper functions
 inline Vec3 GetUnitVector(const Vec3 & mat)
 {
@@ -172,6 +206,7 @@ inline Vec3 GetCrossProduct(const Vec3 & a, const Vec3 &b)
 				a.x * b.y - b.x * a.y
 				);
 }
+*/
 
 inline std::ostream& operator << (std::ostream &os, const Vec2 &v2)
 {

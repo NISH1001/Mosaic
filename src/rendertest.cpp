@@ -8,27 +8,16 @@
 int WIDTH = 800;
 int HEIGHT = 600;
 
-std::string filename = "cube.obj";
-
+//test angle
 float angle = 0.f;
 
-// projection and view matrices
-Mat4 PROJECTION, MODELVIEW;
+
 // main renderer
 Renderer renderer; 
 
 /*make sure it is multiple of 3
 	position,normal,color
 */
-Vertex3D vertices3d[] = {
-				{ Vec3(0,0,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(100,0,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(0,100,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(0,0,200), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(0,50,0), Vec3(0,0,0), Vec3(255,0,0)},
-				{ Vec3(300,0,0), Vec3(0,0,0), Vec3(255,0,0)},
-			};
-unsigned numvertices3D = sizeof(vertices3d)/sizeof(Vertex3D);
 
 // OUR LONG AWAITED CUBE
 // vertices
@@ -66,14 +55,25 @@ void Update(double dt)
 void FragmentShader(Point2D& p)
 {
 	Vec3 att = p.attributes[0];
+	//att.NormalizeToUnit();
+	/*
+    Vec3 dir(50,0,50);
+    dir.NormalizeToUnit();
+    float intensity = Helper::Min(Helper::Max(Vec3::Dot(att, dir*(-1)), 0.0f) + 0.09f, 1.0f );
+    att = att * intensity * 100;
+	*/
 	renderer.SetPixel(p.x, p.y, ColorRGBA(att.x,att.y,att.z,255));
 }
 
-// vertex shader, receives a vertex and multiplies it with modelview and projection matrix
+
 Mat4 SCALE = Transform::Scale(Vec3(50,50,50), Vec3(0,0,0));
+// projection and view matrices
+Mat4 PROJECTION, MODELVIEW, TRANS;
+
+// vertex shader, receives a vertex and multiplies it with modelview and projection matrix
 Vertex3D VertexShader(Vertex3D vertex)
 {
-	Vec4 image = PROJECTION * MODELVIEW * Transform::RotateY(renderer.m_angle)*
+	Vec4 image = TRANS * Transform::RotateY(renderer.m_angle)*
 					SCALE * vertex.position;
 	//image.NormalizeByW();
 	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
@@ -83,25 +83,16 @@ Vertex3D VertexShader(Vertex3D vertex)
 
 void Render()
 {
-	/*
-	// for testing DrawTriangle()
-	Point2D p1(100,100);
-	Point2D p2(0,0);
-	Point2D p3(200,0);
-	Vec3 v(1,2,3);
-	p1.attributes[0] = p2.attributes[0] = p3.attributes[0] = v;
-	float * f;
-	Rasterizer::DrawTriangle(p1,p2,p3,WIDTH, HEIGHT, &FragmentShader, f);
-	*/
 	renderer.DrawModels(models, &VertexShader, &FragmentShader);
 }
 
 
 int main()
 {
-	//PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
-	PROJECTION = Transform::GetOrthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
+	//PROJECTION = Transform::Perspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
+	PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
 	MODELVIEW = Transform::LookAt(Vec3(0, 50, 100), Vec3(0,0,0));
+	TRANS = PROJECTION * MODELVIEW;
 
 	models.push_back(Model("cube.obj"));
 
