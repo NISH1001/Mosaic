@@ -70,10 +70,11 @@ void FragmentShader(Point2D& p)
 }
 
 // vertex shader, receives a vertex and multiplies it with modelview and projection matrix
+Mat4 SCALE = Transform::Scale(Vec3(50,50,50), Vec3(0,0,0));
 Vertex3D VertexShader(Vertex3D vertex)
 {
 	Vec4 image = PROJECTION * MODELVIEW * Transform::RotateY(renderer.m_angle)*
-					Transform::Scale(Vec3(100,100,100), Vec3(0,0,0)) * vertex.position;
+					SCALE * vertex.position;
 	//image.NormalizeByW();
 	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
 	return Vertex3D(image, normal.ToVec3(), vertex.color);
@@ -98,10 +99,8 @@ void Render()
 
 int main()
 {
-	ObjLoader cube(filename);
-
 	PROJECTION = Transform::GetPerspective(120.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
-	MODELVIEW = Transform::LookAt(Vec3(0, 100, 100), Vec3(0,0,0));
+	MODELVIEW = Transform::LookAt(Vec3(0, 100, 200), Vec3(0,0,0));
 
 	models.push_back(Model("cube.obj"));
 

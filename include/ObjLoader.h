@@ -176,9 +176,9 @@ public:
 			m_vertexBuffer[faceindices[i+1].x-1] = v3d[1];
 			m_vertexBuffer[faceindices[i+2].x-1] = v3d[2];
 
-			m_indexBuffer.push_back(faceindices[0].x-1);
-			m_indexBuffer.push_back(faceindices[1].x-1);
-			m_indexBuffer.push_back(faceindices[2].x-1);
+			m_indexBuffer.push_back(faceindices[i].x-1);
+			m_indexBuffer.push_back(faceindices[i+1].x-1);
+			m_indexBuffer.push_back(faceindices[i+2].x-1);
 		}
 		size_t ibsize = m_indexBuffer.size();
 		size_t vbsize = m_vertexBuffer.size();
