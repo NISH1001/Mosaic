@@ -112,7 +112,7 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 			//  the sign of c because, the dot product result is c
 			// NOW, if c is +ve, ignore the triangle and do not draw it
 			// if c is -ve, draw the triangle
-			if (C > 0)
+			if (C < 0)
 			{
 				//first normalize
 				tVertices[a].position.NormalizeByW();

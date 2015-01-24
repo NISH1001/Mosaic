@@ -73,7 +73,7 @@ void FragmentShader(Point2D& p)
 Vertex3D VertexShader(Vertex3D vertex)
 {
 	Vec4 image = PROJECTION * MODELVIEW * Transform::RotateY(renderer.m_angle)*
-					Transform::Scale(Vec3(50,50,50), Vec3(0,0,0)) * vertex.position;
+					Transform::Scale(Vec3(100,100,100), Vec3(0,0,0)) * vertex.position;
 	//image.NormalizeByW();
 	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
 	return Vertex3D(image, normal.ToVec3(), vertex.color);
