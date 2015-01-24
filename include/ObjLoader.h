@@ -197,6 +197,7 @@ public:
 		return true;
 	}
 
+private:
 	//remove trailing  whitespaces
 	std::string &RightTrim(std::string & str)
 	{

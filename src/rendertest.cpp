@@ -99,7 +99,7 @@ void Render()
 
 int main()
 {
-	PROJECTION = Transform::GetPerspective(120.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
+	PROJECTION = Transform::GetPerspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
 	MODELVIEW = Transform::LookAt(Vec3(0, 100, 200), Vec3(0,0,0));
 
 	models.push_back(Model("cube.obj"));
