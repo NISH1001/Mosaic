@@ -130,7 +130,7 @@ int main()
 	//models.push_back(Model(verticesCube, numCube));
 	models.push_back(Model("teapot.obj"));
 
-	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
+	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT, MODELVIEW))
 	{
 		renderer.SetUpdateCallback(&Update);
 		renderer.SetRenderCallback(&Render);

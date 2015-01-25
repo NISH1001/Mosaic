@@ -10,12 +10,12 @@
 class Renderer
 {
 	public:
-		Renderer(void) : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), 
+		Renderer() : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), 
 							m_timer(200) , m_frameBuffer(NULL), m_clearColor(0,0,0,255), m_angle(0)
 		{}
 
 		~Renderer() {}
-		bool Initialize(const char*title, int x, int y, int width, int height);
+		bool Initialize(const char*title, int x, int y, int width, int height, Mat4 modelview);
 		void MainLoop();
 		void CleanUp();
 		
@@ -64,6 +64,7 @@ class Renderer
 		float* m_depthBuffer;
 		ColorRGBA m_clearColor;
 
+		Mat4 MODELVIEW;
 		
 		std::function<void(double)> m_update;
 		std::function<void()> m_render;

@@ -2,9 +2,11 @@
 #include <helper.h>
 #include <iostream>
 #include <Polygon.h>
+#include <Matrix.h>
 
-bool Renderer::Initialize(const char* title, int x, int y, int width, int height)
+bool Renderer::Initialize(const char* title, int x, int y, int width, int height, Mat4 modelview)
 {
+	MODELVIEW = Mat4(modelview);
 	m_width = width;
 	m_height = height;
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -120,14 +122,17 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 			Vec4 &v2 = tVertices[b].position;
 			Vec4 &v3 = tVertices[c].position;
 
+			Vec4 temp1 = MODELVIEW*models[i].m_vertexBuffer[a].position;
+			Vec4 temp2 = MODELVIEW*models[i].m_vertexBuffer[b].position;
+			Vec4 temp3 = MODELVIEW*models[i].m_vertexBuffer[c].position;
 			// calculate C for backface culling
-			float C = Helper::GetC(v1, v2, v3);
+			float C = Helper::GetC(temp1, temp2, temp3);
 
 			// since the view vector is along z axis(0,0,1), we may just check 
 			//  the sign of c because, the dot product result is c
 			// NOW, if c is -ve, ignore the triangle and do not draw it
 			// if c is +ve, draw the triangle
-			if (1||C > 0)
+			if (C > 0)
 			{	
 				
 				//first normalize
