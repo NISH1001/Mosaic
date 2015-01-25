@@ -80,8 +80,8 @@ void Renderer::MainLoop(void)
 
         m_render();
 
-	SDL_UnlockSurface(m_screen);
-	SDL_UpdateWindowSurface(m_window);
+		SDL_UnlockSurface(m_screen);
+		SDL_UpdateWindowSurface(m_window);
 	}
 }
 
@@ -94,12 +94,15 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 	{
 		numVertices = models[i].m_vertexBuffer.size();
 
+		//just resize -> push_back will be slow as it has to resize after every element added
+		tVertices.resize(numVertices);
 		for(int j=0;j<numVertices;j++)
-			tVertices.push_back(vShader(models[i].m_vertexBuffer[j]));
+			tVertices[j] = vShader(models[i].m_vertexBuffer[j]);
 
 		// backface culling and rendering triangles
 		// checking in indexbuffer
-		for(int j=0;j<models[i].m_indexBuffer.size();j+=3)
+		unsigned ibsize = models[i].m_indexBuffer.size();
+		for(int j=0;j<ibsize;j+=3)
 		{
 			int a = models[i].m_indexBuffer[j],
 			    b = models[i].m_indexBuffer[j+1],
@@ -121,12 +124,14 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 
 				// create point2D s and send to DrawTriangle, here we convert to device coordinates so that in Rasteriser::
 				//  DrawTriangle, we can do clipping with respect to device coordinates
-				Point2D p1(ROUND(tVertices[a].position.x*m_width/2.f+m_width/2.f), ROUND(tVertices[a].position.y*(-m_height/2.f)+m_height/2.f)),
-					p2(ROUND(tVertices[b].position.x*m_width/2.f+m_width/2.f), ROUND(tVertices[b].position.y*(-m_height/2.f)+m_height/2.f)),
-					p3(ROUND(tVertices[c].position.x*m_width/2.f+m_width/2.f), ROUND(tVertices[c].position.y*(-m_height/2.f)+m_height/2.f));
+				Point2D p1(static_cast<int>(tVertices[a].position.x*m_width/2.f+m_width/2.f), static_cast<int>(tVertices[a].position.y*(-m_height/2.f)+m_height/2.f)),
+					p2(static_cast<int>(tVertices[b].position.x*m_width/2.f+m_width/2.f), static_cast<int>(tVertices[b].position.y*(-m_height/2.f)+m_height/2.f)),
+					p3(static_cast<int>(tVertices[c].position.x*m_width/2.f+m_width/2.f), static_cast<int>(tVertices[c].position.y*(-m_height/2.f)+m_height/2.f));
+				
 				p1.depth = tVertices[a].position.z;
 				p2.depth = tVertices[b].position.z;
 				p3.depth = tVertices[c].position.z;
+
 				p1.attributes[0] = tVertices[a].color;
 				p1.attributes[1] = tVertices[a].normal;
 
@@ -134,7 +139,7 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 				p1.attributes[1] = tVertices[b].normal;
 
 				p3.attributes[0] = tVertices[c].color;
-				p1.attributes[1] = tVertices[c].normal;
+				p3.attributes[1] = tVertices[c].normal;
 				// send to Rasterizer::drawtriangle the three normalized vertices
 				Rasterizer::DrawTriangle(p1,p2,p3,m_width, m_height,fShader,m_depthBuffer);
 			}

@@ -71,7 +71,7 @@ public:
 		return (&x)[i];
 	}
 
-	float Length() const
+	inline float Length() const
     {
         return sqrtf(x*x+y*y+z*z);
     }
@@ -156,12 +156,12 @@ public:
 		return (&x)[i];
 	}
 
-	float Length(void) const
+	inline float Length(void) const
 	{
 		return sqrtf(x*x+y*y+z*z+w*w);
 	}
 
-	float NormalizeToUnit(void)
+	void NormalizeToUnit(void)
 	{
 		float invlen = 1/Length();
     	x *= invlen;
@@ -181,7 +181,7 @@ public:
 		}
 	}
 
-	Vec3 ToVec3()
+	inline Vec3 ToVec3()
 	{
 		NormalizeByW();
 		return Vec3(x, y, z);

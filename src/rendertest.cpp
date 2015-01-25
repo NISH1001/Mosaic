@@ -48,6 +48,7 @@ std::vector<Model> models;
 
 void Update(double dt)
 {
+	angle += 100*dt;
 	//std::cout << dt << std::endl;
 }
 
@@ -62,9 +63,9 @@ void FragmentShader(Point2D& p)
 	normal.NormalizeToUnit();
 	
 	//light vector	
-    Vec3 light(10,0,100);
+    Vec3 light(200, 100,100);
     light.NormalizeToUnit();
-    float intensity = Helper::Min(Helper::Max(Vec3::Dot(normal, light*(-1)), 0.0f) + 0.09f, 1.0f );
+    float intensity = Helper::Min(Helper::Max(Vec3::Dot(normal, light*(-1)), 0.0f) + 0.3f, 1.0f );
     color = color * intensity ;
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
@@ -78,15 +79,16 @@ Mat4 PROJECTION, MODELVIEW, TRANS;
 // vertex shader, receives a vertex and multiplies it with modelview and projection matrix
 Vertex3D VertexShader(Vertex3D vertex)
 {
-	Vec4 image = TRANS * Transform::RotateY(renderer.m_angle)*
+	Mat4 rotate = Transform::RotateY(angle);
+	Vec4 image = TRANS * rotate *
 					SCALE * vertex.position;
 	//image.NormalizeByW();
-	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 1.0f);
+	Vec4 normal =  MODELVIEW * rotate * Vec4(vertex.normal, 1.0f);
 	return Vertex3D(image, normal.ToVec3(), vertex.color);
 }
 
 
-void Render()
+inline void Render()
 {
 	renderer.DrawModels(models, &VertexShader, &FragmentShader);
 }
@@ -96,7 +98,7 @@ int main()
 {
 	//PROJECTION = Transform::Perspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
 	PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
-	MODELVIEW = Transform::LookAt(Vec3(0, 100, -100), Vec3(0,0,0));
+	MODELVIEW = Transform::LookAt(Vec3(0, 50, 150), Vec3(0,0,0));
 	TRANS = PROJECTION * MODELVIEW;
 
 	//models.push_back(Model(verticesCube, numCube));

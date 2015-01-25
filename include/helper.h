@@ -41,7 +41,7 @@ namespace Helper
 	// function to find C of a plane, input must be something having x, y, z attributes
 	// and input must be in anticlockwise order
 	template <class t>
-	float GetC(t& p1, t& p2, t& p3)
+	inline float GetC(t& p1, t& p2, t& p3)
 	{
 		// here we have 3 points in some order
 		// to find the C component of normal, we need to do
@@ -52,13 +52,12 @@ namespace Helper
 			  p2.x * (p3.y - p1.y) +
 			  p3.x * (p1.y - p2.y);
 		*/
-		float C = (a.x*b.y)-(b.x*a.y);
-		return C;
+		return (a.x*b.y)-(b.x*a.y);;
 	}
 
 	inline float ToRadian(float degree)
 	{
-		return degree*3.141592/180.f;
+		return degree*3.1415/180.f;
 	}
 
 }
