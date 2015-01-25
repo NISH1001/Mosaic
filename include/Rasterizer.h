@@ -72,10 +72,14 @@ class Rasterizer
 
 			int dx1 = e1[0].x-e1[1].x; // dx for first edge
 			int dx2 = e2[0].x-e2[1].x; // dx for second edge
+
 			int dy = e1[0].y - e1[1].y;
+
 			int cnt1 = 0, cnt2 = 0;    // counter for increment of x value(but this works only when dy>dx)
+
 			float inv_m1 = float(dx1)/dy;
 			float inv_m2 = float(dx2)/dy;
+
 			int xinc1=1, xinc2=1;
 
 			if(dx1<0)
@@ -91,8 +95,10 @@ class Rasterizer
 			// starting from topmost y
 
 			float x1 = e1[0].x, x2 = e2[0].x; // x1 and x2 are the x values for respective edges(which may be outside x=0 and x=w).
+
 			float clipx1, clipx2; // clipped x values
 			int dx;
+
 			// attributes
 			Vec3 attr1, attr2, attr, dAttr1, dAttr2;
 			attr1 = e1[0].attributes[0]; // attribute on the starting point of scan line
@@ -142,18 +148,17 @@ class Rasterizer
 						continue;
 					else
 					{
-						if(1 /*depth > depthBuffer[yScan*w + x]*/) // write to FB
+						if(depth > depthBuffer[yScan*w + x] and depth <=1) // write to FB
 							{
 							// update depthBuffer value
-							//depthBuffer[yScan*w + x] = depth;
+							depthBuffer[yScan*w + x] = depth;
 							Point2D temp(x, yScan);
 							temp.attributes[0] = attr;
 							temp.attributes[1] = attrNormal;
-				//			temp.depth = depth;
+							//temp.depth = depth;
 							fragShader(temp);
 						}
 					}
-//					std::cout << "( " << yScan << " , " << x<< ") \n ";
 					x++;
 					attr += (attr2-attr1)/dx;
 					attrNormal += (attrNormal2-attrNormal1)/dx;

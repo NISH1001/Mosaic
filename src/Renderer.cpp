@@ -82,7 +82,15 @@ void Renderer::MainLoop(void)
 
 		SDL_UnlockSurface(m_screen);
 		SDL_UpdateWindowSurface(m_window);
+		// clear depth buffer
+		ClearDepthBuffer();
 	}
+}
+
+void Renderer::ClearDepthBuffer()
+{
+	for(unsigned i=0;i<m_width*m_height;i++)
+		m_depthBuffer[i] = -1;
 }
 
 void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3D), void(*fShader)(Point2D&))
@@ -107,30 +115,36 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 			int a = models[i].m_indexBuffer[j],
 			    b = models[i].m_indexBuffer[j+1],
 			    c = models[i].m_indexBuffer[j+2];
+				
+			Vec4 &v1 = tVertices[a].position;
+			Vec4 &v2 = tVertices[b].position;
+			Vec4 &v3 = tVertices[c].position;
 
 			// calculate C for backface culling
-			float C = Helper::GetC(tVertices[a].position, tVertices[b].position, tVertices[c].position);
+			float C = Helper::GetC(v1, v2, v3);
 
 			// since the view vector is along z axis(0,0,1), we may just check 
 			//  the sign of c because, the dot product result is c
-			// NOW, if c is +ve, ignore the triangle and do not draw it
-			// if c is -ve, draw the triangle
-			if (C > 0)
-			{
+			// NOW, if c is -ve, ignore the triangle and do not draw it
+			// if c is +ve, draw the triangle
+			if (1||C > 0)
+			{	
+				
 				//first normalize
-				tVertices[a].position.NormalizeByW();
-				tVertices[b].position.NormalizeByW();
-				tVertices[c].position.NormalizeByW();
+				v1.NormalizeByW();
+				v2.NormalizeByW();
+				v3.NormalizeByW();
 
+				
 				// create point2D s and send to DrawTriangle, here we convert to device coordinates so that in Rasteriser::
 				//  DrawTriangle, we can do clipping with respect to device coordinates
-				Point2D p1(static_cast<int>(tVertices[a].position.x*m_width/2.f+m_width/2.f), static_cast<int>(tVertices[a].position.y*(-m_height/2.f)+m_height/2.f)),
-					p2(static_cast<int>(tVertices[b].position.x*m_width/2.f+m_width/2.f), static_cast<int>(tVertices[b].position.y*(-m_height/2.f)+m_height/2.f)),
-					p3(static_cast<int>(tVertices[c].position.x*m_width/2.f+m_width/2.f), static_cast<int>(tVertices[c].position.y*(-m_height/2.f)+m_height/2.f));
+				Point2D p1(static_cast<int>(v1.x*m_width/2.f+m_width/2.f), static_cast<int>(v1.y*(-m_height/2.f)+m_height/2.f)),
+						p2(static_cast<int>(v2.x*m_width/2.f+m_width/2.f), static_cast<int>(v2.y*(-m_height/2.f)+m_height/2.f)),
+						p3(static_cast<int>(v3.x*m_width/2.f+m_width/2.f), static_cast<int>(v3.y*(-m_height/2.f)+m_height/2.f));
 				
-				p1.depth = tVertices[a].position.z;
-				p2.depth = tVertices[b].position.z;
-				p3.depth = tVertices[c].position.z;
+				p1.depth = v1.z;
+				p2.depth = v2.z;
+				p3.depth = v3.z;
 
 				p1.attributes[0] = tVertices[a].color;
 				p1.attributes[1] = tVertices[a].normal;

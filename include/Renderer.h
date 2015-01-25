@@ -40,6 +40,7 @@ class Renderer
 		int m_angle; // just for testing
 
 	private:
+		void ClearDepthBuffer();
 		void Clear(void)
 		{
 			for (int i = 0; i < m_width; ++i)
