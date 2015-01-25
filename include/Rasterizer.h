@@ -99,6 +99,13 @@ class Rasterizer
 			attr2 = e2[0].attributes[0]; // attribute on the end point of scan line
 			dAttr1 = (e1[0].attributes[0]-e1[1].attributes[0])/dy; // value of attribure to be increased at each scan line
 			dAttr2 = (e2[0].attributes[0]-e2[1].attributes[0])/dy;
+
+			Vec3 attrNormal1 = e1[0].attributes[1];
+			Vec3 attrNormal2 = e2[0].attributes[1];
+			Vec3 dattrNormal1 = (e1[0].attributes[1]-e1[1].attributes[1])/dy;
+			Vec3 dattrNormal2 = (e2[0].attributes[1]-e2[1].attributes[1])/dy;
+			Vec3 attrNormal;
+
 			// depths
 			float depth1, depth2, depth, dDepth1, dDepth2;
 			dDepth1 = (e1[0].depth - e1[1].depth)/dy;
@@ -115,11 +122,13 @@ class Rasterizer
 				if (dx !=0)
 				{
 					attr = attr1 + (attr2-attr1)*(clipx1-x1)/dx; // attribute of the first point of clipped scan line
+					attrNormal = attrNormal1 + (attrNormal2-attrNormal1)*(clipx1-x1)/dx;
 					depth = depth1 + (depth2-depth1)*(clipx1-x1)/dx;
 				}
 				else
 				{
 					attr = attr1;
+					attrNormal = attrNormal1;
 					depth = depth1;
 				}
 				int x = clipx1;
@@ -139,6 +148,7 @@ class Rasterizer
 							//depthBuffer[yScan*w + x] = depth;
 							Point2D temp(x, yScan);
 							temp.attributes[0] = attr;
+							temp.attributes[1] = attrNormal;
 				//			temp.depth = depth;
 							fragShader(temp);
 						}
@@ -146,6 +156,7 @@ class Rasterizer
 //					std::cout << "( " << yScan << " , " << x<< ") \n ";
 					x++;
 					attr += (attr2-attr1)/dx;
+					attrNormal += (attrNormal2-attrNormal1)/dx;
 					depth += (depth2-depth1)/dx;
 				}while(x <= clipx2);
 				//std::cout << std::endl;

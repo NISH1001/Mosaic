@@ -21,14 +21,14 @@ Renderer renderer;
 
 // OUR LONG AWAITED CUBE
 // vertices
-Vec3 v1(50,0,50), vc1(255,0,0);
-Vec3 v2(50,0,0), vc2(0,255,0);
+Vec3 v1(1,0,1), vc1(255,0,0);
+Vec3 v2(1,0,0), vc2(0,255,0);
 Vec3 v3(0,0,0), vc3(0,0,255);
-Vec3 v4(0,0,50), vc4(255,255,0);
-Vec3 v5(50,50,50), vc5(0,255,255);
-Vec3 v6(50,50,0), vc6(255,0,255);
-Vec3 v7(0,50,0), vc7(0,120,55);
-Vec3 v8(0,50,50), vc8(55,255,0);
+Vec3 v4(0,0,1), vc4(255,255,0);
+Vec3 v5(1,1,1), vc5(0,255,255);
+Vec3 v6(1,1,0), vc6(255,0,255);
+Vec3 v7(0,1,0), vc7(0,120,55);
+Vec3 v8(0,1,1), vc8(55,255,0);
 // normals
 Vec3 n1(0,1,0), n2(0,0,1), n3(1,0,0), n4(0,-1,0), n5(0,0,-1), n6(-1,0,0);
 
@@ -53,16 +53,21 @@ void Update(double dt)
 
 // Fragment shader, receives a point and renders it in framebuffer
 void FragmentShader(Point2D& p)
-{
-	Vec3 att = p.attributes[0];
-	//att.NormalizeToUnit();
-	/*
-    Vec3 dir(50,0,50);
-    dir.NormalizeToUnit();
-    float intensity = Helper::Min(Helper::Max(Vec3::Dot(att, dir*(-1)), 0.0f) + 0.09f, 1.0f );
-    att = att * intensity * 100;
-	*/
-	renderer.SetPixel(p.x, p.y, ColorRGBA(att.x,att.y,att.z,255));
+{	
+	//get color
+	Vec3 color = p.attributes[0];
+
+	//get vertex normal
+	Vec3 normal = p.attributes[1];
+	normal.NormalizeToUnit();
+	
+	//light vector	
+    Vec3 light(10,0,100);
+    light.NormalizeToUnit();
+    float intensity = Helper::Min(Helper::Max(Vec3::Dot(normal, light*(-1)), 0.0f) + 0.09f, 1.0f );
+    color = color * intensity ;
+	
+	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
 
 
@@ -76,7 +81,7 @@ Vertex3D VertexShader(Vertex3D vertex)
 	Vec4 image = TRANS * Transform::RotateY(renderer.m_angle)*
 					SCALE * vertex.position;
 	//image.NormalizeByW();
-	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 0.f);
+	Vec4 normal = MODELVIEW * Vec4(vertex.normal, 1.0f);
 	return Vertex3D(image, normal.ToVec3(), vertex.color);
 }
 
@@ -91,14 +96,11 @@ int main()
 {
 	//PROJECTION = Transform::Perspective(90.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
 	PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
-	MODELVIEW = Transform::LookAt(Vec3(0, 50, 100), Vec3(0,0,0));
+	MODELVIEW = Transform::LookAt(Vec3(0, 100, -100), Vec3(0,0,0));
 	TRANS = PROJECTION * MODELVIEW;
 
+	//models.push_back(Model(verticesCube, numCube));
 	models.push_back(Model("cube.obj"));
-
-	Vec4 v(0,100,50,1);
-	//std::cout << MODELVIEW*v;
-//	return 2;
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
