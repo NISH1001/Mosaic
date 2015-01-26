@@ -85,7 +85,7 @@ void Renderer::MainLoop(void)
 		SDL_UnlockSurface(m_screen);
 		SDL_UpdateWindowSurface(m_window);
 		// clear depth buffer
-		ClearDepthBuffer();
+		//ClearDepthBuffer();
 	}
 }
 

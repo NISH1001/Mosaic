@@ -2,16 +2,14 @@
 
 #include <vector>
 #include <iostream>
-#include <locale>
 #include <fstream>
 #include <sstream>
-#include <algorithm>
-#include <cctype>
+
 
 #include <Vector.h>
 #include <Matrix.h>
 #include <Point2D.h>
-
+#include <helper.h>
 
 /*this is just a test class for loading obj
 	shall be integrate to Model class
@@ -56,10 +54,10 @@ public:
 		while(std::getline(obj, line))
 		{
 			//if any leading whitespaces remove them
-			LeftTrim(line);
+			Helper::LeftTrim(line);
 
 			//if any trailing whitespaces remove them
-			RightTrim(line);
+			Helper::RightTrim(line);
 
 			//now get our linestream using istringstream
 			std::istringstream linestream(line);
@@ -113,12 +111,12 @@ public:
 				line = line.substr(1, line.length()-1);
 
 				//remove leading whitespaces
-				LeftTrim(line);
+				Helper::LeftTrim(line);
 
 				//if no UV(texcoords) -> // change to default /0/
-				line = ReplaceAll(line, "//", "/0/");
+				line = Helper::ReplaceAll(line, "//", "/0/");
 				//now replace all '/' character to white spaces
-				line = ReplaceAll(line, "/", " ");
+				line = Helper::ReplaceAll(line, "/", " ");
 
 				//now create our stream for line
 				std::istringstream lstream(line);
@@ -207,30 +205,6 @@ public:
 	}
 
 private:
-	//remove trailing  whitespaces
-	std::string &RightTrim(std::string & str)
-	{
-		 str.erase(find_if(str.rbegin(), str.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), str.end());
-		 return str;
-	}
-
-	//remove lieading whitespaces
-	std::string &LeftTrim(std::string &str) 
-	{
-		 str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-        return str;
-	}
-
-	std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) 
-	{
-    	size_t start_pos = 0;
-    	while((start_pos = str.find(from, start_pos)) != std::string::npos) 
-    	{
-        	str.replace(start_pos, from.length(), to);
-        	start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-    	}
-    	return str;
-	}
 
 public:
 	std::vector<unsigned> m_indexBuffer;

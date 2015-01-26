@@ -122,7 +122,7 @@ inline void Render()
 
 int main()
 {
-	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 800.f);
+	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 1000.f);
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
 	MODELVIEW = Transform::LookAt(Vec3(0, -100, 300), Vec3(0,0,0));
 	TRANS = PROJECTION * MODELVIEW;

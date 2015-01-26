@@ -1,5 +1,9 @@
 #pragma once
 
+#include <algorithm>
+#include <cctype>
+#include <locale>
+
 #define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 // it contains other helper functions like converting to degree, radian, sorting, etc
 
@@ -58,6 +62,31 @@ namespace Helper
 	inline float ToRadian(float degree)
 	{
 		return degree*3.1415/180.f;
+	}
+
+	//remove trailing  whitespaces
+	inline std::string &RightTrim(std::string & str)
+	{
+		 str.erase(find_if(str.rbegin(), str.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), str.end());
+		 return str;
+	}
+
+	//remove lieading whitespaces
+	inline std::string &LeftTrim(std::string &str) 
+	{
+		 str.erase(str.begin(), std::find_if(str.begin(), str.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+        return str;
+	}
+
+	inline std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) 
+	{
+    	size_t start_pos = 0;
+    	while((start_pos = str.find(from, start_pos)) != std::string::npos) 
+    	{
+        	str.replace(start_pos, from.length(), to);
+        	start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+    	}
+    	return str;
 	}
 
 }
