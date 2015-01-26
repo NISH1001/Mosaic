@@ -170,6 +170,8 @@ class Rasterizer
 				attr2 -= dAttr2;
 				depth1 -= dDepth1;
 				depth2 -= dDepth2;
+				attrNormal1 -= dattrNormal1;
+				attrNormal2 -= dattrNormal2;
 
 				if(absdx1>dy)
 				{
