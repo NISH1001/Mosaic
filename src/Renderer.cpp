@@ -148,9 +148,9 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 						p2(static_cast<int>(v2.x*m_width/2.f+m_width/2.f), static_cast<int>(v2.y*(-m_height/2.f)+m_height/2.f)),
 						p3(static_cast<int>(v3.x*m_width/2.f+m_width/2.f), static_cast<int>(v3.y*(-m_height/2.f)+m_height/2.f));
 				
-				p1.depth = v1.z;
-				p2.depth = v2.z;
-				p3.depth = v3.z;
+				p1.depth = 0.5f*v1.z + 0.5f;
+				p2.depth = 0.5f*v2.z + 0.5f;
+				p3.depth = 0.5f*v3.z + 0.5f;
 
 				p1.attributes[0] = tVertices[a].color;
 				p1.attributes[1] = tVertices[a].normal;

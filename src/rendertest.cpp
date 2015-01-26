@@ -124,11 +124,18 @@ int main()
 {
 	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 1000.f);
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
-	MODELVIEW = Transform::LookAt(Vec3(0, -100, 300), Vec3(0,0,0));
+	MODELVIEW = Transform::LookAt(Vec3(0, 100, 300), Vec3(0,0,0));
 	TRANS = PROJECTION * MODELVIEW;
+
+	Model model("cone.obj");
+
+	for(unsigned i=0; i<model.m_vertexBuffer.size(); ++i)
+		model.m_vertexBuffer[i].position = Transform::Translate(3,0,0) * 
+											model.m_vertexBuffer[i].position;
 
 	//models.push_back(Model(verticesCube, numCube));
 	models.push_back(Model("teapot.obj"));
+	models.push_back(model);
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT, MODELVIEW))
 	{

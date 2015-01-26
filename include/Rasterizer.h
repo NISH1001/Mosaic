@@ -148,7 +148,7 @@ class Rasterizer
 						continue;
 					else
 					{
-						if(depth > depthBuffer[yScan*w + x] and depth <=1) // write to FB
+						if(depth < depthBuffer[yScan*w + x]) // write to FB
 							{
 							// update depthBuffer value
 							depthBuffer[yScan*w + x] = depth;

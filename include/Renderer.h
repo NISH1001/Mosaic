@@ -48,7 +48,7 @@ class Renderer
 				for(int j=0; j< m_height; ++j)
 				{
 					SetPixel(i, j, m_clearColor);
-					m_depthBuffer[i*m_height+j] = -1.0f;
+					m_depthBuffer[i*m_height+j] = 1.0f;
 				}
 			}
 		}
