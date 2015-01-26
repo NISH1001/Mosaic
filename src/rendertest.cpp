@@ -58,18 +58,18 @@ void FragmentShader(Point2D& p)
 	//get color
 	Vec3 color = p.attributes[0];
 
-	/*
+	
 	//get vertex normal
 	Vec3 normal = p.attributes[1];
 	normal.NormalizeToUnit();
 	
 	//light vector	
-    Vec3 light(200, 100,100);
-    light.NormalizeToUnit();
-color=Vec3(0,0,255);	
-    float intensity = Helper::Min(Helper::Max(Vec3::Dot(normal, light*(-1)), 0.0f) + 0.3f, 1.0f );
-    color = color * intensity ;
-	*/
+    Vec3 lightdir(-1, 1,1);
+    lightdir.NormalizeToUnit();
+
+    float intensity = Helper::Min(Helper::Max(Vec3::Dot(normal, lightdir*(-1)), 0.0f) + 0.3f, 1.0f );
+    color = color * intensity * 4;
+	
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
@@ -86,7 +86,7 @@ Vertex3D VertexShader(Vertex3D vertex)
 	Vec4 image = PROJECTION*MODELVIEW * rotate *SCALE*
 					 vertex.position;
 
-	Vec4 normal =  MODELVIEW * rotate * Vec4(vertex.normal, 0.0f);
+	Vec4 normal =  rotate * Vec4(vertex.normal, 0.0f);
 	Vec3 n = Vec3::NormalizeToUnit(normal.ToVec3());
 
 	// assuming color of the object is white i.e has reflectivity (1,1,1)
