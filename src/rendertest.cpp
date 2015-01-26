@@ -64,11 +64,11 @@ void FragmentShader(Point2D& p)
 	normal.NormalizeToUnit();
 	
 	//light vector	
-    Vec3 lightdir(-1, 1,1);
+    Vec3 lightdir(1, 1,1);
     lightdir.NormalizeToUnit();
 
     float intensity = Helper::Min(Helper::Max(Vec3::Dot(normal, lightdir*(-1)), 0.0f) + 0.3f, 1.0f );
-    color = color * intensity * 4;
+    color = color * intensity * 3;
 	
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
