@@ -11,6 +11,8 @@ int HEIGHT = 600;
 //test angle
 float angle = 0.f;
 
+Vec3 eyepos(0, 100, 300);
+
 
 // main renderer
 Renderer renderer; 
@@ -58,18 +60,9 @@ void FragmentShader(Point2D& p)
 	//get color
 	Vec3 color = p.attributes[0];
 
-	
 	//get vertex normal
 	Vec3 normal = p.attributes[1];
 	normal.NormalizeToUnit();
-	
-	//light vector	
-    Vec3 lightdir(1, 1,1);
-    lightdir.NormalizeToUnit();
-
-    float intensity = Helper::Min(Helper::Max(Vec3::Dot(normal, lightdir*(-1)), 0.0f) + 0.3f, 1.0f );
-    color = color * intensity * 3;
-	
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
@@ -83,7 +76,7 @@ Mat4 PROJECTION, MODELVIEW, TRANS;
 Vertex3D VertexShader(Vertex3D vertex)
 {
 	Mat4 rotate = Transform::RotateY(angle);
-	Vec4 image = PROJECTION*MODELVIEW * rotate *SCALE*
+	Vec4 image = TRANS* rotate *SCALE*
 					 vertex.position;
 
 	Vec4 normal =  rotate * Vec4(vertex.normal, 0.0f);
@@ -111,7 +104,40 @@ Vertex3D VertexShader(Vertex3D vertex)
 	float intensity = Vec3::Dot(n,light);
 	color = Vec3(Helper::Max(color.x*intensity*refred,0.f), Helper::Max(color.y*intensity*refgreen,0.f), Helper::Max(color.z*intensity*refblue,0.f));
 	*/
-	return Vertex3D(image, normal.ToVec3(), color);
+
+	//out light for specular
+	Vec3 light(0,0,255);
+	Vec3 lightdir(1,-1,-1);
+	lightdir.NormalizeToUnit();
+
+	//get worldspace vertex
+	Vec3 vertexpos = (rotate * SCALE * vertex.position).ToVec3();
+
+	/*get our vector from vertex to eye
+		it may or maynot be in the direction of reflected ray
+		so has to calculate specular intensity using
+		this view vector and reflected vector
+	*/
+	Vec3 view = eyepos - vertexpos;
+	view.NormalizeToUnit();
+
+	//calculate the reflected vector
+	Vec3 reflected = lightdir - n * Vec3::Dot(n, lightdir);
+	reflected.NormalizeToUnit();
+
+	//now calculate our specular factor
+	float specularfactor = Vec3::Dot(reflected, view);
+	specularfactor = Helper::Max(specularfactor,0.0f);
+
+	//damping factor for specular
+	//greater damping factor = low specular and ...
+	float dampfactor = pow(specularfactor, 0.4);
+
+	Vec3 finalspecular = light * dampfactor;
+
+	color += finalspecular;
+
+	return Vertex3D(image, Vec3::NormalizeToUnit(normal.ToVec3()), color);
 }
 
 
@@ -124,7 +150,7 @@ int main()
 {
 	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 1000.f);
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
-	MODELVIEW = Transform::LookAt(Vec3(0, 100, 300), Vec3(0,0,0));
+	MODELVIEW = Transform::LookAt(eyepos, Vec3(0,0,0));
 	TRANS = PROJECTION * MODELVIEW;
 
 	Model model("cone.obj");

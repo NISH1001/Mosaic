@@ -43,6 +43,7 @@ class Rasterizer
 				float depth = p1.depth + (p3.depth-p1.depth)*(p2.y-p1.y)/dy;
 				Vec3 attribute = p1.attributes[0] + (p3.attributes[0]-p1.attributes[0])*(p2.y-p1.y)/dy;
 				Vec3 attrNormal = p1.attributes[1] + (p3.attributes[1]-p1.attributes[1]) * (p2.y-p1.y)/dy;
+				attrNormal.NormalizeToUnit();
 				// new point
 				Point2D p(x, p2.y);
 				// assign attributes and depth
