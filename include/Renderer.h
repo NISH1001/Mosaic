@@ -11,17 +11,18 @@ class Renderer
 {
 	public:
 		Renderer() : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), 
-							m_timer(200) , m_frameBuffer(NULL), m_clearColor(0,0,0,255), m_angle(0)
+							m_timer(200) , m_frameBuffer(NULL), m_clearColor(0,0,0,255)
 		{}
 
 		~Renderer() {}
-		bool Initialize(const char*title, int x, int y, int width, int height, Mat4 modelview);
+		bool Initialize(const char*title, int x, int y, int width, int height);
 		void MainLoop();
 		void CleanUp();
 		
 		// callbacks
 		void SetRenderCallback(void(*renderCallback)(void)) { m_render = renderCallback; }
 		void SetUpdateCallback(void(* updateCallback)(double)) { m_update = updateCallback; }
+		void SetKeyboardCallback(void(*keyboardcallback)(SDL_Event*)) { m_keyboard = keyboardcallback; }
 		//void SetResizeCallback(std::function<void(int, int)> resizeCallback) { m_resize = resizeCallback; }
 
 		void SetPixel(int x, int y, ColorRGBA color)
@@ -36,8 +37,6 @@ class Renderer
 
 		// for rendering the models loaded, this renders the overall scene of the program
 		void DrawModels(std::vector<Model>&models, Vertex3D(*v)(Vertex3D), void(*s)(Point2D&));
-
-		int m_angle; // just for testing
 
 	private:
 		void ClearDepthBuffer();
@@ -64,11 +63,10 @@ class Renderer
 		SDL_Surface* m_screen;
 		float* m_depthBuffer;
 		ColorRGBA m_clearColor;
-
-		Mat4 MODELVIEW;
 		
 		std::function<void(double)> m_update;
 		std::function<void()> m_render;
+		std::function<void(SDL_Event*)> m_keyboard;
 		//std::function<void(int,int)> m_resize;
 		
 };

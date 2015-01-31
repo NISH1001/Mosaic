@@ -1,12 +1,10 @@
 #include <Renderer.h>
 #include <helper.h>
 #include <iostream>
-#include <Polygon.h>
 #include <Matrix.h>
 
-bool Renderer::Initialize(const char* title, int x, int y, int width, int height, Mat4 modelview)
+bool Renderer::Initialize(const char* title, int x, int y, int width, int height)
 {
-	MODELVIEW = Mat4(modelview);
 	m_width = width;
 	m_height = height;
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -48,6 +46,8 @@ void Renderer::MainLoop(void)
 	{
 		while(SDL_PollEvent(&event))
 		{
+			m_keyboard(&event);
+			
 			switch (event.type)
         	{
         		case SDL_QUIT:
@@ -60,12 +60,6 @@ void Renderer::MainLoop(void)
         				case SDLK_ESCAPE:
         					quit = true;
         					break;
-						case SDLK_a:
-							m_angle=(m_angle+10);
-							break;
-						case SDLK_d:
-							m_angle=(m_angle-10);
-							break;
         			}
         			break;
         		}

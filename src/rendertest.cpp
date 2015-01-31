@@ -4,6 +4,7 @@
 #include <Transform.h>
 #include <Rasterizer.h>
 #include <Model.h>
+#include <Camera.h>
 
 int WIDTH = 800;
 int HEIGHT = 600;
@@ -11,16 +12,25 @@ int HEIGHT = 600;
 //test angle
 float angle = 0.f;
 
-Vec3 eyepos(0, 100, 300);
-
+Vec3 eyepos(0, 50, 200);
+Vec3 lookat(0,50,0);
 
 // main renderer
 Renderer renderer; 
 
+//camera
+Camera cam;
+
+Mat4 SCALE = Transform::Scale(Vec3(30,30,30), Vec3(0,0,0));
+// projection and view matrices
+Mat4 PROJECTION, VIEW;
+
+// models
+std::vector<Model> models;
+
 /*make sure it is multiple of 3
 	position,normal,color
 */
-
 // OUR LONG AWAITED CUBE
 // vertices
 Vec3 v1(1,0,1), vc1(255,0,0);
@@ -45,14 +55,6 @@ Vertex3D verticesCube[] ={
 
 unsigned numCube = sizeof(verticesCube)/sizeof(Vertex3D);
 
-// models
-std::vector<Model> models;
-
-void Update(double dt)
-{
-	angle += 100*dt;
-	//std::cout << dt << std::endl;
-}
 
 // Fragment shader, receives a point and renders it in framebuffer
 void FragmentShader(Point2D& p)
@@ -67,16 +69,12 @@ void FragmentShader(Point2D& p)
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
 
-
-Mat4 SCALE = Transform::Scale(Vec3(30,30,30), Vec3(0,0,0));
-// projection and view matrices
-Mat4 PROJECTION, MODELVIEW, TRANS;
-
-// vertex shader, receives a vertex and multiplies it with modelview and projection matrix
+// vertex shader, receives a vertex and multiplies it with VIEW and projection matrix
 Vertex3D VertexShader(Vertex3D vertex)
 {
 	Mat4 rotate = Transform::RotateY(angle);
-	Vec4 image = TRANS* rotate *SCALE*
+	Mat4 model = rotate * SCALE;
+	Vec4 image = PROJECTION * cam.GetView() * model * 
 					 vertex.position;
 
 	Vec4 normal =  rotate * Vec4(vertex.normal, 0.0f);
@@ -84,8 +82,6 @@ Vertex3D VertexShader(Vertex3D vertex)
 
 	// assuming color of the object is white i.e has reflectivity (1,1,1)
 	float refred=1.f, refgreen=1.f, refblue=1.f;
-	// light1 has color blue(0,0,255), direction (1,0,-1.5)
-	// light2 has color red(255,0,0), direction (-1,0,-1.5)
 	Vec3 l2(255,0,0), l1(0,0,255);
 	Vec3 d2(-1,-0.5,0.2), d1(1,0,0.2);
 	// first normalize light directions, these can be precalculated for better efficiency, can be made global
@@ -96,14 +92,6 @@ Vertex3D VertexShader(Vertex3D vertex)
 	Vec3 color = Vec3(Helper::Max((l1.x*i1+l2.x*i2)*refred/2.f,0.f), 
 				 	  Helper::Max((l1.y*i1+l2.y*i2)*refgreen/2.f,0.f), 
 				 	  Helper::Max((l1.z*i1+l2.z*i2)*refblue/2.f,0.f)); 
-	//color.NormalizeToUnit();
-	/*
-	Vec3 color = Vec3(255,255,255);
-	Vec3 light(-1,-1,0);
-	light.NormalizeToUnit();
-	float intensity = Vec3::Dot(n,light);
-	color = Vec3(Helper::Max(color.x*intensity*refred,0.f), Helper::Max(color.y*intensity*refgreen,0.f), Helper::Max(color.z*intensity*refblue,0.f));
-	*/
 
 	//out light for specular
 	Vec3 light(0,0,255);
@@ -118,7 +106,7 @@ Vertex3D VertexShader(Vertex3D vertex)
 		so has to calculate specular intensity using
 		this view vector and reflected vector
 	*/
-	Vec3 view = eyepos - vertexpos;
+	Vec3 view = cam.GetPos() - vertexpos;
 	view.NormalizeToUnit();
 
 	//calculate the reflected vector
@@ -146,27 +134,69 @@ inline void Render()
 	renderer.DrawModels(models, &VertexShader, &FragmentShader);
 }
 
+inline void KeyboardHandler(SDL_Event *e)
+{
+
+}
+
+void Update(double dt)
+{
+	const Uint8 *keys = SDL_GetKeyboardState(NULL);
+	if (keys[SDL_SCANCODE_W])
+	{
+		cam.MoveForward(250*dt);
+	}
+
+	if (keys[SDL_SCANCODE_S])
+	{
+		cam.MoveForward(-256 * dt);
+	}
+
+	if(keys[SDL_SCANCODE_RIGHT])
+	{
+		cam.RotateView(-100*dt);
+	}
+
+	if(keys[SDL_SCANCODE_LEFT])
+	{
+		cam.RotateView(100*dt);
+	}
+
+	if(keys[SDL_SCANCODE_D])
+	{
+		cam.MoveSideway(-250*dt);
+	}
+
+	if(keys[SDL_SCANCODE_A])
+	{
+		cam.MoveSideway(250*dt);
+	}
+	angle += 100*dt;
+	
+}
+
+
 int main()
 {
 	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 1000.f);
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
-	MODELVIEW = Transform::LookAt(eyepos, Vec3(0,0,0));
-	TRANS = PROJECTION * MODELVIEW;
+	cam.SetView(eyepos, lookat);
 
 	Model model("cone.obj");
 
 	for(unsigned i=0; i<model.m_vertexBuffer.size(); ++i)
-		model.m_vertexBuffer[i].position = Transform::Translate(3,0,0) * 
+		model.m_vertexBuffer[i].position = Transform::Translate(4,0,0) * 
 											model.m_vertexBuffer[i].position;
 
 	//models.push_back(Model(verticesCube, numCube));
 	models.push_back(Model("teapot.obj"));
 	models.push_back(model);
 
-	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT, MODELVIEW))
+	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
 		renderer.SetUpdateCallback(&Update);
 		renderer.SetRenderCallback(&Render);
+		renderer.SetKeyboardCallback(&KeyboardHandler);
 		renderer.MainLoop();
 		renderer.CleanUp();
 	}

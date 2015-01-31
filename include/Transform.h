@@ -66,6 +66,26 @@ public:
 					);	
 	}
 
+	static Mat4 Rotate(float angle, const Vec3& vec, const Vec3 & point)
+	{
+		angle = M_PI * angle/180;
+		Vec3 axis = vec;
+		axis.NormalizeToUnit();
+
+		float sine = sinf(angle);
+		float cosine = cosf(angle);
+
+		float u = axis.x, v = axis.y, w = axis.z;
+		float a = point.x, b = point.y, c = point.z;
+
+		 return Mat4(
+					u*u+(v*v+w*w)*cosine, u*v*(1-cosine)-w*sine, u*w*(1-cosine)+v*sine, (a*(v*v+w*w)-u*(b*v+c*w))*(1-cosine)+(b*w-c*v)*sine,
+					u*v*(1-cosine)+w*sine, v*v+(u*u+w*w)*cosine, v*w*(1-cosine)-u*sine, (b*(u*u+w*w)-v*(a*u+c*w))*(1-cosine)+(c*u-a*w)*sine,
+					u*w*(1-cosine)-v*sine, v*w*(1-cosine)+u*sine, w*w+(u*u+v*v)*cosine, (c*(u*u+v*v)-w*(a*u+b*v))*(1-cosine)+(a*v-b*u)*sine,
+					0, 0, 0, 1
+				);
+	}
+
 	static Mat4 Scale(const Vec3& sc, const Vec3& vec)
 	{
 		return Mat4(
