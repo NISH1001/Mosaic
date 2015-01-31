@@ -99,7 +99,7 @@ public:
 	{
 		return Vec3(
 				a.y * b.z - b.y * a.z,
-				a.z * b.x - b.z * b.x,
+				a.z * b.x - b.z * a.x,
 				a.x * b.y - b.x * a.y
 				);
 	}

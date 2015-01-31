@@ -12,7 +12,7 @@ int HEIGHT = 600;
 //test angle
 float angle = 0.f;
 
-Vec3 eyepos(0, 50, 200);
+Vec3 eyepos(0, 50, 200) ;
 Vec3 lookat(0,50,0);
 
 // main renderer
@@ -144,12 +144,12 @@ void Update(double dt)
 	const Uint8 *keys = SDL_GetKeyboardState(NULL);
 	if (keys[SDL_SCANCODE_W])
 	{
-		cam.MoveForward(250*dt);
+		cam.MoveForward(200*dt);
 	}
 
 	if (keys[SDL_SCANCODE_S])
 	{
-		cam.MoveForward(-256 * dt);
+		cam.MoveForward(-250 * dt);
 	}
 
 	if(keys[SDL_SCANCODE_RIGHT])
@@ -171,7 +171,7 @@ void Update(double dt)
 	{
 		cam.MoveSideway(250*dt);
 	}
-	angle += 100*dt;
+	//angle += 100*dt;
 	
 }
 
