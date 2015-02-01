@@ -110,7 +110,7 @@ Vertex3D VertexShader(Vertex3D vertex)
 	view.NormalizeToUnit();
 
 	//calculate the reflected vector
-	Vec3 reflected = lightdir - n * Vec3::Dot(n, lightdir);
+	Vec3 reflected = lightdir - n * Vec3::Dot(n, lightdir) * 2;
 	reflected.NormalizeToUnit();
 
 	//now calculate our specular factor
@@ -119,7 +119,7 @@ Vertex3D VertexShader(Vertex3D vertex)
 
 	//damping factor for specular
 	//greater damping factor = low specular and ...
-	float dampfactor = pow(specularfactor, 0.4);
+	float dampfactor = pow(specularfactor, 20);
 
 	Vec3 finalspecular = light * dampfactor;
 
@@ -152,6 +152,16 @@ void Update(double dt)
 		cam.MoveForward(-250 * dt);
 	}
 
+	if(keys[SDL_SCANCODE_D])
+	{
+		cam.MoveSideway(-250*dt);
+	}
+
+	if(keys[SDL_SCANCODE_A])
+	{
+		cam.MoveSideway(250*dt);
+	}
+
 	if(keys[SDL_SCANCODE_RIGHT])
 	{
 		cam.RotateView(-100*dt);
@@ -162,15 +172,16 @@ void Update(double dt)
 		cam.RotateView(100*dt);
 	}
 
-	if(keys[SDL_SCANCODE_D])
+	if(keys[SDL_SCANCODE_UP])
 	{
-		cam.MoveSideway(-250*dt);
+		cam.MoveVertically(100*dt);
 	}
 
-	if(keys[SDL_SCANCODE_A])
+	if(keys[SDL_SCANCODE_DOWN])
 	{
-		cam.MoveSideway(250*dt);
+		cam.MoveVertically(-100*dt);
 	}
+
 	//angle += 100*dt;
 	
 }

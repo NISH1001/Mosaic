@@ -60,6 +60,13 @@ public:
 		
 	}
 
+	void MoveVertically(float deltastep)
+	{
+		m_pos += m_up * deltastep;
+		m_target += m_up * deltastep;
+		SetView(m_pos, m_target);
+	}
+
 	void RotateView(float deltastep)
 	{
 		Vec4 vec = Transform::Rotate(deltastep, m_up, m_pos) * Vec4(m_target,1);
