@@ -31,30 +31,6 @@ std::vector<Model> models;
 /*make sure it is multiple of 3
 	position,normal,color
 */
-// OUR LONG AWAITED CUBE
-// vertices
-Vec3 v1(1,0,1), vc1(255,0,0);
-Vec3 v2(1,0,0), vc2(0,255,0);
-Vec3 v3(0,0,0), vc3(0,0,255);
-Vec3 v4(0,0,1), vc4(255,255,0);
-Vec3 v5(1,1,1), vc5(0,255,255);
-Vec3 v6(1,1,0), vc6(255,0,255);
-Vec3 v7(0,1,0), vc7(0,120,55);
-Vec3 v8(0,1,1), vc8(55,255,0);
-// normals
-Vec3 n1(0,1,0), n2(0,0,1), n3(1,0,0), n4(0,-1,0), n5(0,0,-1), n6(-1,0,0);
-
-Vertex3D verticesCube[] ={
-	{v1,n2,vc1},{v5,n2,vc5},{v4,n2,vc4},{v4,n2,vc4},{v5,n2,vc5},{v8,n2,vc8},
-	{v1,n3,vc1},{v2,n3,vc2},{v5,n3,vc5},{v5,n3,vc5},{v2,n3,vc2},{v6,n3,vc6},
-	{v2,n5,vc2},{v3,n5,vc3},{v6,n5,vc6},{v6,n5,vc6},{v3,n5,vc3},{v7,n5,vc7},
-	{v3,n6,vc3},{v8,n6,vc8},{v7,n6,vc7},{v8,n6,vc8},{v3,n6,vc3},{v4,n6,vc4},
-	{v8,n1,vc8},{v5,n1,vc5},{v7,n1,vc7},{v7,n1,vc7},{v5,n1,vc5},{v6,n1,vc6},
-	{v4,n4,vc4},{v3,n4,vc3},{v1,n4,vc1},{v1,n4,vc1},{v3,n4,vc3},{v2,n4,vc2},
-};
-
-unsigned numCube = sizeof(verticesCube)/sizeof(Vertex3D);
-
 
 // Fragment shader, receives a point and renders it in framebuffer
 void FragmentShader(Point2D& p)
@@ -69,26 +45,22 @@ void FragmentShader(Point2D& p)
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
 
-// vertex shader, receives a vertex and multiplies it with VIEW and projection matrix
-Vertex3D VertexShader(Vertex3D vertex)
+// Calculation of light
+void CalculateLight(Vertex3D& v, Vec3 normal)
 {
-	Mat4 rotate = Transform::RotateY(angle);
-	Mat4 model = rotate * SCALE;
-	Vec4 image = PROJECTION * cam.GetView() * model * 
-					 vertex.position;
-
-	Vec4 normal =  rotate * Vec4(vertex.normal, 0.0f);
-	Vec3 n = Vec3::NormalizeToUnit(normal.ToVec3());
-
 	// assuming color of the object is white i.e has reflectivity (1,1,1)
 	float refred=1.f, refgreen=1.f, refblue=1.f;
+
 	Vec3 l2(255,0,0), l1(0,0,255);
 	Vec3 d2(-1,-0.5,0.2), d1(1,0,0.2);
+
 	// first normalize light directions, these can be precalculated for better efficiency, can be made global
 	d1.NormalizeToUnit();
 	d2.NormalizeToUnit();
+
 	// intensities
-	float i1 = Vec3::Dot(n,d1), i2 = Vec3::Dot(n,d2);
+	float i1 = Vec3::Dot(normal,d1), i2 = Vec3::Dot(normal,d2);
+
 	Vec3 color = Vec3(Helper::Max((l1.x*i1+l2.x*i2)*refred/2.f,0.f), 
 				 	  Helper::Max((l1.y*i1+l2.y*i2)*refgreen/2.f,0.f), 
 				 	  Helper::Max((l1.z*i1+l2.z*i2)*refblue/2.f,0.f)); 
@@ -98,19 +70,16 @@ Vertex3D VertexShader(Vertex3D vertex)
 	Vec3 lightdir(1,-1,-1);
 	lightdir.NormalizeToUnit();
 
-	//get worldspace vertex
-	Vec3 vertexpos = (rotate * SCALE * vertex.position).ToVec3();
-
 	/*get our vector from vertex to eye
 		it may or maynot be in the direction of reflected ray
 		so has to calculate specular intensity using
 		this view vector and reflected vector
 	*/
-	Vec3 view = cam.GetPos() - vertexpos;
+	Vec3 view = cam.GetPos() - v.position.ToVec3();
 	view.NormalizeToUnit();
 
-	//calculate the reflected vector
-	Vec3 reflected = lightdir - n * Vec3::Dot(n, lightdir) * 2;
+	//calculate the reflected vector and normalize it.
+	Vec3 reflected = lightdir - normal * Vec3::Dot(normal, lightdir) * 2;
 	reflected.NormalizeToUnit();
 
 	//now calculate our specular factor
@@ -123,9 +92,35 @@ Vertex3D VertexShader(Vertex3D vertex)
 
 	Vec3 finalspecular = light * dampfactor;
 
-	color += finalspecular;
+	//color += finalspecular;
+	color = Vec3(Helper::Min(color.x+finalspecular.x,255.f),Helper::Min(color.y+finalspecular.y,255.f),Helper::Min(color.z+finalspecular.z,255.f));
 
-	return Vertex3D(image, Vec3::NormalizeToUnit(normal.ToVec3()), color);
+	//v.color = Vec3(100, 0, 0);
+	v.color = color;
+}
+
+// vertex shader, receives a vertex and multiplies it with VIEW and projection matrix
+Vertex3D VertexShader(Vertex3D vertex)
+{
+	Mat4 rotate = Transform::RotateY(angle);
+	Mat4 model = rotate * SCALE;
+	vertex.position = model * vertex.position;
+
+	Vec4 norm = rotate * Vec4(vertex.normal, 0.f);
+	norm.NormalizeToUnit();
+
+	// calcuate light
+	CalculateLight(vertex, norm.ToVec3());
+
+	Vec4 image = PROJECTION * cam.GetView() * 
+					 vertex.position;
+	return Vertex3D(image, Vec3::NormalizeToUnit(norm.ToVec3()), vertex.color);
+}
+
+
+void FlatShader(Vertex3D v)
+{
+	
 }
 
 
