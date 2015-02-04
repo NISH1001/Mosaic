@@ -18,7 +18,7 @@ OBJ_FILES := $(addprefix $(OBJ_DIR)/, $(CPP_FILES:$(SRC_DIR)/%.cpp=%.o))
 CC := g++
 CXXLIBS := 
 LDLIBS := -lSDL2
-CXXFLAGS := -I$(INC_DIR) -std=c++11 -MMD $(CXXLIBS) -Ofast -msse3 -mmmx
+CXXFLAGS := -I$(INC_DIR) -std=c++11 -MMD $(CXXLIBS) -Ofast -msse3 -mmmx -g
 LDFLAGS := --std=c++11 $(LDLIBS)
 
 

@@ -157,6 +157,8 @@ class Rasterizer
 			x2-=inv_m2;
 
 			y--;
-			}
 		}
+	}
 };
+
+		

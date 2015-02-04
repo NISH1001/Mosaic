@@ -27,9 +27,9 @@ class Renderer
 
 		void SetPixel(int x, int y, ColorRGBA color)
 		{
-			if (x >= 0 && x <= m_width && y >= 0 && y <= m_height)
+			if (x >= 0 && x < m_width && y >= 0 && y < m_height)
             {
-            	uint32_t* p = (Uint32*)m_screen->pixels;
+            	Uint32* p = (Uint32*)m_screen->pixels;
             	p[y*m_width + x] = (0xFF << 24) | (color.R << 16) | (color.G << 8) | color.B;
            	}
 
