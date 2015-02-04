@@ -123,9 +123,20 @@ void FlatShader(Vertex3D v)
 	
 }
 
+// test 
+//Point2D p1(-100,80);Point2D p2(120,300);Point2D p3(100, 200);
 
 inline void Render()
 {
+	/* test
+	float f[640*480];
+	p1.attributes[0] = Vec3(255,0,0);
+	p2.attributes[0] = Vec3(0,255,0);
+	p3.attributes[0] = Vec3(0,0,255);
+	p1.depth = p2.depth = p3.depth = 0;
+	int w = 640, h=480;
+	*/
+	//Rasterizer::DrawTriangle(p1, p2, p3,w, h,&FragmentShader, f);
 	renderer.DrawModels(models, &VertexShader, &FragmentShader);
 }
 

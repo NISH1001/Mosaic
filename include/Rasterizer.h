@@ -2,6 +2,7 @@
 #include <Point2D.h>
 #include <helper.h>
 
+using namespace Helper; // mainly for ROUND function, other functions are SortY, Min, Max, Swap
 
 class Rasterizer
 {
@@ -15,7 +16,7 @@ class Rasterizer
 	static void DrawTriangle(Point2D& p1, Point2D& p2, Point2D& p3, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
 			// first sort the points in descending order a/c y coordinate
-			Helper::SortY(p1,p2,p3);
+			SortY(p1,p2,p3);
 
 			if(p1.y == p2.y)  // the two upper points are at same y level
 			{
@@ -64,147 +65,98 @@ class Rasterizer
 
 		static void Interpolate(Point2D* e1, Point2D* e2, int& w, int& h, void(*fragShader)(Point2D&), float* depthBuffer)
 		{
-			// this function assumes flat bottom or top
+			// function receives flat top or flat bottom triangle
 			// make sure that e1 is left edge
-			if(e1[0].x > e2[0].x or e1[1].x > e2[1].x) // means if e1 is on the right
-			{
-				// swap the edges
-				Helper::Swap(e1,e2);
-			}
-			// now we have e1 on the left of e2
+			if(e1[0].x > e2[0].x or e1[1].x > e2[1].x) // if e1 is on right, swap the edges
+				Swap(e1, e2);
 
-			int dx1 = e1[0].x-e1[1].x; // dx for first edge
-			int dx2 = e2[0].x-e2[1].x; // dx for second edge
+			int l1x0 = e1[0].x, l1x1 = e1[1].x;
+			int l2x0 = e2[0].x, l2x1 = e2[1].x;
+			int l1y0 = e1[0].y, l1y1 = e1[1].y;
+			int l2y0 = e2[0].y, l2y1 = e2[1].y;
 
-			int dy = e1[0].y - e1[1].y;
+			int dx1 = l1x0 - l1x1;
+			int dx2 = l2x0 - l2x1;
 
-			int cnt1 = 0, cnt2 = 0;    // counter for increment of x value(but this works only when dy>dx)
+			int dy = l1y0 - l1y1; // dy is same for both lines
 
+			// inverse slopes
 			float inv_m1 = float(dx1)/dy;
 			float inv_m2 = float(dx2)/dy;
 
-			int xinc1=1, xinc2=1;
-
-			if(dx1<0)
-				xinc1 = -1;
-			if(dx2<0)
-				xinc2 = -1;
-
-			int absdx1 = abs(dx1);
-			int absdx2 = abs(dx2);
-			//std::cout << "inv_m1 : " << inv_m1 << "  inv_m2 : " << inv_m2 << std::endl;
-
-			int yScan = e1[0].y; // both the first point of edges have same y value
-			// starting from topmost y
-
-			float x1 = e1[0].x, x2 = e2[0].x; // x1 and x2 are the x values for respective edges(which may be outside x=0 and x=w).
-
-			float clipx1, clipx2; // clipped x values
-			int dx;
-
 			// attributes
 			Vec3 attr1, attr2, attr, dAttr1, dAttr2;
-			attr1 = e1[0].attributes[0]; // attribute on the starting point of scan line
-			attr2 = e2[0].attributes[0]; // attribute on the end point of scan line
-			dAttr1 = (e1[0].attributes[0]-e1[1].attributes[0])/dy; // value of attribure to be increased at each scan line
-			dAttr2 = (e2[0].attributes[0]-e2[1].attributes[0])/dy;
-
-			Vec3 attrNormal1 = e1[0].attributes[1];
-			Vec3 attrNormal2 = e2[0].attributes[1];
-			Vec3 dattrNormal1 = (e1[0].attributes[1]-e1[1].attributes[1])/dy;
-			Vec3 dattrNormal2 = (e2[0].attributes[1]-e2[1].attributes[1])/dy;
-			Vec3 attrNormal;
-
-			// depths
+			attr1 = e1[0].attributes[0];
+			attr2 = e2[0].attributes[0];
+			
+			// values of attribute to be increased at each scan line
+			dAttr1 = (e1[0].attributes[0] - e1[1].attributes[0])/dy;
+			dAttr2 = (e2[0].attributes[0] - e2[1].attributes[0])/dy;
+			
+			// depths and values to be increased at each scan line
 			float depth1, depth2, depth, dDepth1, dDepth2;
 			dDepth1 = (e1[0].depth - e1[1].depth)/dy;
 			dDepth2 = (e2[0].depth - e2[1].depth)/dy;
 			depth1 = e1[0].depth;
 			depth2 = e2[0].depth;
-			while(yScan >= e1[1].y) 	// both edges have lower y value same, we can take any y
+			
+			int y = l1y0;
+			float x1 = l1x0, x2 = l2x0;
+
+			int clippedx1, clippedx2;
+			// begin loop
+			while( y >= l1y1) // both edges have lower y value same, so no matter we take l1y1 or l2y1
 			{
-				if(yScan <0) break;
-				dx = x2-x1;
-				clipx1 = Helper::Max(Helper::Min(ROUND(x1),w), 0);
-				clipx2 = Helper::Min(Helper::Max(ROUND(x2),0), w);
-
-				if (dx !=0)
-				{
-					attr = attr1 + (attr2-attr1)*(clipx1-x1)/dx; // attribute of the first point of clipped scan line
-					attrNormal = attrNormal1 + (attrNormal2-attrNormal1)*(clipx1-x1)/dx;
-					depth = depth1 + (depth2-depth1)*(clipx1-x1)/dx;
-				}
-				else
-				{
-					attr = attr1;
-					attrNormal = attrNormal1;
-					depth = depth1;
-				}
-				int x = clipx1;
-				do
-				{
-					if(yScan >= h)
-						break;
-
-					//std::cout << "x: " << x << " y: " << yScan <<std::endl;
-					if (/*depth<0 and depth > 1*/0/* 0 for testing only*/) // discard the point
-						continue;
-					else
-					{
-						if(depth < depthBuffer[yScan*w + x]) // write to FB
-							{
-							// update depthBuffer value
-							depthBuffer[yScan*w + x] = depth;
-							Point2D temp(x, yScan);
-							temp.attributes[0] = attr;
-							temp.attributes[1] = attrNormal;
-							//temp.depth = depth;
-							fragShader(temp);
-						}
-					}
-					x++;
-					attr += (attr2-attr1)/dx;
-					attrNormal += (attrNormal2-attrNormal1)/dx;
-					depth += (depth2-depth1)/dx;
-				}while(x <= clipx2);
-				//std::cout << std::endl;
-
-				attr1 -= dAttr1;
-				attr2 -= dAttr2;
-				depth1 -= dDepth1;
-				depth2 -= dDepth2;
-				attrNormal1 -= dattrNormal1;
-				attrNormal2 -= dattrNormal2;
-
-				if(absdx1>dy)
-				{
-					x1-=inv_m1;
-				}
-				else
-				{
-					cnt1+=2*absdx1;
-					if(cnt1>=dy)
-					{
-						cnt1 -= 2*dy;
-						x1-=xinc1;
-					}
-				}
-
-				if(absdx2>dy)
-				{
-					x2-=inv_m2;
-				}
-				else
-				{
-					cnt2+=2*absdx2;
-					if(cnt2>=dy)
-					{
-						cnt2 -= 2*dy;
-						x2-=xinc2;
-					}
-				}
+				if(y < 0) break; // as we move from top to bottom
 				
-				yScan--;
+				if(!(x2 < 0 or x1 > w or y > h)) // scan line is not outside the screen
+				{
+
+					clippedx1 = Max(ROUND(x1), 0); // clipped x1 value
+					clippedx2 = Min(ROUND(x2), w); // clipped x2 value
+	
+					int dx = ROUND(x2)-ROUND(x1);
+
+					attr = attr1;
+					depth = depth1;
+	
+					if (clippedx1 != ROUND(x1)) // means x-clipping has occured and thus attribute at clipped value is different than attr1
+					{
+						attr = attr1+(attr2-attr1)*(clippedx1-ROUND(x1))/dx;
+						depth = depth1+(depth2-depth1)*(clippedx1-ROUND(x1))/dx;
+					}
+	
+					// plot the first point
+					if( depth < depthBuffer[y*w + clippedx1] and depth > -1)
+						{
+							Point2D p(clippedx1, y);
+							p.attributes[0] = attr;
+							depthBuffer[y*w + clippedx1] = depth;
+							fragShader(p);
+						}
+					// plot other points	
+					for(int x=clippedx1+1;x<=clippedx2;x++)
+					{
+						attr+= (attr2-attr1)/dx;
+						depth+= (depth2-depth1)/dx;
+						if( depth < depthBuffer[y*w + x] and depth >= -1)
+						{
+							Point2D p(x, y);
+							p.attributes[0] = attr;
+							depthBuffer[y*w+x] = depth;
+							fragShader(p);
+						}
+				}
+			}
+			attr1 -= dAttr1;
+			attr2 -= dAttr2;
+			depth1 -= dDepth1;
+			depth2 -= dDepth2;
+
+			x1-=inv_m1;
+			x2-=inv_m2;
+
+			y--;
 			}
 		}
-};
+		

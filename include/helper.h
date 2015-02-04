@@ -4,11 +4,14 @@
 #include <cctype>
 #include <locale>
 
-#define ROUND(x) x>0 ? int(x+0.5) : int(x-0.5)
 // it contains other helper functions like converting to degree, radian, sorting, etc
 
 namespace Helper
 {
+	inline int ROUND(float x)
+	{
+		return x>0 ? int(x+0.5) : int(x-0.5);
+	}
 	template <class t>
 	inline t Max(t a, t b)
 	{
