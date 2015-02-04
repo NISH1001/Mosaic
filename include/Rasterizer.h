@@ -159,4 +159,4 @@ class Rasterizer
 			y--;
 			}
 		}
-		
+};
