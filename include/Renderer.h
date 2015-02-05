@@ -42,9 +42,9 @@ class Renderer
 		void ClearDepthBuffer();
 		void Clear(void)
 		{
-			for (int i = 0; i < m_width; ++i)
+			for (int i = 0; i <= m_width; ++i)
 			{
-				for(int j=0; j< m_height; ++j)
+				for(int j=0; j<= m_height; ++j)
 				{
 					SetPixel(i, j, m_clearColor);
 					m_depthBuffer[i*m_height+j] = 1.0f;

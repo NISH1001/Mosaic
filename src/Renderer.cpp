@@ -31,7 +31,7 @@ bool Renderer::Initialize(const char* title, int x, int y, int width, int height
 		return false;
 	}
 
-	m_depthBuffer = new float[m_width*m_height];
+	m_depthBuffer = new float[(m_width+1)*(m_height+1)];
 
 	return true;
 
