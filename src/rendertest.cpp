@@ -37,10 +37,6 @@ std::vector<DirectedLight> lights = {
 									{Vec3(-1,-0.5,0.2), Vec3(1,0,0)},
 								};
 
-/*make sure it is multiple of 3
-	position,normal,color
-*/
-
 // Fragment shader, receives a point and renders it in framebuffer
 void FragmentShader(Point2D& p)
 {	
@@ -54,7 +50,7 @@ void FragmentShader(Point2D& p)
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
 
-// Calculation of light
+// inplace Calculation of light
 void CalculateLight(Vertex3D& v, Vec3 normal)
 {
 	//our color intensity 0 - 1 range
@@ -100,18 +96,18 @@ void CalculateLight(Vertex3D& v, Vec3 normal)
 		intensity.x += lights[i].intensity.x * renderer.m_currentMaterial->ks.x * dampfactor;
 		intensity.y += lights[i].intensity.y * renderer.m_currentMaterial->ks.y * dampfactor;
 		intensity.z += lights[i].intensity.z * renderer.m_currentMaterial->ks.z * dampfactor;
-	}
-
+	}	
 	
-	
+	//clamp the values
 	intensity.x = Helper::Min(intensity.x, 1.0f);
 	intensity.y = Helper::Min(intensity.y, 1.0f);
 	intensity.z = Helper::Min(intensity.z, 1.0f);
 
+	//finally get our 0-255 RGB value
 	Vec3 color;
 	color.x = intensity.x * 255;
 	color.y = intensity.y * 255;
-	color.z = intensity.y * 255;
+	color.z = intensity.z * 255;
 
 	v.color = color;
 	
