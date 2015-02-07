@@ -98,6 +98,8 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 	{
 		numVertices = models[i].m_vertexBuffer.size();
 
+		m_currentMaterial = &(models[i].m_material);
+
 		//just resize -> push_back will be slow as it has to resize after every element added
 		tVertices.resize(numVertices);
 		for(int j=0;j<numVertices;j++)

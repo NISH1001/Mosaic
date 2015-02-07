@@ -6,6 +6,7 @@
 #include <pixel.h>
 #include <Timer.h>
 #include <Model.h>
+#include <Material.h>
 
 class Renderer
 {
@@ -51,6 +52,9 @@ class Renderer
 				}
 			}
 		}
+
+	public:
+		Material *m_currentMaterial;
 		
 
 	private:

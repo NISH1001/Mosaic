@@ -5,6 +5,8 @@
 #include <Rasterizer.h>
 #include <Model.h>
 #include <Camera.h>
+#include <Light.h>
+#include <Material.h>
 
 int WIDTH = 800;
 int HEIGHT = 600;
@@ -28,6 +30,13 @@ Mat4 PROJECTION, VIEW;
 // models
 std::vector<Model> models;
 
+//lights
+AmbientLight ambientlight = {{0.4,0.4,0.4}};
+std::vector<DirectedLight> lights = {
+									{Vec3(1,-1,-1), Vec3(0,0,1)},
+									{Vec3(-1,-0.5,0.2), Vec3(1,0,0)},
+								};
+
 /*make sure it is multiple of 3
 	position,normal,color
 */
@@ -48,55 +57,64 @@ void FragmentShader(Point2D& p)
 // Calculation of light
 void CalculateLight(Vertex3D& v, Vec3 normal)
 {
-	// assuming color of the object is white i.e has reflectivity (1,1,1)
-	float refred=1.f, refgreen=1.f, refblue=1.f;
+	//our color intensity 0 - 1 range
+	Vec3 intensity;
 
-	Vec3 l2(255,0,0), l1(0,0,255);
-	Vec3 d2(-1,-0.5,0.2), d1(1,0,0.2);
+	//calculate ambient intensity
+	intensity.x = ambientlight.intensity.x * renderer.m_currentMaterial->ka.x;
+	intensity.y = ambientlight.intensity.y * renderer.m_currentMaterial->ka.y;
+	intensity.z = ambientlight.intensity.z * renderer.m_currentMaterial->ka.z;
 
-	// first normalize light directions, these can be precalculated for better efficiency, can be made global
-	d1.NormalizeToUnit();
-	d2.NormalizeToUnit();
-
-	// intensities
-	float i1 = Vec3::Dot(normal,d1), i2 = Vec3::Dot(normal,d2);
-
-	Vec3 color = Vec3(Helper::Max((l1.x*i1+l2.x*i2)*refred/2.f,0.f), 
-				 	  Helper::Max((l1.y*i1+l2.y*i2)*refgreen/2.f,0.f), 
-				 	  Helper::Max((l1.z*i1+l2.z*i2)*refblue/2.f,0.f)); 
-
-	//out light for specular
-	Vec3 light(0,0,255);
-	Vec3 lightdir(1,-1,-1);
-	lightdir.NormalizeToUnit();
-
-	/*get our vector from vertex to eye
-		it may or maynot be in the direction of reflected ray
-		so has to calculate specular intensity using
-		this view vector and reflected vector
-	*/
+	//our view vector from vertex to camera in world space
 	Vec3 view = cam.GetPos() - v.position.ToVec3();
 	view.NormalizeToUnit();
 
-	//calculate the reflected vector and normalize it.
-	Vec3 reflected = lightdir - normal * Vec3::Dot(normal, lightdir) * 2;
-	reflected.NormalizeToUnit();
+	for(unsigned i=0; i<lights.size(); ++i)
+	{
+		//calculate diffuse intensity
+		float diffintensity = Vec3::Dot(normal, lights[i].direction);
+		diffintensity = Helper::Max(diffintensity, 0.f);
+		diffintensity = Helper::Min(diffintensity,1.f);
 
-	//now calculate our specular factor
-	float specularfactor = Vec3::Dot(reflected, view);
-	specularfactor = Helper::Max(specularfactor,0.0f);
+		intensity.x += lights[i].intensity.x * renderer.m_currentMaterial->kd.x*diffintensity;
+		intensity.y += lights[i].intensity.y * renderer.m_currentMaterial->kd.y*diffintensity;
+		intensity.z += lights[i].intensity.z * renderer.m_currentMaterial->kd.z*diffintensity;
 
-	//damping factor for specular
-	//greater damping factor = low specular and ...
-	float dampfactor = pow(specularfactor, 20);
+		/*
+			SPECULAR ...
+			get our vector from vertex to eye
+			it may or maynot be in the direction of reflected ray
+			so has to calculate specular intensity using
+			this view vector and reflected vector
+		*/
 
-	Vec3 finalspecular = light * dampfactor;
+		Vec3 reflected = lights[i].direction - normal * Vec3::Dot(normal, lights[i].direction) * 2;
+		reflected.NormalizeToUnit();
 
-	//color += finalspecular;
-	color = Vec3(Helper::Min(color.x+finalspecular.x,255.f),Helper::Min(color.y+finalspecular.y,255.f),Helper::Min(color.z+finalspecular.z,255.f));
+		float specularfactor = Vec3::Dot(reflected, view);
+		specularfactor = Helper::Max(specularfactor,0.0f);
+		specularfactor = Helper::Min(specularfactor, 1.0f);
 
-	//v.color = Vec3(100, 0, 0);
+		float dampfactor = pow(specularfactor, renderer.m_currentMaterial->ns);
+
+		intensity.x += lights[i].intensity.x * renderer.m_currentMaterial->ks.x * dampfactor;
+		intensity.y += lights[i].intensity.y * renderer.m_currentMaterial->ks.y * dampfactor;
+		intensity.z += lights[i].intensity.z * renderer.m_currentMaterial->ks.z * dampfactor;
+	}
+
+	
+	
+	intensity.x = Helper::Min(intensity.x, 1.0f);
+	intensity.y = Helper::Min(intensity.y, 1.0f);
+	intensity.z = Helper::Min(intensity.z, 1.0f);
+
+	Vec3 color;
+	color.x = intensity.x * 255;
+	color.y = intensity.y * 255;
+	color.z = intensity.y * 255;
+
 	v.color = color;
+	
 }
 
 // vertex shader, receives a vertex and multiplies it with VIEW and projection matrix
@@ -123,20 +141,9 @@ void FlatShader(Vertex3D v)
 	
 }
 
-// test 
-//Point2D p1(-100,80);Point2D p2(120,300);Point2D p3(100, 200);
 
 inline void Render()
 {
-	/* test
-	float f[640*480];
-	p1.attributes[0] = Vec3(255,0,0);
-	p2.attributes[0] = Vec3(0,255,0);
-	p3.attributes[0] = Vec3(0,0,255);
-	p1.depth = p2.depth = p3.depth = 0;
-	int w = 640, h=480;
-	*/
-	//Rasterizer::DrawTriangle(p1, p2, p3,w, h,&FragmentShader, f);
 	renderer.DrawModels(models, &VertexShader, &FragmentShader);
 }
 
@@ -199,14 +206,14 @@ int main()
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
 	cam.SetView(eyepos, lookat);
 
-	Model model("cone.obj");
-
-	for(unsigned i=0; i<model.m_vertexBuffer.size(); ++i)
-		model.m_vertexBuffer[i].position = Transform::Translate(4,0,0) * 
-											model.m_vertexBuffer[i].position;
 
 	//models.push_back(Model(verticesCube, numCube));
-	models.push_back(Model("teapot.obj"));
+	Model model("teapot.obj");
+	model.m_material.ka = {0.1,0.1,0.1};
+    model.m_material.kd = {0.5,0.5,0.5};
+    model.m_material.ks = {0.5,0.5,0.5};
+    model.m_material.ns = 20;
+
 	models.push_back(model);
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))

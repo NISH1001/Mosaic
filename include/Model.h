@@ -7,7 +7,7 @@
 #include <utility>
 #include <ObjLoader.h>
 #include <Point2D.h>
-
+#include <Material.h>
 
 
 /*a triangular surface struct
@@ -155,6 +155,7 @@ public:
 	//we only need this
 	std::vector<unsigned> m_indexBuffer;
 	std::vector<Vertex3D> m_vertexBuffer;
+	Material m_material;
 	bool m_hasTexture;
 private:
 	ObjLoader obj;	
