@@ -62,6 +62,14 @@ namespace Helper
 		return (a.x*b.y)-(b.x*a.y);;
 	}
 
+	template <class t>
+	inline Vec3 GetNormal(t& p1, t& p2, t& p3)
+	{
+		t a = p3-p2;
+		t b = p1-p2;
+		return Vec3(a.y*b.z-b.y*a.z, a.z*b.x-a.x*b.z, a.x*b.y-b.x*a.y);
+	}
+
 	inline float ToRadian(float degree)
 	{
 		return degree*3.1415/180.f;

@@ -33,6 +33,7 @@ std::vector<Model> models;
 //lights
 AmbientLight ambientlight = {{0.4,0.4,0.4}};
 std::vector<DirectedLight> lights = {
+									{Vec3(0,0.5,-1), Vec3(0.1,0.5,0.3)},
 									{Vec3(1,-1,-1), Vec3(0,0,1)},
 									{Vec3(-1,-0.5,0.2), Vec3(1,0,0)},
 								};
@@ -204,7 +205,7 @@ int main()
 
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("teapot.obj");
+	Model model("water.obj");
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
