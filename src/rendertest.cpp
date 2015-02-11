@@ -159,17 +159,17 @@ void Update(double dt)
 
 	if (keys[SDL_SCANCODE_S])
 	{
-		cam.MoveForward(-250 * dt);
+		cam.MoveForward(-200 * dt);
 	}
 
 	if(keys[SDL_SCANCODE_D])
 	{
-		cam.MoveSideway(-250*dt);
+		cam.MoveSideway(-200*dt);
 	}
 
 	if(keys[SDL_SCANCODE_A])
 	{
-		cam.MoveSideway(250*dt);
+		cam.MoveSideway(200*dt);
 	}
 
 	if(keys[SDL_SCANCODE_RIGHT])
@@ -205,7 +205,7 @@ int main()
 
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("water.obj");
+	Model model("teapot.obj");
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};

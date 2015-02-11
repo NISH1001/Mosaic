@@ -103,7 +103,14 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 		//just resize -> push_back will be slow as it has to resize after every element added
 		tVertices.resize(numVertices);
 		for(int j=0;j<numVertices;j++)
-			tVertices[j] = vShader(models[i].m_vertexBuffer[j]);
+        {
+            tVertices[j] = vShader(models[i].m_vertexBuffer[j]);
+            //avoid divide by zero case
+            if(tVertices[j].position.w ==0)
+                tVertices[j].position.w = 0.000001f;
+            //else if(tVertices[j].position.w < 0)
+            //    tVertices[j].position.w *= -1;
+        }
 
 		// backface culling and rendering triangles
 		// checking in indexbuffer
@@ -117,6 +124,18 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 			Vec4 &v1 = tVertices[a].position;
 			Vec4 &v2 = tVertices[b].position;
 			Vec4 &v3 = tVertices[c].position;
+            
+            //do the clipping if object is behind the camera
+            if( ( v1.x < -v1.w && v2.x < -v2.w && v3.x < -v3.w  )  ||        
+                ( v1.y < -v1.w && v2.y < -v2.w && v3.y < -v3.w  )  || 
+                ( v1.z < -v1.w && v2.z < -v2.w && v3.z < -v3.w  )  || 
+
+                ( v1.x > v1.w && v2.x > v2.w && v3.x > v3.w  )  ||                 
+                ( v1.y > v1.w && v2.y > v2.w && v3.y > v3.w  )  ||                
+                ( v1.z > v1.w && v2.z > v2.w && v3.z > v3.w  ) 
+              )
+                continue;
+
 			//first normalize
 				v1.NormalizeByW();
 				v2.NormalizeByW();
