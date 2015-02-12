@@ -52,13 +52,10 @@ void FragmentShader(Point2D& p)
 }
 
 // inplace Calculation of light
-Vec3 CalculateLight(Vertex3D& v)
+Vec3 CalculateLight(Vertex3D v, Vec3 normal)
 {
-	Mat4 rotate = Transform::RotateY(angle);
-	Mat4 model = rotate * SCALE;
-	v.position = model * v.position;
-
-	Vec3 normal = (rotate * Vec4(v.normal,0.f)).ToVec3();
+	
+	//Vec3 normal = (rotate * Vec4(v.normal,0.f)).ToVec3();
 
 	//our color intensity 0 - 1 range
 	Vec3 intensity;
@@ -121,24 +118,32 @@ Vec3 CalculateLight(Vertex3D& v)
 }
 
 // vertex shader, receives a vertex and multiplies it with VIEW and projection matrix
-Vertex3D VertexShader(Vertex3D vertex)
+Vertex3D VertexShader(Vertex3D& vertex)
 {
+	Vertex3D vcopy = vertex;
 	Mat4 rotate = Transform::RotateY(angle);
 	Vec4 norm = rotate * Vec4(vertex.normal, 0.f);
 	norm.NormalizeToUnit();
 
-	// calcuate light
-	vertex.color = CalculateLight(vertex);
+	Mat4 model = rotate * SCALE;
+	vertex.position = model * vertex.position;
 
-	Vec4 image = PROJECTION * cam.GetView() * 
-					 vertex.position;
-	return Vertex3D(image, Vec3::NormalizeToUnit(norm.ToVec3()), vertex.color);
+	// calcuate light
+	vcopy.color = CalculateLight(vertex, norm.ToVec3());
+
+	Vec4 image = PROJECTION * cam.GetView() * model*vcopy.position; 
+
+	return Vertex3D(image, Vec3::NormalizeToUnit(norm.ToVec3()), vcopy.color);
 }
 
 
-void FlatShader(Vertex3D v)
+Vertex3D FlatShader(Vertex3D& v)
 {
-	
+	Mat4 rotate = Transform::RotateY(angle);
+	Mat4 model = rotate * SCALE;
+	v.position = model*v.position;
+	Vec4 image = PROJECTION * cam.GetView() * model*v.position; 
+	return Vertex3D(image, v.normal, v.color);
 }
 
 
@@ -204,7 +209,7 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("teapot.obj", &VertexShader);
+	Model model("teapot.obj", &FlatShader, &CalculateLight);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};

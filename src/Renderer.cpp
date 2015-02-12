@@ -89,7 +89,7 @@ void Renderer::ClearDepthBuffer()
 		m_depthBuffer[i] = -1;
 }
 
-void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3D), void(*fShader)(Point2D&))
+void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D&), void(*fShader)(Point2D&))
 {
 	std::vector<Vertex3D> tVertices; // to store vertices after transformation
 	int numVertices;
@@ -146,10 +146,17 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 						p2(static_cast<int>(v2.x*m_width/2.f+m_width/2.f), static_cast<int>(v2.y*(-m_height/2.f)+m_height/2.f)),
 						p3(static_cast<int>(v3.x*m_width/2.f+m_width/2.f), static_cast<int>(v3.y*(-m_height/2.f)+m_height/2.f));
 				
-				Vec3 color;
 				if(models[i].m_isFlat)
 				{
-					color = models[i].colorShader(models[i].m_vertexBuffer[j]);
+					Vec3 color, normal;
+					Vec4 va,vb,vc;
+					va=models[i].m_vertexBuffer[a].position;
+					vc=models[i].m_vertexBuffer[c].position;
+					vb=models[i].m_vertexBuffer[b].position;
+					normal = GetNormal(va, vb, vc);
+					normal.NormalizeToUnit();
+					color = models[i].colorShader(models[i].m_vertexBuffer[j],normal);
+					tVertices[a].color = tVertices[b].color = tVertices[c].color = color;
 				}
 				p1.depth = v1.z;
 				p2.depth = v2.z;
