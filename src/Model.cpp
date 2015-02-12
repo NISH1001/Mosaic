@@ -1,7 +1,7 @@
 #include <Model.h>
 
 //accepts vertices array
-Model::Model(Vertex3D *vertices, unsigned numvertices) 
+Model::Model(Vertex3D *vertices, unsigned numvertices,Vertex3D(*vertShader)(Vertex3D), Vec3(*colShader)(Vertex3D&)) 
 {
 	// if ... return immediately
 	if(numvertices%3 != 0 || numvertices==0)
@@ -9,6 +9,13 @@ Model::Model(Vertex3D *vertices, unsigned numvertices)
 		std::cout << "invalid no. of vertices" << std::endl;
 		return;
 	}
+
+	vertexShader=  vertShader;
+	colorShader = colShader;
+	if(colorShader==NULL)
+		m_isFlat= false;
+	else
+		m_isFlat=true;
 
 	//we dont need this variable now
 //	unsigned numsurfaces = numvertices/3;

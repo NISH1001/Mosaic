@@ -52,11 +52,13 @@ void FragmentShader(Point2D& p)
 }
 
 // inplace Calculation of light
-Vec3 CalculateLight(Vertex3D& v, Vec3 normal)
+Vec3 CalculateLight(Vertex3D& v)
 {
 	Mat4 rotate = Transform::RotateY(angle);
 	Mat4 model = rotate * SCALE;
 	v.position = model * v.position;
+
+	Vec3 normal = (rotate * Vec4(v.normal,0.f)).ToVec3();
 
 	//our color intensity 0 - 1 range
 	Vec3 intensity;
@@ -126,7 +128,7 @@ Vertex3D VertexShader(Vertex3D vertex)
 	norm.NormalizeToUnit();
 
 	// calcuate light
-	vertex.color = CalculateLight(vertex, norm.ToVec3());
+	vertex.color = CalculateLight(vertex);
 
 	Vec4 image = PROJECTION * cam.GetView() * 
 					 vertex.position;
@@ -202,7 +204,7 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("teapot.obj");
+	Model model("teapot.obj", &VertexShader);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};

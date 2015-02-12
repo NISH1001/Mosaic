@@ -17,54 +17,6 @@
 	normal is the surface normal
 */
 
-//not needed now
-class Surface
-{
-public:
-	Vertex3D vertex[3];
-	Surface() {} 
-	Surface(Vertex3D v1, Vertex3D v2, Vertex3D v3)
-	{
-		Store(v1,v2,v3);
-	}
-private:
-	void Store(Vertex3D  v1, Vertex3D  v2, Vertex3D  v3)
-	{
-		if(v1.position.x < v2.position.x)
-		{
-			std::swap(v1,v2);
-		}
-
-		if(v2.position.x < v3.position.x)
-		{
-			std::swap(v2,v3);
-		}
-		{
-			std::swap(v1,v2);
-		}
-
-		if(v2.position.y > v3.position.y)
-		{
-			std::swap(v2,v3);
-		}
-
-		vertex[0] = v1;
-		vertex[1] = v2;
-		vertex[2] = v3;
-
-	}
-};
-
-inline std::ostream& operator << (std::ostream &os, const Surface & s)
-{
-	os <<"(" << s.vertex[0].position.x << "," << s.vertex[0].position.y << "," << s.vertex[0].position.z << ")";
-	os << ", ";
-	os <<"(" << s.vertex[1].position.x << "," << s.vertex[1].position.y << "," << s.vertex[1].position.z << ")";
-	os << ", ";
-	os <<"(" << s.vertex[2].position.x << "," << s.vertex[2].position.y << "," << s.vertex[2].position.z << ")";
-	return os;
-}
-
 /*
 	A general Model Class
 	consists of Surfaces
@@ -74,9 +26,9 @@ inline std::ostream& operator << (std::ostream &os, const Surface & s)
 class Model
 {
 public:
-	Model(Vertex3D *vertices, unsigned numvertices);
+	Model(Vertex3D *vertices, unsigned numvertices, Vertex3D(*vertShader)(Vertex3D), Vec3(*colShader)(Vertex3D&)=NULL);
 
-	Model(const std::string & filename)
+	Model(const std::string & filename, Vertex3D(*vertShader)(Vertex3D), Vec3(*colShader)(Vertex3D&)=NULL)
 	{
 		if(obj.Load(filename))
 		{
@@ -84,25 +36,16 @@ public:
 			m_vertexBuffer = obj.m_vertexBuffer;
 			m_hasTexture = obj.m_hasTexture;
 		}
+		vertexShader = vertShader;
+		colorShader = colShader;
+		if(colorShader==NULL)
+			m_isFlat=false;
+		else
+			m_isFlat=true;
 		
 	}
 
-	//we dont need this now
-	Model(Surface *surfaces, unsigned numsurfaces);
-
-	//we dont need this now
-	/*std::vector<Surface>::iterator GetSurfaceIterator(void)
-	{
-		std::vector<Surface>::iterator iter;
-		iter = m_surfaces.begin();
-		return iter;
-	}
-	// a surface or surfaces
-	//not needed void AddSurface(const Surface & surface) { m_surfaces.push_back(surface); }
-	//not needed void AddSurfaces(Surface *surfaces, unsigned numsurfaces);
-
-	 */
-	//check if the point v is in VB
+		//check if the point v is in VB
 	std::pair<bool,unsigned> Lookup(const Vertex3D & v)
 	{
 		size_t vbsize = m_vertexBuffer.size();
@@ -145,18 +88,14 @@ public:
 
 
 public:
-	//we dont need this now
-	/*
-	std::vector<Vertex3D> m_vertices;
-	std::vector<unsigned> m_indices;
-	std::vector<Surface> m_surfaces;
-	*/
+	Vertex3D(*vertexShader)(Vertex3D);
+	Vec3(*colorShader)(Vertex3D&);
 
-	//we only need this
 	std::vector<unsigned> m_indexBuffer;
 	std::vector<Vertex3D> m_vertexBuffer;
 	Material m_material;
 	bool m_hasTexture;
+	bool m_isFlat;
 private:
 	ObjLoader obj;	
 };
