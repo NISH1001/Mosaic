@@ -141,13 +141,6 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 				v2.NormalizeByW();
 				v3.NormalizeByW();
 
-#define ClipX(x) x<-1.f and x>1.f ? true:false
-#define ClipY(x) x<-1.f and x>1.f ? true:false
-#define ClipZ(x) x<-1.f and x>1.f ? true:false
-			if(ClipX(v1.x) and ClipX(v2.x) and ClipX(v3.x))continue;
-			if(ClipY(v1.y) and ClipY(v2.y) and ClipY(v3.y))continue;
-			if(ClipZ(v1.z) and ClipZ(v2.z) and ClipZ(v3.z))continue;
-
 			// calculate C for backface culling
 			float C = Helper::GetC(v1, v2, v3);
 
