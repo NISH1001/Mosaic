@@ -105,6 +105,10 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D
 		for(int j=0;j<numVertices;j++)
 			tVertices[j] = vShader(models[i].m_vertexBuffer[j]);
 
+		// divide by zero case
+			if(tVertices[j].position.w==0.f)
+				tVertices[j].position.w==0.00001f;
+
 		// backface culling and rendering triangles
 		// checking in indexbuffer
 		unsigned ibsize = models[i].m_indexBuffer.size();
