@@ -117,6 +117,18 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D
 			Vec4 &v1 = tVertices[a].position;
 			Vec4 &v2 = tVertices[b].position;
 			Vec4 &v3 = tVertices[c].position;
+
+			//do the clipping if object is behind the camera
+            if( ( v1.x < -v1.w && v2.x < -v2.w && v3.x < -v3.w  )  ||        
+                ( v1.y < -v1.w && v2.y < -v2.w && v3.y < -v3.w  )  || 
+                ( v1.z < -v1.w && v2.z < -v2.w && v3.z < -v3.w  )  || 
+
+                ( v1.x > v1.w && v2.x > v2.w && v3.x > v3.w  )  ||                 
+                ( v1.y > v1.w && v2.y > v2.w && v3.y > v3.w  )  ||                
+                ( v1.z > v1.w && v2.z > v2.w && v3.z > v3.w  ) 
+              )
+                continue;
+
 			//first normalize
 				v1.NormalizeByW();
 				v2.NormalizeByW();
@@ -125,6 +137,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D
 #define ClipX(x) x<-1.f and x>1.f ? true:false
 #define ClipY(x) x<-1.f and x>1.f ? true:false
 #define ClipZ(x) x<-1.f and x>1.f ? true:false
+
 			if(ClipX(v1.x) and ClipX(v2.x) and ClipX(v3.x))continue;
 			if(ClipY(v1.y) and ClipY(v2.y) and ClipY(v3.y))continue;
 			if(ClipZ(v1.z) and ClipZ(v2.z) and ClipZ(v3.z))continue;
