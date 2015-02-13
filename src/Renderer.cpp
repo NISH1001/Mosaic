@@ -89,7 +89,7 @@ void Renderer::ClearDepthBuffer()
 		m_depthBuffer[i] = -1;
 }
 
-void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3D), void(*fShader)(Point2D&))
+void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D&), void(*fShader)(Point2D&))
 {
 	std::vector<Vertex3D> tVertices; // to store vertices after transformation
 	int numVertices;
@@ -125,7 +125,8 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 			Vec4 &v2 = tVertices[b].position;
 			Vec4 &v3 = tVertices[c].position;
             
-            //do the clipping if object is behind the camera
+
+			//do the clipping if object is behind the camera
             if( ( v1.x < -v1.w && v2.x < -v2.w && v3.x < -v3.w  )  ||        
                 ( v1.y < -v1.w && v2.y < -v2.w && v3.y < -v3.w  )  || 
                 ( v1.z < -v1.w && v2.z < -v2.w && v3.z < -v3.w  )  || 
@@ -140,6 +141,7 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 				v1.NormalizeByW();
 				v2.NormalizeByW();
 				v3.NormalizeByW();
+
 
 			// calculate C for backface culling
 			float C = Helper::GetC(v1, v2, v3);
@@ -158,6 +160,18 @@ void Renderer::DrawModels(std::vector<Model>& models, Vertex3D(*vShader)(Vertex3
 						p2(static_cast<int>(v2.x*m_width/2.f+m_width/2.f), static_cast<int>(v2.y*(-m_height/2.f)+m_height/2.f)),
 						p3(static_cast<int>(v3.x*m_width/2.f+m_width/2.f), static_cast<int>(v3.y*(-m_height/2.f)+m_height/2.f));
 				
+				if(models[i].m_isFlat)
+				{
+					Vec3 color, normal;
+					Vec4 va,vb,vc;
+					va=models[i].m_vertexBuffer[a].position;
+					vc=models[i].m_vertexBuffer[c].position;
+					vb=models[i].m_vertexBuffer[b].position;
+					normal = GetNormal(va, vb, vc);
+					normal.NormalizeToUnit();
+					color = models[i].colorShader(models[i].m_vertexBuffer[j],normal);
+					tVertices[a].color = tVertices[b].color = tVertices[c].color = color;
+				}
 				p1.depth = v1.z;
 				p2.depth = v2.z;
 				p3.depth = v3.z;

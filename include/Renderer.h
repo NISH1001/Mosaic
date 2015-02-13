@@ -37,7 +37,7 @@ class Renderer
 		}
 
 		// for rendering the models loaded, this renders the overall scene of the program
-		void DrawModels(std::vector<Model>&models, Vertex3D(*v)(Vertex3D), void(*s)(Point2D&));
+		void DrawModels(std::vector<Model>models, Vertex3D(*v)(Vertex3D&), void(*s)(Point2D&));
 
 	private:
 		void ClearDepthBuffer();
