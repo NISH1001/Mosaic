@@ -2,6 +2,7 @@
 #include <vector>
 #include <Vector.h>
 #include <Matrix.h>
+#include <Transform.h>
 #include <iostream>
 #include <tuple>
 #include <utility>
@@ -86,6 +87,23 @@ public:
 		}
 	}
 
+    void Translate(float tx, float ty, float tz);
+    void Translate(const Vec3& t)
+    {
+        Translate(t.x, t.y, t.z);
+    }
+
+    void RotateX(float angle);
+    void RotateY(float angle);
+    void RotateZ(float angle);
+    void Rotate(float angle, const Vec3& vec, const Vec3& point);
+
+    void Scale(float sx, float sy, float xz);
+    void Scale(const Vec3& sc, const Vec3& vec);
+    void Scale(const Vec3 & sc)
+    {
+        Scale(sc.x, sc.y, sc.z);
+    }
 
 public:
 	Vertex3D(*vertexShader)(Vertex3D&);

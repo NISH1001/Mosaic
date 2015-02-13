@@ -23,9 +23,8 @@ Renderer renderer;
 //camera
 Camera cam;
 
-Mat4 SCALE = Transform::Scale(Vec3(30,30,30), Vec3(0,0,0));
 // projection and view matrices
-Mat4 PROJECTION, VIEW;
+Mat4 PROJECTION;
 
 // models
 std::vector<Model> models;
@@ -45,13 +44,13 @@ void FragmentShader(Point2D& p)
 	Vec3 color = p.attributes[0];
 
 	//get vertex normal
-	Vec3 normal = p.attributes[1];
-	normal.NormalizeToUnit();
+	//Vec3 normal = p.attributes[1];
+	//normal.NormalizeToUnit();
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
 
-// inplace Calculation of light
+// Calculation of light
 Vec3 CalculateLight(Vertex3D v, Vec3 normal)
 {
 	
@@ -122,10 +121,11 @@ Vertex3D VertexShader(Vertex3D& vertex)
 {
 	Vertex3D vcopy = vertex;
 	Mat4 rotate = Transform::RotateY(angle);
+
 	Vec4 norm = rotate * Vec4(vertex.normal, 0.f);
 	norm.NormalizeToUnit();
 
-	Mat4 model = rotate * SCALE;
+	Mat4 model = rotate;
 	vertex.position = model * vertex.position;
 
 	// calcuate light
@@ -140,7 +140,7 @@ Vertex3D VertexShader(Vertex3D& vertex)
 Vertex3D FlatShader(Vertex3D& v)
 {
 	Mat4 rotate = Transform::RotateY(angle);
-	Mat4 model = rotate * SCALE;
+	Mat4 model = rotate ;
 	v.position = model*v.position;
 	Vec4 image = PROJECTION * cam.GetView() * model*v.position; 
 	return Vertex3D(image, v.normal, v.color);
@@ -199,23 +199,29 @@ void Update(double dt)
 	{
 		cam.MoveVertically(-100*dt);
 	}
+
+    //angle += 1;
 }
 
 
 int main()
 {
-	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 100.f, 1000.f);
+	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 10.f, 1000.f);
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("teapot.obj", &FlatShader, &CalculateLight);
-
+	Model model("teapot.obj", &FlatShader);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
     model.m_material.ns = 20;
 
+
+    model.Scale(30,30,30);
+    model.RotateZ(90);
+    //model.Rotate(45, Vec3(1,1,1), Vec3(0,0,0));
+    
 	models.push_back(model);
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))

@@ -96,6 +96,21 @@ public:
 					);
 	}
 
+    static Mat4 Scale(float sx, float sy, float sz)
+    {
+        return Mat4(
+                sx, 0, 0, 0,
+                0, sy, 0, 0,
+                0, 0, sz, 0,
+                0, 0, 0, 1
+                );
+    }
+
+    static Mat4 Scale(const Vec3 & sc)
+    {
+        return Scale(sc.x, sc.y, sc.z);
+    }
+
 	static Mat4 Perspective(float fieldView, float aspectRatio, float near, float far)
 	{
 		float cot = 1.f/tanf(fieldView/2.f);

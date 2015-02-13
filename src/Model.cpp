@@ -84,6 +84,117 @@ Model::Model(Vertex3D *vertices, unsigned numvertices,Vertex3D(*vertShader)(Vert
 	*/
 }
 
+void Model::Translate(float tx, float ty, float tz)
+{
+    unsigned vbsize = m_vertexBuffer.size();
+    Mat4 translate = Transform::Translate(tx,ty,tz); 
+    for(unsigned i=0; i< vbsize; ++i)
+    {
+        Vec4 pos = m_vertexBuffer[i].position;
+        pos = translate * pos;
+        pos.NormalizeByW();
+        m_vertexBuffer[i].position = pos;
+    }
+
+}
+
+void Model::RotateX(float angle)
+{
+    unsigned vbsize = m_vertexBuffer.size();
+    Mat4 rotate = Transform::RotateX(angle);
+    for(unsigned i=0; i<vbsize; ++i)
+    {
+        Vec4 pos = m_vertexBuffer[i].position;
+        pos = rotate* pos;
+        pos.NormalizeByW();
+        m_vertexBuffer[i].position = pos;
+        Vec4 norm = Vec4(m_vertexBuffer[i].normal, 0.f);
+        norm = rotate * norm;
+        norm.NormalizeToUnit();
+        m_vertexBuffer[i].normal = Vec3(norm.x, norm.y, norm.z);
+    }
+}
+
+void Model::RotateY(float angle)
+{
+    unsigned vbsize = m_vertexBuffer.size();
+    Mat4 rotate = Transform::RotateY(angle);
+    for(unsigned i=0; i<vbsize; ++i)
+    {
+        Vec4 pos = m_vertexBuffer[i].position;
+        pos = rotate* pos;
+        pos.NormalizeByW();
+        m_vertexBuffer[i].position = pos;
+        Vec4 norm = Vec4(m_vertexBuffer[i].normal, 0.f);
+        norm = rotate * norm;
+        norm.NormalizeToUnit();
+        m_vertexBuffer[i].normal = Vec3(norm.x, norm.y, norm.z);
+    }
+}
+
+
+void Model::RotateZ(float angle)
+{
+    unsigned vbsize = m_vertexBuffer.size();
+    Mat4 rotate = Transform::RotateZ(angle);
+    for(unsigned i=0; i<vbsize; ++i)
+    {
+        Vec4 pos = m_vertexBuffer[i].position;
+        pos = rotate* pos;
+        pos.NormalizeByW();
+        m_vertexBuffer[i].position = pos;
+        Vec4 norm = Vec4(m_vertexBuffer[i].normal, 0.f);
+        norm = rotate * norm;
+        norm.NormalizeToUnit();
+        m_vertexBuffer[i].normal = Vec3(norm.x, norm.y, norm.z);
+    }
+}
+
+void Model::Rotate(float angle, const Vec3& vec, const Vec3& point)
+{
+    
+    unsigned vbsize = m_vertexBuffer.size();
+    Mat4 rotate = Transform::Rotate(angle, vec, point);
+    for(unsigned i=0; i<vbsize; ++i)
+    {
+        Vec4 pos = m_vertexBuffer[i].position;
+        pos = rotate* pos;
+        pos.NormalizeByW();
+        m_vertexBuffer[i].position = pos;
+        Vec4 norm = Vec4(m_vertexBuffer[i].normal, 0.f);
+        norm = rotate * norm;
+        norm.NormalizeToUnit();
+        m_vertexBuffer[i].normal = Vec3(norm.x, norm.y, norm.z);
+    }
+}
+
+void Model::Scale(float sx, float sy, float sz)
+{
+    unsigned vbsize = m_vertexBuffer.size();
+    Mat4 scale = Transform::Scale(sx,sy,sz);
+    for(unsigned i=0; i<vbsize; ++i)
+    {
+        Vec4 pos = m_vertexBuffer[i].position;
+        pos = scale * pos;
+        pos.NormalizeByW();
+        m_vertexBuffer[i].position = pos;
+    }
+}
+
+
+void Model::Scale(const Vec3 & sc, const Vec3 & vec)
+{
+    unsigned vbsize = m_vertexBuffer.size();
+    Mat4 scale = Transform::Scale(sc, vec);
+    for(unsigned i=0; i<vbsize; ++i)
+    {
+        Vec4 pos = m_vertexBuffer[i].position;
+        pos = scale * pos;
+        pos.NormalizeByW();
+        m_vertexBuffer[i].position = pos;
+    }
+}
+
 /*
 //not needed now
 Model::Model(Surface* surfaces, unsigned numsurfaces)
