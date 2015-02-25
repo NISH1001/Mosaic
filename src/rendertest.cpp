@@ -120,18 +120,16 @@ Vec3 CalculateLight(Vertex3D v, Vec3 normal)
 Vertex3D VertexShader(Vertex3D& vertex)
 {
 	Vertex3D vcopy = vertex;
-	Mat4 rotate = Transform::RotateY(angle);
-
-	Vec4 norm = rotate * Vec4(vertex.normal, 0.f);
+    Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
+	Vec4 norm = modelmatrix * Vec4(vertex.normal, 0.f);
 	norm.NormalizeToUnit();
 
-	Mat4 model = rotate;
-	vertex.position = model * vertex.position;
+	vertex.position = modelmatrix * vertex.position;
 
 	// calcuate light
 	vcopy.color = CalculateLight(vertex, norm.ToVec3());
 
-	Vec4 image = PROJECTION * cam.GetView() * model*vcopy.position; 
+	Vec4 image = PROJECTION * cam.GetView() * modelmatrix * vcopy.position; 
 
 	return Vertex3D(image, Vec3::NormalizeToUnit(norm.ToVec3()), vcopy.color);
 }
@@ -211,18 +209,25 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("teapot.obj", &FlatShader);
+	Model model("objects/teapot.obj", &FlatShader);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
     model.m_material.ns = 20;
 
+    model.AddTransformation(Transform::RotateZ(30));
+    model.AddTransformation(Transform::Scale(30,30,30));
 
-    model.Scale(30,30,30);
-    model.RotateZ(90);
-    //model.Rotate(45, Vec3(1,1,1), Vec3(0,0,0));
+	Model cone = model;
+	cone.m_material.ka = {0.1,0.1,0.1};
+    cone.m_material.kd = {0.5,0.5,0.5};
+    cone.m_material.ks = {0.5,0.5,0.5};
+    cone.m_material.ns = 20;
+
+    cone.AddTransformation(Transform::Translate(90,0,0));
     
 	models.push_back(model);
+    models.push_back(cone);
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{

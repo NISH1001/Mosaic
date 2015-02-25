@@ -55,6 +55,7 @@ class Renderer
 
 	public:
 		Material *m_currentMaterial;
+        Mat4 *m_currentModelMatrix;
 		
 
 	private:

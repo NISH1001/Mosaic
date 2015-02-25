@@ -28,6 +28,10 @@ class Model
 {
 public:
 	Model(Vertex3D *vertices, unsigned numvertices, Vertex3D(*vertShader)(Vertex3D&), Vec3(*colShader)(Vertex3D, Vec3)=NULL);
+    Model()
+    {
+        this->m_modelMatrix = Mat4();
+    }
 
 	Model(const std::string & filename, Vertex3D(*vertShader)(Vertex3D&), Vec3(*colShader)(Vertex3D, Vec3)=NULL)
 	{
@@ -46,6 +50,17 @@ public:
 		
 	}
 
+    Model  operator = (const Model & other)
+    {
+        Model m;
+        m.m_vertexBuffer = other.m_vertexBuffer;
+        m.m_indexBuffer = other.m_indexBuffer;
+        m.m_material = other.m_material;
+        m.m_isFlat = other.m_isFlat;
+        m.m_hasTexture = other.m_hasTexture;
+        return m;
+    }
+
 		//check if the point v is in VB
 	std::pair<bool,unsigned> Lookup(const Vertex3D & v)
 	{
@@ -60,31 +75,6 @@ public:
 			}
 		}
 		return std::make_pair(false, vbsize);
-	}
-
-	//for ordering of indices of triangle
-	// no need to swap vertices
-	void Order(unsigned &i1, unsigned & i2, unsigned & i3)
-	{
-		if(m_vertexBuffer[i1].position.x < m_vertexBuffer[i2].position.x)
-		{
-			std::swap(i1,i2);
-		}
-
-		if(m_vertexBuffer[i2].position.x < m_vertexBuffer[i3].position.x)
-		{
-			std::swap(i2,i3);
-		}
-
-		if(m_vertexBuffer[i1].position.x < m_vertexBuffer[i2].position.x)
-		{
-			std::swap(i1,i2);
-		}
-
-		if(m_vertexBuffer[i2].position.y > m_vertexBuffer[i3].position.y)
-		{
-			std::swap(i2,i3);
-		}
 	}
 
     void Translate(float tx, float ty, float tz);
@@ -105,6 +95,27 @@ public:
         Scale(sc.x, sc.y, sc.z);
     }
 
+    void AddTransformation(const Mat4 & mat)
+    {
+        this->m_modelMatrix = mat * this->m_modelMatrix;
+    }
+
+    void ApplyTransformation(void)
+    {
+        unsigned vbsize = m_vertexBuffer.size();
+        for(unsigned i=0; i<vbsize; ++i)
+        {
+            Vec4 pos = m_vertexBuffer[i].position;
+            pos =  this->m_modelMatrix * pos;
+            pos.NormalizeByW();
+            m_vertexBuffer[i].position = pos;
+            Vec4 norm = Vec4(m_vertexBuffer[i].normal, 0.f);
+            norm = this->m_modelMatrix * norm;
+            norm.NormalizeToUnit();
+            m_vertexBuffer[i].normal = Vec3(norm.x, norm.y, norm.z);
+        }
+    }
+
 public:
 	Vertex3D(*vertexShader)(Vertex3D&);
 	Vec3(*colorShader)(Vertex3D, Vec3);
@@ -114,6 +125,8 @@ public:
 	Material m_material;
 	bool m_hasTexture;
 	bool m_isFlat;
+
+    Mat4 m_modelMatrix;
 private:
 	ObjLoader obj;	
 };
