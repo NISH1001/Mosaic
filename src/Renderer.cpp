@@ -89,7 +89,7 @@ void Renderer::ClearDepthBuffer()
 		m_depthBuffer[i] = -1;
 }
 
-void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D&), void(*fShader)(Point2D&))
+void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Vertex3D&), void(*fShader)(Point2D&))
 {
 	std::vector<Vertex3D> tVertices; // to store vertices after transformation
 	int numVertices;
@@ -99,6 +99,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D
 		numVertices = models[i].m_vertexBuffer.size();
 
 		m_currentMaterial = &(models[i].m_material);
+        m_currentModelMatrix = &(models[i].m_modelMatrix);
 
 		//just resize -> push_back will be slow as it has to resize after every element added
 		tVertices.resize(numVertices);
@@ -172,6 +173,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D
 					color = models[i].colorShader(models[i].m_vertexBuffer[j],normal);
 					tVertices[a].color = tVertices[b].color = tVertices[c].color = color;
 				}
+
 				p1.depth = v1.z;
 				p2.depth = v2.z;
 				p3.depth = v3.z;

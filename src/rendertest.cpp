@@ -117,33 +117,34 @@ Vec3 CalculateLight(Vertex3D v, Vec3 normal)
 }
 
 // vertex shader, receives a vertex and multiplies it with VIEW and projection matrix
-Vertex3D VertexShader(Vertex3D& vertex)
+Vertex3D VertexShader( const Vertex3D & vertex)
 {
 	Vertex3D vcopy = vertex;
-	Mat4 rotate = Transform::RotateY(angle);
 
-	Vec4 norm = rotate * Vec4(vertex.normal, 0.f);
+    Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
+
+	Vec4 norm = modelmatrix * Vec4(vertex.normal, 0.f);
 	norm.NormalizeToUnit();
-
-	Mat4 model = rotate;
-	vertex.position = model * vertex.position;
+    
+    Vertex3D vcop = vertex;
+	vcop.position = modelmatrix * vertex.position;
 
 	// calcuate light
-	vcopy.color = CalculateLight(vertex, norm.ToVec3());
+	vcopy.color = CalculateLight(vcop, norm.ToVec3());
 
-	Vec4 image = PROJECTION * cam.GetView() * model*vcopy.position; 
+	Vec4 image = PROJECTION * cam.GetView() * modelmatrix * vcopy.position; 
 
 	return Vertex3D(image, Vec3::NormalizeToUnit(norm.ToVec3()), vcopy.color);
 }
 
 
-Vertex3D FlatShader(Vertex3D& v)
+Vertex3D FlatShader( const Vertex3D & v)
 {
-	Mat4 rotate = Transform::RotateY(angle);
-	Mat4 model = rotate ;
-	v.position = model*v.position;
-	Vec4 image = PROJECTION * cam.GetView() * model*v.position; 
-	return Vertex3D(image, v.normal, v.color);
+    Vertex3D vcopy = v;
+    Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
+	vcopy.position = modelmatrix*v.position;
+	Vec4 image = PROJECTION * cam.GetView() * modelmatrix*vcopy.position; 
+	return Vertex3D(image, vcopy.normal, vcopy.color);
 }
 
 
@@ -211,20 +212,24 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	//Model model("objects/tree.obj", &FlatShader, &CalculateLight);
-	Model model("objects/tree.obj", &VertexShader);
+	Model model("objects/teapot.obj", &VertexShader);
+	Model model("objects/teapot.obj", &FlatShader, &CalculateLight);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
     model.m_material.ns = 20;
 
+    //model.AddTransformation(Transform::RotateZ(30));
+    model.AddTransformation(Transform::Scale(30,30,30));
 
-    model.Scale(10,10,10);
-    model.Translate(0,0,-500);
-    //model.RotateZ(90);
-    //model.Rotate(45, Vec3(1,1,1), Vec3(0,0,0));
+	Model cone = model;
+    cone.FlatShading(&FlatShader, &CalculateLight);
+    cone.ResetModelMatrix();
+    cone.AddTransformation(Transform::Scale(30,30,30));
+    cone.AddTransformation(Transform::Translate(230,0,0));
     
 	models.push_back(model);
+   // models.push_back(cone);
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
