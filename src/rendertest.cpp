@@ -211,7 +211,7 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("teapot.obj", &FlatShader);
+	Model model("objects/teapot.obj", &FlatShader);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
