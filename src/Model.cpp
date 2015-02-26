@@ -1,7 +1,7 @@
 #include <Model.h>
 
 //accepts vertices array
-Model::Model(Vertex3D *vertices, unsigned numvertices,Vertex3D(*vertShader)(Vertex3D&), Vec3(*colShader)(Vertex3D, Vec3)) 
+Model::Model(Vertex3D *vertices, unsigned numvertices,Vertex3D(*vertShader)(const Vertex3D&), Vec3(*colShader)(Vertex3D, Vec3)) 
 {
 	// if ... return immediately
 	if(numvertices%3 != 0 || numvertices==0)

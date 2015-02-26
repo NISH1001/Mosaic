@@ -117,17 +117,19 @@ Vec3 CalculateLight(Vertex3D v, Vec3 normal)
 }
 
 // vertex shader, receives a vertex and multiplies it with VIEW and projection matrix
-Vertex3D VertexShader(Vertex3D& vertex)
+Vertex3D VertexShader( const Vertex3D & vertex)
 {
 	Vertex3D vcopy = vertex;
     Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
+
 	Vec4 norm = modelmatrix * Vec4(vertex.normal, 0.f);
 	norm.NormalizeToUnit();
-
-	vertex.position = modelmatrix * vertex.position;
+    
+    Vertex3D vcop = vertex;
+	vcop.position = modelmatrix * vertex.position;
 
 	// calcuate light
-	vcopy.color = CalculateLight(vertex, norm.ToVec3());
+	vcopy.color = CalculateLight(vcop, norm.ToVec3());
 
 	Vec4 image = PROJECTION * cam.GetView() * modelmatrix * vcopy.position; 
 
@@ -135,13 +137,13 @@ Vertex3D VertexShader(Vertex3D& vertex)
 }
 
 
-Vertex3D FlatShader(Vertex3D& v)
+Vertex3D FlatShader( const Vertex3D & v)
 {
-	Mat4 rotate = Transform::RotateY(angle);
-	Mat4 model = rotate ;
-	v.position = model*v.position;
-	Vec4 image = PROJECTION * cam.GetView() * model*v.position; 
-	return Vertex3D(image, v.normal, v.color);
+    Vertex3D vcopy = v;
+    Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
+	vcopy.position = modelmatrix*v.position;
+	Vec4 image = PROJECTION * cam.GetView() * modelmatrix*vcopy.position; 
+	return Vertex3D(image, vcopy.normal, vcopy.color);
 }
 
 
@@ -214,7 +216,6 @@ int main()
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
     model.m_material.ns = 20;
-
     model.AddTransformation(Transform::RotateZ(30));
     model.AddTransformation(Transform::Scale(30,30,30));
 
@@ -223,7 +224,6 @@ int main()
     cone.m_material.kd = {0.5,0.5,0.5};
     cone.m_material.ks = {0.5,0.5,0.5};
     cone.m_material.ns = 20;
-
     cone.AddTransformation(Transform::Translate(90,0,0));
     
 	models.push_back(model);

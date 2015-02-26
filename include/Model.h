@@ -27,13 +27,13 @@
 class Model
 {
 public:
-	Model(Vertex3D *vertices, unsigned numvertices, Vertex3D(*vertShader)(Vertex3D&), Vec3(*colShader)(Vertex3D, Vec3)=NULL);
+	Model(Vertex3D *vertices, unsigned numvertices, Vertex3D(*vertShader)(const Vertex3D &), Vec3(*colShader)(Vertex3D, Vec3)=NULL);
     Model()
     {
-        this->m_modelMatrix = Mat4();
+        this->m_modelMatrix = Mat4(1.0f);
     }
 
-	Model(const std::string & filename, Vertex3D(*vertShader)(Vertex3D&), Vec3(*colShader)(Vertex3D, Vec3)=NULL)
+	Model(const std::string & filename, Vertex3D(*vertShader)( const Vertex3D &), Vec3(*colShader)(Vertex3D, Vec3)=NULL)
 	{
 		if(obj.Load(filename))
 		{
@@ -117,7 +117,7 @@ public:
     }
 
 public:
-	Vertex3D(*vertexShader)(Vertex3D&);
+	Vertex3D(*vertexShader)( const Vertex3D&);
 	Vec3(*colorShader)(Vertex3D, Vec3);
 
 	std::vector<unsigned> m_indexBuffer;

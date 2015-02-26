@@ -89,7 +89,7 @@ void Renderer::ClearDepthBuffer()
 		m_depthBuffer[i] = -1;
 }
 
-void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(Vertex3D&), void(*fShader)(Point2D&))
+void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Vertex3D&), void(*fShader)(Point2D&))
 {
 	std::vector<Vertex3D> tVertices; // to store vertices after transformation
 	int numVertices;
