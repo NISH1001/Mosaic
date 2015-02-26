@@ -200,7 +200,7 @@ void Update(double dt)
 		cam.MoveVertically(-100*dt);
 	}
 
-    //angle += 1;
+    //angle += 0.3;
 }
 
 
@@ -211,7 +211,7 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("objects/teapot.obj", &FlatShader);
+	Model model("objects/tree.obj", &FlatShader, &CalculateLight);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
@@ -219,7 +219,8 @@ int main()
 
 
     model.Scale(30,30,30);
-    model.RotateZ(90);
+    model.Translate(0,0,-500);
+    //model.RotateZ(90);
     //model.Rotate(45, Vec3(1,1,1), Vec3(0,0,0));
     
 	models.push_back(model);

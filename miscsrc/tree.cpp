@@ -169,7 +169,7 @@ int main()
 
     float length = 5.f;
     Vec3 baseleft(0,0), baseright(length, 0);
-    generate(baseleft, baseright, 0, length, 4, std::string("base"));
+    generate(baseleft, baseright, 0, length, 5, std::string("base"));
     // by this point, we have all the cubes with 8 vertices in cubes vector
 
     // so at first get the indices of cube vertices in the vertex buffer 
