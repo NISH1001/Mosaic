@@ -111,8 +111,8 @@ int indexOf(Vec3 v, std::vector<Vec3> & vertices)
 
 std::vector<Cube> cubes; // where we store the cubes
 std::vector<Vec3> vertBuff; // the vertex buffer where all the vertices are placed
-float thetaChild = pi/3.f;
-float childLenFactor = 0.6f;
+float thetaChild = pi/4.6f;
+float childLenFactor = cos(thetaChild);
 
 
 void generate(Vec3 baseleft, Vec3 baseright, float thetacube, float length, float iter, std::string text)
@@ -169,7 +169,7 @@ int main()
 
     float length = 5.f;
     Vec3 baseleft(0,0), baseright(length, 0);
-    generate(baseleft, baseright, 0, length, 5, std::string("base"));
+    generate(baseleft, baseright, 0, length, 7, std::string("base"));
     // by this point, we have all the cubes with 8 vertices in cubes vector
 
     // so at first get the indices of cube vertices in the vertex buffer 
@@ -177,11 +177,11 @@ int main()
         cubes[i].getIndices(vertBuff);
     // respective vertices are stored in cubes' index array by now
 
-    for(int i=0;i<vertBuff.size();i++)
+/*    for(int i=0;i<vertBuff.size();i++)
         std::cout <<i+1 << " "<<vertBuff[i].x << " "<<vertBuff[i].y<<" "<<vertBuff[i].z<<std::endl;
     std::cout << vertBuff.size();
+    */
 
-    // now, what remains is to write the vertices and indices in the file, one more thing, vertices to be transformed into unit cube
 
     // write the vertices to the file
     for(int i=0;i<vertBuff.size();i++)
@@ -193,21 +193,53 @@ int main()
     // the turn of faces now
     for(int i=0;i<cubes.size();i++)
     {
-        for(int j=0;j<8;j++)
-            std::cout << cubes[i].indxVert[j] << " ";
-        std::cout << std::endl;
-        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "<<cubes[i].indxVert[1]<<"//1 "<<cubes[i].indxVert[2]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "<<cubes[i].indxVert[2]<<"//1 "<<cubes[i].indxVert[3]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[1]<<"//1 "<<cubes[i].indxVert[5]<<"//1 "<<cubes[i].indxVert[6]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[1]<<"//1 "<<cubes[i].indxVert[6]<<"//1 "<<cubes[i].indxVert[2]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[5]<<"//1 "<<cubes[i].indxVert[4]<<"//1 "<<cubes[i].indxVert[7]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[5]<<"//1 "<<cubes[i].indxVert[7]<<"//1 "<<cubes[i].indxVert[6]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[4]<<"//1 "<<cubes[i].indxVert[0]<<"//1 "<<cubes[i].indxVert[3]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[4]<<"//1 "<<cubes[i].indxVert[3]<<"//1 "<<cubes[i].indxVert[7]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[3]<<"//1 "<<cubes[i].indxVert[2]<<"//1 "<<cubes[i].indxVert[6]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[3]<<"//1 "<<cubes[i].indxVert[6]<<"//1 "<<cubes[i].indxVert[7]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "<<cubes[i].indxVert[1]<<"//1 "<<cubes[i].indxVert[5]<<"//1\n";
-        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "<<cubes[i].indxVert[5]<<"//1 "<<cubes[i].indxVert[4]<<"//1\n";
+        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "
+                       <<cubes[i].indxVert[1]<<"//1 "
+                       <<cubes[i].indxVert[2]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "
+                       <<cubes[i].indxVert[2]<<"//1 "
+                       <<cubes[i].indxVert[3]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[1]<<"//1 "
+                    <<cubes[i].indxVert[5]<<"//1 "
+                    <<cubes[i].indxVert[6]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[1]<<"//1 "
+                      <<cubes[i].indxVert[6]<<"//1 "
+                      <<cubes[i].indxVert[2]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[5]<<"//1 "
+                        <<cubes[i].indxVert[4]<<"//1 "
+                        <<cubes[i].indxVert[7]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[5]<<"//1 "
+                    <<cubes[i].indxVert[7]<<"//1 "
+                    <<cubes[i].indxVert[6]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[4]<<"//1 "
+                         <<cubes[i].indxVert[0]<<"//1 "
+                         <<cubes[i].indxVert[3]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[4]<<"//1 "
+                        <<cubes[i].indxVert[3]<<"//1 "
+                        <<cubes[i].indxVert[7]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[3]<<"//1 "
+                        <<cubes[i].indxVert[2]<<"//1 "
+                        <<cubes[i].indxVert[6]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[3]<<"//1 "
+                         <<cubes[i].indxVert[6]<<"//1 "
+                         <<cubes[i].indxVert[7]<<"//1\n";
+
+        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "
+                        <<cubes[i].indxVert[4]<<"//1 "
+                        <<cubes[i].indxVert[5]<<"//1\n";
+                        
+        outfile << "f "<<cubes[i].indxVert[0]<<"//1 "
+                        <<cubes[i].indxVert[5]<<"//1 "
+                        <<cubes[i].indxVert[1]<<"//1\n";
     }
     outfile.close();
     return 0;

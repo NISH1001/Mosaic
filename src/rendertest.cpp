@@ -211,14 +211,15 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("objects/tree.obj", &FlatShader, &CalculateLight);
+	//Model model("objects/tree.obj", &FlatShader, &CalculateLight);
+	Model model("objects/tree.obj", &VertexShader);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
     model.m_material.ns = 20;
 
 
-    model.Scale(30,30,30);
+    model.Scale(10,10,10);
     model.Translate(0,0,-500);
     //model.RotateZ(90);
     //model.Rotate(45, Vec3(1,1,1), Vec3(0,0,0));
