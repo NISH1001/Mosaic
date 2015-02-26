@@ -173,6 +173,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 					color = models[i].colorShader(models[i].m_vertexBuffer[j],normal);
 					tVertices[a].color = tVertices[b].color = tVertices[c].color = color;
 				}
+
 				p1.depth = v1.z;
 				p2.depth = v2.z;
 				p3.depth = v3.z;

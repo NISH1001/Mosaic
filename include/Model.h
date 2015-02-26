@@ -49,7 +49,21 @@ public:
 			m_isFlat=true;
 		
 	}
-
+    
+    /*
+    Model (const Model & other)
+    {
+        m_modelMatrix = Mat4(1.0f);
+        m_vertexBuffer = other.m_vertexBuffer;
+        m_indexBuffer = other.m_indexBuffer;
+        m_material = other.m_material;
+        m_hasTexture = other.m_hasTexture;
+        m_isFlat = other.m_isFlat;
+        vertexShader = other.vertexShader;
+        colorShader = other.colorShader;
+    }
+    */
+    /*
     Model  operator = (const Model & other)
     {
         Model m;
@@ -58,8 +72,11 @@ public:
         m.m_material = other.m_material;
         m.m_isFlat = other.m_isFlat;
         m.m_hasTexture = other.m_hasTexture;
+        m.vertexShader = other.vertexShader;
+        m.colorShader = other.colorShader;
         return m;
     }
+    */
 
 		//check if the point v is in VB
 	std::pair<bool,unsigned> Lookup(const Vertex3D & v)
@@ -94,12 +111,15 @@ public:
     {
         Scale(sc.x, sc.y, sc.z);
     }
-
+    
+    // add series of transformation for model
     void AddTransformation(const Mat4 & mat)
     {
         this->m_modelMatrix = mat * this->m_modelMatrix;
     }
 
+    // to apply transformation -> at the end , reset the model matrix
+    // the origin points get modified
     void ApplyTransformation(void)
     {
         unsigned vbsize = m_vertexBuffer.size();
@@ -114,6 +134,24 @@ public:
             norm.NormalizeToUnit();
             m_vertexBuffer[i].normal = Vec3(norm.x, norm.y, norm.z);
         }
+        this->ResetModelMatrix();
+    }
+    
+    // enable flatshading
+    void FlatShading(Vertex3D(*vertShader)( const Vertex3D &), Vec3(*colShader)(Vertex3D, Vec3)=NULL)
+    {
+		vertexShader = vertShader;
+		colorShader = colShader;
+		if(colorShader==NULL)
+			m_isFlat=false;
+		else
+			m_isFlat=true;
+    }
+
+    // reset model matrix to identity
+    void ResetModelMatrix()
+    {
+        m_modelMatrix = Mat4(1.0f);
     }
 
 public:

@@ -120,6 +120,7 @@ Vec3 CalculateLight(Vertex3D v, Vec3 normal)
 Vertex3D VertexShader( const Vertex3D & vertex)
 {
 	Vertex3D vcopy = vertex;
+
     Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
 
 	Vec4 norm = modelmatrix * Vec4(vertex.normal, 0.f);
@@ -220,11 +221,10 @@ int main()
     model.AddTransformation(Transform::Scale(30,30,30));
 
 	Model cone = model;
-	cone.m_material.ka = {0.1,0.1,0.1};
-    cone.m_material.kd = {0.5,0.5,0.5};
-    cone.m_material.ks = {0.5,0.5,0.5};
-    cone.m_material.ns = 20;
-    cone.AddTransformation(Transform::Translate(90,0,0));
+    cone.FlatShading(&FlatShader, &CalculateLight);
+    cone.ResetModelMatrix();
+    cone.AddTransformation(Transform::Scale(30,30,30));
+    cone.AddTransformation(Transform::Translate(230,0,0));
     
 	models.push_back(model);
     models.push_back(cone);
