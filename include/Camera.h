@@ -45,6 +45,7 @@ public:
 	void MoveForward(float deltastep)	
 	{
 		m_pos -= m_n * deltastep;
+        m_target -= m_n * deltastep;
 		SetView(m_pos, m_target);
 	}
 
