@@ -12,7 +12,7 @@ class Renderer
 {
 	public:
 		Renderer() : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), 
-							m_timer(200) , m_frameBuffer(NULL), m_clearColor(0,0,0,255)
+							m_timer(200) , m_frameBuffer(NULL), m_clearColor(0,0,0,255)//135,206,250,255)
 		{}
 
 		~Renderer() {}
