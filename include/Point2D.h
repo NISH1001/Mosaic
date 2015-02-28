@@ -37,7 +37,6 @@ struct Vertex3D
 	Vec3 normal; // for normal
 	Vec3 color; // for the color
 
-
 	Vertex3D () {}
 	Vertex3D(const Vec4 & p, const Vec3 & n, const Vec3 & c) : position(p), normal(n), color(c) {}
 

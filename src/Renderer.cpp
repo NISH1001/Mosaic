@@ -107,10 +107,10 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
         {
             tVertices[j] = models[i].vertexShader(models[i].m_vertexBuffer[j]);
             //avoid divide by zero case
-            if(tVertices[j].position.w ==0)
+            if(tVertices[j].position.w ==0.0f)
                 tVertices[j].position.w = 0.000001f;
-            //else if(tVertices[j].position.w < 0)
-            //    tVertices[j].position.w *= -1;
+            else if(tVertices[j].position.w < 0)
+                tVertices[j].position.w *= -1;
         }
 
 		// backface culling and rendering triangles
@@ -146,6 +146,10 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 
 			// calculate C for backface culling
 			float C = Helper::GetC(v1, v2, v3);
+
+            // temporary -> just for correcting the culling for flatshading
+            if(models[i].m_isFlat)
+                C = -C;
 
 
 			// since the view vector is along z axis(0,0,1), we may just check 
