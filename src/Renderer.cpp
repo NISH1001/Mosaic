@@ -105,7 +105,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 		tVertices.resize(numVertices);
 		for(int j=0;j<numVertices;j++)
         {
-            tVertices[j] = vShader(models[i].m_vertexBuffer[j]);
+            tVertices[j] = models[i].vertexShader(models[i].m_vertexBuffer[j]);
             //avoid divide by zero case
             if(tVertices[j].position.w ==0)
                 tVertices[j].position.w = 0.000001f;

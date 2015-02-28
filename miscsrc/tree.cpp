@@ -71,7 +71,7 @@ public:
 
     void Store3DPoints()
     {
-        Vec3 temp(0,0,length*(-1.f));
+        Vec3 temp(0,0,length);
         points[4] = points[0] + temp;
         points[5] = points[1] + temp;
         points[6] = points[2] + temp;
@@ -111,7 +111,7 @@ int indexOf(Vec3 v, std::vector<Vec3> & vertices)
 
 std::vector<Cube> cubes; // where we store the cubes
 std::vector<Vec3> vertBuff; // the vertex buffer where all the vertices are placed
-float thetaChild = pi/4.6f;
+float thetaChild = pi/4.f;
 float childLenFactor = cos(thetaChild);
 
 
@@ -169,7 +169,7 @@ int main()
 
     float length = 5.f;
     Vec3 baseleft(0,0), baseright(length, 0);
-    generate(baseleft, baseright, 0, length, 7, std::string("base"));
+    generate(baseleft, baseright, 0, length, 5, std::string("base"));
     // by this point, we have all the cubes with 8 vertices in cubes vector
 
     // so at first get the indices of cube vertices in the vertex buffer 

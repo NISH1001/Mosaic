@@ -142,7 +142,7 @@ Vertex3D FlatShader( const Vertex3D & v)
 {
     Vertex3D vcopy = v;
     Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
-	vcopy.position = modelmatrix*v.position;
+	//vcopy.position = modelmatrix*v.position;
 	Vec4 image = PROJECTION * cam.GetView() * modelmatrix*vcopy.position; 
 	return Vertex3D(image, vcopy.normal, vcopy.color);
 }
@@ -200,7 +200,6 @@ void Update(double dt)
 	{
 		cam.MoveVertically(-100*dt);
 	}
-
     //angle += 0.3;
 }
 
@@ -212,21 +211,23 @@ int main()
 	cam.SetView(eyepos, lookat);
 
 	//models.push_back(Model(verticesCube, numCube));
-	Model model("objects/teapot.obj", &VertexShader);
-	Model model("objects/teapot.obj", &FlatShader, &CalculateLight);
+	//Model model("objects/teapot.obj", &FlatShader, &CalculateLight);
+	Model model("objects/water.obj", &FlatShader, &CalculateLight);
 	model.m_material.ka = {0.1,0.1,0.1};
     model.m_material.kd = {0.5,0.5,0.5};
     model.m_material.ks = {0.5,0.5,0.5};
     model.m_material.ns = 20;
 
     //model.AddTransformation(Transform::RotateZ(30));
-    model.AddTransformation(Transform::Scale(30,30,30));
+    model.AddTransformation(Transform::Scale(10,10,10));
 
+    /*
 	Model cone = model;
     cone.FlatShading(&FlatShader, &CalculateLight);
     cone.ResetModelMatrix();
     cone.AddTransformation(Transform::Scale(30,30,30));
     cone.AddTransformation(Transform::Translate(230,0,0));
+    */
     
 	models.push_back(model);
    // models.push_back(cone);

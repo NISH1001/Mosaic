@@ -4,10 +4,10 @@
 
 int main()
 {
-	std::ofstream outfile("water.obj");
+	std::ofstream outfile("objects/water.obj");
 	float y = 0.f; // water level at y=0.f
 
-	int breadth=21, length=31;
+	int breadth=2, length=3;
 
 	std::vector<int> indices;
 	// we have 31x21 points each at distance of 0.5
@@ -16,7 +16,8 @@ int main()
 	for(int i=0;i<breadth;i++)
 		for(int j=0;j<length;j++)
 		{
-			outfile << "v " << j/float(length-1) << " "<<j<<" "<<i/float(breadth-1)<<"\n";
+			//outfile << "v " << j/float(length-1) << " "<<j<<" "<<i/float(breadth-1)<<"\n";
+			outfile << "v " << j*10 << " "<<y<<" "<<i*(-10)<<"\n";
 		}
 	// write the only one vertex normal, that is 0,1,0
 	outfile << "\nvn " << "0.0 1.0 0.0\n\n";
