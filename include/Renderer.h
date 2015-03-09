@@ -39,6 +39,9 @@ class Renderer
 		// for rendering the models loaded, this renders the overall scene of the program
 		void DrawModels(std::vector<Model>models, Vertex3D(*v)( const Vertex3D&), void(*s)(Point2D&));
 
+        //for lightspace things 
+        void DepthModels(std::vector<Model>models, Vertex3D(*v)(const Vertex3D&));
+
 	private:
 		void ClearDepthBuffer();
 		void Clear(void)
@@ -49,6 +52,7 @@ class Renderer
 				{
 					SetPixel(i, j, m_clearColor);
 					m_depthBuffer[i*m_height+j] = 1.0f;
+                    m_depthBufferShadow[i*m_height+j] = 1.0f;
 				}
 			}
 		}
@@ -56,6 +60,8 @@ class Renderer
 	public:
 		Material *m_currentMaterial;
         Mat4 *m_currentModelMatrix;
+		float* m_depthBuffer;
+		float* m_depthBufferShadow;
 		
 
 	private:
@@ -66,7 +72,6 @@ class Renderer
 		SDL_Window* m_window;
 		SDL_Renderer* m_renderer;
 		SDL_Surface* m_screen;
-		float* m_depthBuffer;
 		ColorRGBA m_clearColor;
 		
 		std::function<void(double)> m_update;

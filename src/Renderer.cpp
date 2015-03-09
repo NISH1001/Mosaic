@@ -32,6 +32,7 @@ bool Renderer::Initialize(const char* title, int x, int y, int width, int height
 	}
 
 	m_depthBuffer = new float[(m_width+1)*(m_height+1)];
+	m_depthBufferShadow = new float[(m_width+1)*(m_height+1)];
 
 	return true;
 
@@ -197,6 +198,58 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 				//std::cout << "hidden\n ";
 		}
 	}
+
+}
+
+
+void Renderer::DepthModels(std::vector<Model> models, Vertex3D(*vertexDepthShader)(const Vertex3D&))
+{
+	std::vector<Vertex3D> tVertices; // to store vertices after transformation
+	int numVertices;
+
+	for(int i=0;i<models.size(); i++)
+	{
+		numVertices = models[i].m_vertexBuffer.size();
+		tVertices.resize(numVertices);
+		for(int j=0;j<numVertices;j++)
+        {
+            tVertices[j] = vertexDepthShader(models[i].m_vertexBuffer[j]);
+            //avoid divide by zero case
+            if(tVertices[j].position.w ==0.0f)
+                tVertices[j].position.w = 0.000001f;
+        }
+
+
+		unsigned ibsize = models[i].m_indexBuffer.size();
+		for(int j=0;j<ibsize;j+=3)
+		{
+			int a = models[i].m_indexBuffer[j],
+			    b = models[i].m_indexBuffer[j+1],
+			    c = models[i].m_indexBuffer[j+2];
+				
+			Vec4 &v1 = tVertices[a].position;
+			Vec4 &v2 = tVertices[b].position;
+			Vec4 &v3 = tVertices[c].position;
+
+            v1.NormalizeByW();
+            v2.NormalizeByW();
+            v3.NormalizeByW();
+
+			Point2D p1(static_cast<int>(v1.x*m_width/2.f+m_width/2.f), static_cast<int>(v1.y*(-m_height/2.f)+m_height/2.f)),
+					p2(static_cast<int>(v2.x*m_width/2.f+m_width/2.f), static_cast<int>(v2.y*(-m_height/2.f)+m_height/2.f)),
+					p3(static_cast<int>(v3.x*m_width/2.f+m_width/2.f), static_cast<int>(v3.y*(-m_height/2.f)+m_height/2.f));
+
+
+			p1.depth = v1.z;
+			p2.depth = v2.z;
+			p3.depth = v3.z;
+
+
+			RasterizerDepth::DrawTriangle(p1,p2,p3,m_width, m_height,m_depthBufferShadow);
+        }
+
+
+    }
 
 }
 

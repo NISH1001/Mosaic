@@ -26,6 +26,12 @@ Camera cam;
 // projection and view matrices
 Mat4 PROJECTION;
 
+//for lightspace thing....
+Mat4 DEPTH_PROJECTION;
+Mat4 DEPTH_VIEW;
+Mat4 DEPTH_MODEL;
+Mat4 DEPTH_MVP;
+
 // models
 std::vector<Model> models;
 
@@ -46,6 +52,10 @@ void FragmentShader(Point2D& p)
 	//get vertex normal
 	//Vec3 normal = p.attributes[1];
 	//normal.NormalizeToUnit();
+    //
+    //hawa comparison -> dont know to access worldspace coordinate to transform it into lightspace here
+    if(renderer.m_depthBuffer[p.y * WIDTH + HEIGHT] < renderer.m_depthBufferShadow[p.y * WIDTH + HEIGHT])
+        color = Vec3(0,0,0);
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
@@ -147,9 +157,21 @@ Vertex3D FlatShader( const Vertex3D & v)
 	return Vertex3D(image, vcopy.normal, vcopy.color);
 }
 
+//for lightspaec transformation -> not much to do -> only position
+Vertex3D VertexDepthShader(const Vertex3D & vertex)
+{
+    Vec4 p = DEPTH_MVP * vertex.position;
+    return Vertex3D(p, vertex.normal, vertex.color);
+}
+
+
 
 inline void Render()
 {
+    //first pass -> store only depth information relative to light
+    renderer.DepthModels(models, &VertexDepthShader);
+
+    //second pass -> real rendering
 	renderer.DrawModels(models, &VertexShader, &FragmentShader);
 }
 
@@ -218,7 +240,15 @@ int main()
 	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 1.f, 4000.f);
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
 	cam.SetView(eyepos, lookat);
-    
+
+    //out lightspace parameters
+    DEPTH_PROJECTION = Transform::Orthographic(-10,10,-10,10,-10,20);
+    {
+        Camera lightcam(lights[2].direction * -1, Vec3(0,0,0));
+        DEPTH_VIEW = lightcam.GetView();
+    }
+    DEPTH_MVP = DEPTH_PROJECTION * DEPTH_VIEW * DEPTH_MODEL;
+
     //this first model is our main model -> other shall be duplicated using this
     //kd -> controls the color of the model
 	Model model("objects/tree.obj", &FlatShader, &CalculateLight);
