@@ -221,7 +221,7 @@ int main()
     
     //this first model is our main model -> other shall be duplicated using this
     //kd -> controls the color of the model
-	Model model("objects/tree.obj", VertexShader);
+	Model model("objects/tree.obj", &FlatShader, &CalculateLight);
 	model.m_material.ka = {0.1,0.4,0.1};
     model.m_material.kd = {0.3,0.8,0.3};
     model.m_material.ks = {0.0,0.0,0.0};
@@ -253,15 +253,16 @@ int main()
     teapot.m_material.ks = {0.4,0.4,0.4};
     teapot.m_material.ns = 20;
     teapot.AddTransformation(Transform::Scale(20,20,20));
-    teapot.AddTransformation(Transform::Translate(200,0,-300));
+    teapot.AddTransformation(Transform::Translate(200,30,-300));
 
     // a ground plane -> lyang during rendering
     Model groundplane("objects/ground.obj", &VertexShader);
 	groundplane.m_material.ka = {0.4,0.4,0.4};
     groundplane.m_material.kd = {0.95f,0.65,0.38};
     groundplane.m_material.ks = {0,0,0};
-    groundplane.m_material.ns = 20;
-    groundplane.Scale(1,1,2);
+    groundplane.m_material.ns = 0;
+    //groundplane.Scale(1,1,2);
+    groundplane.Translate(-50,0,100);
     groundplane.AddTransformation(Transform::Scale(4,2,4));
 
     models.push_back(model);
