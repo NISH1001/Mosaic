@@ -7,7 +7,7 @@ int main()
 	std::ofstream outfile("objects/water.obj");
 	float y = 0.f; // water level at y=0.f
 
-	int breadth=2, length=3;
+	int breadth=30, length=30;
 
 	std::vector<int> indices;
 	// we have 31x21 points each at distance of 0.5

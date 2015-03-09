@@ -211,16 +211,18 @@ Vertex3D ground[] = {
                     Vertex3D(Vec4(1,0,0.5,1), Vec3(0,1,0), Vec3(0,0,1)), 
                     Vertex3D(Vec4(-1,0,0.5,1), Vec3(0,1,0), Vec3(0,0,1)),
                 };
+
+
 int main()
 {
-	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 1.f, 1000.f);
+	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 1.f, 4000.f);
 	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
 	cam.SetView(eyepos, lookat);
     
     //this first model is our main model -> other shall be duplicated using this
     //kd -> controls the color of the model
-	Model model("objects/tree.obj", &FlatShader, &CalculateLight);
-	model.m_material.ka = {0.1,0.1,0.1};
+	Model model("objects/tree.obj", VertexShader);
+	model.m_material.ka = {0.1,0.4,0.1};
     model.m_material.kd = {0.3,0.8,0.3};
     model.m_material.ks = {0.0,0.0,0.0};
     model.m_material.ns = 20;
@@ -229,7 +231,7 @@ int main()
     
     //bluish model -> assuming all light source as white
     Model model2 = model;
-	model2.m_material.ka = {0.1,0.1,0.1};
+	model2.m_material.ka = {0.1,0.4,0.1};
     model2.m_material.kd = {0.3,0.3,0.8};
     model2.m_material.ks = {0.0,0.0,0.0};
     model2.m_material.ns = 20;
@@ -238,14 +240,14 @@ int main()
 
     //reddish model -> assuimg all light source as white
     Model model3 = model;
-	model3.m_material.ka = {0.1,0.1,0.1};
+	model3.m_material.ka = {0.1,0.4,0.1};
     model3.m_material.kd = {0.8,0.3,0.3};
     model3.m_material.ks = {0.0,0.0,0.0};
     model3.m_material.ns = 20;
     model3.AddTransformation(Transform::Translate(-200,0,-100));
 
     //whitish teapot -> kd controls the color of model
-	Model teapot("objects/teapot.obj", &FlatShader);
+	Model teapot("objects/teapot.obj", &VertexShader);
 	teapot.m_material.ka = {0.1,0.1,0.1};
     teapot.m_material.kd = {0.4,0.4,0.4};
     teapot.m_material.ks = {0.4,0.4,0.4};
@@ -254,19 +256,19 @@ int main()
     teapot.AddTransformation(Transform::Translate(200,0,-300));
 
     // a ground plane -> lyang during rendering
-    Model groundplane(ground, sizeof(ground)/sizeof(ground[0]), &FlatShader, &CalculateLight);
+    Model groundplane("objects/ground.obj", &VertexShader);
 	groundplane.m_material.ka = {0.4,0.4,0.4};
     groundplane.m_material.kd = {0.95f,0.65,0.38};
     groundplane.m_material.ks = {0,0,0};
     groundplane.m_material.ns = 20;
     groundplane.Scale(1,1,2);
-    groundplane.AddTransformation(Transform::Scale(200,200,200));
+    groundplane.AddTransformation(Transform::Scale(4,2,4));
 
     models.push_back(model);
     models.push_back(model2);
     models.push_back(model3);
     models.push_back(teapot);
-    //models.push_back(groundplane);
+    models.push_back(groundplane);
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
