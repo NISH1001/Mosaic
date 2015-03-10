@@ -24,7 +24,6 @@ class Renderer
 		void SetRenderCallback(void(*renderCallback)(void)) { m_render = renderCallback; }
 		void SetUpdateCallback(void(* updateCallback)(double)) { m_update = updateCallback; }
 		void SetKeyboardCallback(void(*keyboardcallback)(SDL_Event*)) { m_keyboard = keyboardcallback; }
-        void SetVertexDepthShader(Vertex3D(*vdepthShader)(const Vertex3D&)) { m_vertexDepthShader = vdepthShader;}
 		//void SetResizeCallback(std::function<void(int, int)> resizeCallback) { m_resize = resizeCallback; }
 
 		void SetPixel(int x, int y, ColorRGBA color)
@@ -38,7 +37,7 @@ class Renderer
 		}
 
 		// for rendering the models loaded, this renders the overall scene of the program
-		void DrawModels(std::vector<Model>models, Vertex3D(*v)( const Vertex3D&), void(*s)(Point2D&));
+		void DrawModels(std::vector<Model>models, Vertex3D(*v)( const Vertex3D&), Vertex3D(*vDepth)(const Vertex3D&), void(*s)(Point2D&));
 
         //for lightspace things 
         void DepthModels(std::vector<Model>models, Vertex3D(*v)(const Vertex3D&));
@@ -79,7 +78,6 @@ class Renderer
 		std::function<void(double)> m_update;
 		std::function<void()> m_render;
 		std::function<void(SDL_Event*)> m_keyboard;
-        std::function<Vertex3D(const Vertex3D&)> m_vertexDepthShader;
 		//std::function<void(int,int)> m_resize;
 		
 };

@@ -173,7 +173,7 @@ inline void Render()
     renderer.DepthModels(models, &VertexDepthShader);
 
     //second pass -> real rendering
-	renderer.DrawModels(models, &VertexShader, &FragmentShader);
+	renderer.DrawModels(models, &VertexShader, &VertexDepthShader, &FragmentShader);
 }
 
 inline void KeyboardHandler(SDL_Event *e)
@@ -245,6 +245,7 @@ int main()
     //out lightspace parameters
     DEPTH_PROJECTION = Transform::Orthographic(-10,10,-10,10,-10,20);
     {
+        lights[2].direction.NormalizeToUnit();
         Camera lightcam(lights[2].direction * -1, Vec3(0,0,0));
         DEPTH_VIEW = lightcam.GetView();
     }
@@ -307,7 +308,6 @@ int main()
 		renderer.SetUpdateCallback(&Update);
 		renderer.SetRenderCallback(&Render);
 		renderer.SetKeyboardCallback(&KeyboardHandler);
-        renderer.SetVertexDepthShader(&VertexDepthShader);
 		renderer.MainLoop();
 		renderer.CleanUp();
 	}

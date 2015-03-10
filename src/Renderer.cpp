@@ -90,7 +90,7 @@ void Renderer::ClearDepthBuffer()
 		m_depthBuffer[i] = -1;
 }
 
-void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Vertex3D&), void(*fShader)(Point2D&))
+void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Vertex3D&), Vertex3D(*vDepthshader)(const Vertex3D&), void(*fShader)(Point2D&))
 {
 	std::vector<Vertex3D> tVertices; // to store vertices after transformation
 	int numVertices;
@@ -119,12 +119,12 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 
             if(m_shadowEnabled)
             {
-                Vertex3D temp = m_vertexDepthShader(models[i].m_vertexBuffer[j]);
+                Vertex3D temp = vDepthshader(models[i].m_vertexBuffer[j]);
                 Vec4 p = temp.position;
                 if(p.w = 0.0f)
                     p.w = 0.000001f;
                 p.NormalizeByW();
-                lightspace[j] = Vec3(p.x+0.5,p.y+0.5,p.z+0.5);
+                lightspace[j] = Vec3(p.x*0.5+0.5,p.y*0.5+0.5,p.z*0.5+0.5);
             }
         }
 
