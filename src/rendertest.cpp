@@ -52,10 +52,11 @@ void FragmentShader(Point2D& p)
 	//get vertex normal
 	//Vec3 normal = p.attributes[1];
 	//normal.NormalizeToUnit();
-    //
-    //hawa comparison -> dont know to access worldspace coordinate to transform it into lightspace here
-    if(renderer.m_depthBuffer[p.y * WIDTH + HEIGHT] < renderer.m_depthBufferShadow[p.y * WIDTH + HEIGHT])
-        color = Vec3(0,0,0);
+    
+    // now compare the point distance from light with the second depth buffer
+    // attributes[1] is where we are storing lightspace position
+    if(renderer.m_depthBufferShadow[p.y * WIDTH + p.x] < p.attributes[1].z)
+        color = Vec3(20,20,20);
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
@@ -306,6 +307,7 @@ int main()
 		renderer.SetUpdateCallback(&Update);
 		renderer.SetRenderCallback(&Render);
 		renderer.SetKeyboardCallback(&KeyboardHandler);
+        renderer.SetVertexDepthShader(&VertexDepthShader);
 		renderer.MainLoop();
 		renderer.CleanUp();
 	}

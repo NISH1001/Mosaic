@@ -12,7 +12,7 @@ class Renderer
 {
 	public:
 		Renderer() : m_window(NULL), m_renderer(NULL), m_screen(NULL), m_depthBuffer(NULL), 
-							m_timer(200) , m_frameBuffer(NULL), m_clearColor(0,0,0,255)//135,206,250,255)
+							m_timer(200) , m_frameBuffer(NULL), m_clearColor(0,0,0,255), m_shadowEnabled(false)
 		{}
 
 		~Renderer() {}
@@ -24,6 +24,7 @@ class Renderer
 		void SetRenderCallback(void(*renderCallback)(void)) { m_render = renderCallback; }
 		void SetUpdateCallback(void(* updateCallback)(double)) { m_update = updateCallback; }
 		void SetKeyboardCallback(void(*keyboardcallback)(SDL_Event*)) { m_keyboard = keyboardcallback; }
+        void SetVertexDepthShader(Vertex3D(*vdepthShader)(const Vertex3D&)) { m_vertexDepthShader = vdepthShader;}
 		//void SetResizeCallback(std::function<void(int, int)> resizeCallback) { m_resize = resizeCallback; }
 
 		void SetPixel(int x, int y, ColorRGBA color)
@@ -73,10 +74,12 @@ class Renderer
 		SDL_Renderer* m_renderer;
 		SDL_Surface* m_screen;
 		ColorRGBA m_clearColor;
+        bool m_shadowEnabled;
 		
 		std::function<void(double)> m_update;
 		std::function<void()> m_render;
 		std::function<void(SDL_Event*)> m_keyboard;
+        std::function<Vertex3D(const Vertex3D&)> m_vertexDepthShader;
 		//std::function<void(int,int)> m_resize;
 		
 };

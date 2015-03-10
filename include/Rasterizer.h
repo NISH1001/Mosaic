@@ -44,7 +44,7 @@ class Rasterizer
 				float depth = p1.depth + (p3.depth-p1.depth)*(p2.y-p1.y)/dy;
 				Vec3 attribute = p1.attributes[0] + (p3.attributes[0]-p1.attributes[0])*(p2.y-p1.y)/dy;
 				Vec3 attrNormal = p1.attributes[1] + (p3.attributes[1]-p1.attributes[1]) * (p2.y-p1.y)/dy;
-				attrNormal.NormalizeToUnit();
+				//attrNormal.NormalizeToUnit();
 				// new point
 				Point2D p(x, p2.y);
 				// assign attributes and depth
@@ -86,13 +86,21 @@ class Rasterizer
 
 			// attributes
 			Vec3 attr1, attr2, attr, dAttr1, dAttr2;
+            Vec3 attrN1, attrN2, attrN, dAttrN1, dAttrN2; 
+
 			attr1 = e1[0].attributes[0];
 			attr2 = e2[0].attributes[0];
+
+            attrN1 = e1[0].attributes[1];
+            attrN2 = e2[0].attributes[1];
 			
 			// values of attribute to be increased at each scan line
 			dAttr1 = (e1[0].attributes[0] - e1[1].attributes[0])/dy;
 			dAttr2 = (e2[0].attributes[0] - e2[1].attributes[0])/dy;
 			
+			dAttrN1 = (e1[0].attributes[1] - e1[1].attributes[1])/dy;
+			dAttrN2 = (e2[0].attributes[1] - e2[1].attributes[1])/dy;
+
 			// depths and values to be increased at each scan line
 			float depth1, depth2, depth, dDepth1, dDepth2;
 			dDepth1 = (e1[0].depth - e1[1].depth)/dy;
@@ -118,11 +126,13 @@ class Rasterizer
 					int dx = ROUND(x2)-ROUND(x1);
 
 					attr = attr1;
+                    attrN = attrN1;
 					depth = depth1;
 	
 					if (clippedx1 != ROUND(x1)) // means x-clipping has occured and thus attribute at clipped value is different than attr1
 					{
 						attr = attr1+(attr2-attr1)*(clippedx1-ROUND(x1))/dx;
+						attrN = attrN1+(attrN2-attrN1)*(clippedx1-ROUND(x1))/dx;
 						depth = depth1+(depth2-depth1)*(clippedx1-ROUND(x1))/dx;
 					}
 	
@@ -131,6 +141,7 @@ class Rasterizer
 						{
 							Point2D p(clippedx1, y);
 							p.attributes[0] = attr;
+                            p.attributes[1] = attrN;
 							depthBuffer[y*w + clippedx1] = depth;
 							fragShader(p);
 						}
@@ -138,11 +149,13 @@ class Rasterizer
 					for(int x=clippedx1+1;x<=clippedx2;x++)
 					{
 						attr+= (attr2-attr1)/dx;
+                        attrN += (attrN2 - attrN1)/dx;
 						depth+= (depth2-depth1)/dx;
 						if( depth < depthBuffer[y*w + x] and depth >= -1)
 						{
 							Point2D p(x, y);
 							p.attributes[0] = attr;
+							p.attributes[1] = attrN;
 							depthBuffer[y*w+x] = depth;
 							fragShader(p);
 						}
@@ -150,6 +163,8 @@ class Rasterizer
 			}
 			attr1 -= dAttr1;
 			attr2 -= dAttr2;
+            attrN1 -= dAttrN1;
+            attrN2 -= dAttrN2;
 			depth1 -= dDepth1;
 			depth2 -= dDepth2;
 

@@ -102,8 +102,12 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 		m_currentMaterial = &(models[i].m_material);
         m_currentModelMatrix = &(models[i].m_modelMatrix);
 
-		//just resize -> push_back will be slow as it has to resize after every element added
+        //to store position w.r.t light
+        std::vector<Vec3> lightspace;
+        lightspace.resize(numVertices);
+
 		tVertices.resize(numVertices);
+
 		for(int j=0;j<numVertices;j++)
         {
             tVertices[j] = models[i].vertexShader(models[i].m_vertexBuffer[j]);
@@ -112,6 +116,16 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
                 tVertices[j].position.w = 0.000001f;
             else if(tVertices[j].position.w < 0)
                 tVertices[j].position.w *= -1;
+
+            if(m_shadowEnabled)
+            {
+                Vertex3D temp = m_vertexDepthShader(models[i].m_vertexBuffer[j]);
+                Vec4 p = temp.position;
+                if(p.w = 0.0f)
+                    p.w = 0.000001f;
+                p.NormalizeByW();
+                lightspace[j] = Vec3(p.x+0.5,p.y+0.5,p.z+0.5);
+            }
         }
 
 		// backface culling and rendering triangles
@@ -126,6 +140,10 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 			Vec4 &v1 = tVertices[a].position;
 			Vec4 &v2 = tVertices[b].position;
 			Vec4 &v3 = tVertices[c].position;
+
+            Vec3 d1 = lightspace[a];
+            Vec3 d2 = lightspace[b];
+            Vec3 d3 = lightspace[c];
             
 
 			//do the clipping if object is behind the camera
@@ -184,13 +202,17 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 				p3.depth = v3.z;
 
 				p1.attributes[0] = tVertices[a].color;
-				p1.attributes[1] = tVertices[a].normal;
+				//p1.attributes[1] = tVertices[a].normal;
+				p1.attributes[1] =  d1;
 
 				p2.attributes[0] = tVertices[b].color;
-				p1.attributes[1] = tVertices[b].normal;
+				//p1.attributes[1] = tVertices[b].normal;
+                p2.attributes[1] = d2;
 
 				p3.attributes[0] = tVertices[c].color;
-				p3.attributes[1] = tVertices[c].normal;
+				//p3.attributes[1] = tVertices[c].normal;
+                p3.attributes[1] = d3;
+
 				// send to Rasterizer::drawtriangle the three normalized vertices
 				Rasterizer::DrawTriangle(p1,p2,p3,m_width, m_height,fShader,m_depthBuffer);
 			}
@@ -204,6 +226,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 
 void Renderer::DepthModels(std::vector<Model> models, Vertex3D(*vertexDepthShader)(const Vertex3D&))
 {
+    m_shadowEnabled = true;
 	std::vector<Vertex3D> tVertices; // to store vertices after transformation
 	int numVertices;
 
