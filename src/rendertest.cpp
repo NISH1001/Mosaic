@@ -55,7 +55,7 @@ void FragmentShader(Point2D& p)
     
     // now compare the point distance from light with the second depth buffer
     // attributes[1] is where we are storing lightspace position
-    if(renderer.m_depthBufferShadow[p.y * WIDTH + p.x] < p.attributes[1].z)
+    if(renderer.m_depthBufferShadow[(int)(p.attributes[1].y * WIDTH + p.attributes[1].x)] < p.attributes[1].z)
         color = Vec3(20,20,20);
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
@@ -170,7 +170,7 @@ Vertex3D VertexDepthShader(const Vertex3D & vertex)
 inline void Render()
 {
     //first pass -> store only depth information relative to light
-    renderer.DepthModels(models, &VertexDepthShader);
+    //renderer.DepthModels(models, &VertexDepthShader);
 
     //second pass -> real rendering
 	renderer.DrawModels(models, &VertexShader, &VertexDepthShader, &FragmentShader);
@@ -278,6 +278,13 @@ int main()
     model3.m_material.ns = 20;
     model3.AddTransformation(Transform::Translate(-200,0,-100));
 
+    Model model4 = model;
+	model4.m_material.ka = {0.1,0.4,0.1};
+    model4.m_material.kd = {0.3,0.8,0.3};
+    model4.m_material.ks = {0.0,0.0,0.0};
+    model4.m_material.ns = 20;
+    model4.AddTransformation(Transform::Translate(-200,0,200));
+
     //whitish teapot -> kd controls the color of model
 	Model teapot("objects/teapot.obj", &VertexShader);
 	teapot.m_material.ka = {0.1,0.1,0.1};
@@ -285,7 +292,7 @@ int main()
     teapot.m_material.ks = {0.4,0.4,0.4};
     teapot.m_material.ns = 20;
     teapot.AddTransformation(Transform::Scale(20,20,20));
-    teapot.AddTransformation(Transform::Translate(200,30,-300));
+    teapot.AddTransformation(Transform::Translate(200,28,-300));
 
     // a ground plane -> lyang during rendering
     Model groundplane("objects/ground.obj", &VertexShader);
@@ -295,11 +302,12 @@ int main()
     groundplane.m_material.ns = 0;
     //groundplane.Scale(1,1,2);
     groundplane.Translate(-50,0,100);
-    groundplane.AddTransformation(Transform::Scale(4,2,4));
+    groundplane.AddTransformation(Transform::Scale(10,1,4));
 
     models.push_back(model);
     models.push_back(model2);
     models.push_back(model3);
+    models.push_back(model4);
     models.push_back(teapot);
     models.push_back(groundplane);
 
