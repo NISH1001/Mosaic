@@ -14,8 +14,8 @@ int HEIGHT = 600;
 //test angle
 float angle = 0.f;
 
-Vec3 eyepos(-100, 50, 400) ;
-Vec3 lookat(0,50,0);
+Vec3 eyepos(-100, 80, 400) ;
+Vec3 lookat(0,80,0);
 
 // main renderer
 Renderer renderer; 
@@ -285,6 +285,20 @@ int main()
     model4.m_material.ns = 20;
     model4.AddTransformation(Transform::Translate(-200,0,200));
 
+    Model model5 = model;
+	model5.m_material.ka = {0.1,0.4,0.1};
+    model5.m_material.kd = {0.3,0.8,0.8};
+    model5.m_material.ks = {0.0,0.0,0.0};
+    model5.m_material.ns = 20;
+    model5.AddTransformation(Transform::Translate(500,0,-300));
+
+    Model model6 = model;
+	model6.m_material.ka = {0.1,0.4,0.1};
+    model6.m_material.kd = {0.3,0.8,0.8};
+    model6.m_material.ks = {0.0,0.0,0.0};
+    model6.m_material.ns = 20;
+    model6.AddTransformation(Transform::Translate(300,0,-100));
+
     //whitish teapot -> kd controls the color of model
 	Model teapot("objects/teapot.obj", &VertexShader);
 	teapot.m_material.ka = {0.1,0.1,0.1};
@@ -308,6 +322,8 @@ int main()
     models.push_back(model2);
     models.push_back(model3);
     models.push_back(model4);
+    models.push_back(model5);
+    models.push_back(model6);
     models.push_back(teapot);
     models.push_back(groundplane);
 

@@ -167,8 +167,8 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 			float C = Helper::GetC(v1, v2, v3);
 
             // temporary -> just for correcting the culling for flatshading
-            if(models[i].m_isFlat)
-                C = -C;
+            if(models[i].m_isFlat);
+                //C = -C;
 
 
 			// since the view vector is along z axis(0,0,1), we may just check 
