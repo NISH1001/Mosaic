@@ -56,7 +56,7 @@ void FragmentShader(Point2D& p)
     // now compare the point distance from light with the second depth buffer
     // attributes[1] is where we are storing lightspace position
     if(renderer.m_depthBufferShadow[(int)(p.attributes[1].y * WIDTH + p.attributes[1].x)] < p.attributes[1].z)
-        color = Vec3(20,20,20);
+        color = Vec3(color.x/6,color.y/6, color.z/6);
 	
 	renderer.SetPixel(p.x, p.y, ColorRGBA(color.x,color.y,color.z,255));
 }
@@ -151,16 +151,17 @@ Vertex3D VertexShader( const Vertex3D & vertex)
 
 Vertex3D FlatShader( const Vertex3D & v)
 {
-    Vertex3D vcopy = v;
     Mat4 modelmatrix = *(renderer.m_currentModelMatrix);
 	//vcopy.position = modelmatrix*v.position;
-	Vec4 image = PROJECTION * cam.GetView() * modelmatrix*vcopy.position; 
-	return Vertex3D(image, vcopy.normal, vcopy.color);
+	Vec4 image = PROJECTION * cam.GetView() * modelmatrix*v.position; 
+	return Vertex3D(image, v.normal, v.color);
 }
 
 //for lightspaec transformation -> not much to do -> only position
 Vertex3D VertexDepthShader(const Vertex3D & vertex)
 {
+    Mat4 DEPTH_MODEL  = *(renderer.m_currentModelMatrix);
+    DEPTH_MVP = DEPTH_PROJECTION * DEPTH_VIEW * DEPTH_MODEL;
     Vec4 p = DEPTH_MVP * vertex.position;
     return Vertex3D(p, vertex.normal, vertex.color);
 }
@@ -243,7 +244,7 @@ int main()
 	cam.SetView(eyepos, lookat);
 
     //out lightspace parameters
-    DEPTH_PROJECTION = Transform::Orthographic(-10,10,-10,10,-10,20);
+    DEPTH_PROJECTION = Transform::Orthographic(-100,100,-100,100,-100,200);
     {
         lights[2].direction.NormalizeToUnit();
         Camera lightcam(lights[2].direction * -1, Vec3(0,0,0));

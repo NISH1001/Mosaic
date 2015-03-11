@@ -141,8 +141,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 			Vec4 &v2 = tVertices[b].position;
 			Vec4 &v3 = tVertices[c].position;
 
-            Vec3 d1 = lightspace[a];
-            Vec3 d2 = lightspace[b];
+            Vec3 d1 = lightspace[a]; Vec3 d2 = lightspace[b];
             Vec3 d3 = lightspace[c];
             
 
@@ -232,8 +231,11 @@ void Renderer::DepthModels(std::vector<Model> models, Vertex3D(*vertexDepthShade
 
 	for(int i=0;i<models.size(); i++)
 	{
+        m_currentModelMatrix = &(models[i].m_modelMatrix);
+
 		numVertices = models[i].m_vertexBuffer.size();
 		tVertices.resize(numVertices);
+
 		for(int j=0;j<numVertices;j++)
         {
             tVertices[j] = vertexDepthShader(models[i].m_vertexBuffer[j]);
@@ -250,9 +252,9 @@ void Renderer::DepthModels(std::vector<Model> models, Vertex3D(*vertexDepthShade
 			    b = models[i].m_indexBuffer[j+1],
 			    c = models[i].m_indexBuffer[j+2];
 				
-			Vec4 &v1 = tVertices[a].position;
-			Vec4 &v2 = tVertices[b].position;
-			Vec4 &v3 = tVertices[c].position;
+			Vec4 v1 = tVertices[a].position;
+			Vec4 v2 = tVertices[b].position;
+			Vec4 v3 = tVertices[c].position;
 
             v1.NormalizeByW();
             v2.NormalizeByW();
