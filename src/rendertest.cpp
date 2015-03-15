@@ -1,6 +1,7 @@
 #include <iostream>
 #include <Renderer.h>
 #include <Matrix.h>
+#include <cmath>
 #include <Transform.h>
 #include <Rasterizer.h>
 #include <Model.h>
@@ -182,6 +183,8 @@ inline void KeyboardHandler(SDL_Event *e)
 
 }
 
+void UpdateWater(float);
+
 void Update(double dt)
 {
 	const Uint8 *keys = SDL_GetKeyboardState(NULL);
@@ -225,16 +228,34 @@ void Update(double dt)
 		cam.MoveVertically(-100*dt);
 	}
     //angle += 0.3;
+    UpdateWater(dt);
 }
 
-Vertex3D ground[] = {
-                    Vertex3D(Vec4(-1,0,-0.5,1), Vec3(0,1,0), Vec3(0,0,1)), 
-                    Vertex3D(Vec4(1,0,-0.5,1), Vec3(0,1,0), Vec3(0,0,1)), 
-                    Vertex3D(Vec4(1,0,0.5,1), Vec3(0,1,0), Vec3(0,0,1)), 
-                    Vertex3D(Vec4(-1,0,-0.5,1), Vec3(0,1,0), Vec3(0,0,1)), 
-                    Vertex3D(Vec4(1,0,0.5,1), Vec3(0,1,0), Vec3(0,0,1)), 
-                    Vertex3D(Vec4(-1,0,0.5,1), Vec3(0,1,0), Vec3(0,0,1)),
-                };
+float t = 0;
+void UpdateWater(float dt)
+{
+    t+=dt;
+    // currently, the size of water is 20X20 array
+    for(int i=0;i<20;i++)
+    ;//models[models.size()-1].m_vertexBuffer[i*20+4].position.y += 0.05*sin(3*t+ i);
+    
+    
+    for(int i=0;i<20;i+=2)
+    for(int j=0;j<20;j++)
+    models[models.size()-1].m_vertexBuffer[j*20+i].position.y += 0.05*sin(3*t+ j);
+
+    /*
+    i=3;
+    for(int j=0;j<20;j++)
+    models[models.size()-1].m_vertexBuffer[j*20+i].position.y += 0.05*sin(3*t+ j);
+
+    i=4;
+    for(int j=0;j<20;j++)
+    models[models.size()-1].m_vertexBuffer[j*20+i].position.y += 0.05*sin(3*t+ j);
+    */
+
+}
+
 
 
 int main()
@@ -301,7 +322,7 @@ int main()
     model6.AddTransformation(Transform::Translate(300,0,-100));
 
     //whitish teapot -> kd controls the color of model
-	Model teapot("objects/teapot.obj", &VertexShader);
+	Model teapot("objects/teapot.obj", &FlatShader, &CalculateLight);
 	teapot.m_material.ka = {0.1,0.1,0.1};
     teapot.m_material.kd = {0.4,0.4,0.4};
     teapot.m_material.ks = {0.4,0.4,0.4};
@@ -310,16 +331,24 @@ int main()
     teapot.AddTransformation(Transform::Translate(200,28,-300));
 
     // a ground plane -> lyang during rendering
-    Model groundplane("objects/ground.obj", &VertexShader);
+    Model groundplane("objects/ground.obj", &FlatShader, &CalculateLight);
 	groundplane.m_material.ka = {0.4,0.4,0.4};
     groundplane.m_material.kd = {0.95f,0.65,0.38};
     groundplane.m_material.ks = {0,0,0};
     groundplane.m_material.ns = 0;
     //groundplane.Scale(1,1,2);
-    groundplane.Translate(-50,0,100);
     groundplane.AddTransformation(Transform::Scale(10,1,4));
+    groundplane.Translate(-50,0,100);
+    
+    // a water plane -> lyang during rendering
+    Model water("objects/water.obj", &FlatShader, &CalculateLight);
+	water.m_material.ka = {0.1,0.1,0.4};
+    water.m_material.kd = {0.25f,0.35,0.38};
+    water.m_material.ks = {0,0,0};
+    water.m_material.ns = 0;
+    water.AddTransformation(Transform::Scale(2,1,2));
+    water.Translate(-440,2,200);
 
-    models.push_back(model);
     models.push_back(model2);
     models.push_back(model3);
     models.push_back(model4);
@@ -327,6 +356,7 @@ int main()
     models.push_back(model6);
     models.push_back(teapot);
     models.push_back(groundplane);
+    models.push_back(water);
 
 	if(renderer.Initialize("rendertest", 50, 100, WIDTH, HEIGHT))
 	{
