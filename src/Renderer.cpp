@@ -79,8 +79,6 @@ void Renderer::MainLoop(void)
 
 		SDL_UnlockSurface(m_screen);
 		SDL_UpdateWindowSurface(m_window);
-		// clear depth buffer
-		//ClearDepthBuffer();
 	}
 }
 
@@ -92,12 +90,10 @@ void Renderer::ClearDepthBuffer()
 
 void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Vertex3D&), Vertex3D(*vDepthshader)(const Vertex3D&), void(*fShader)(Point2D&))
 {
-	std::vector<Vertex3D> tVertices; // to store vertices after transformation
-	int numVertices;
 
 	for(int i=0;i<models.size(); i++)
 	{
-		numVertices = models[i].m_vertexBuffer.size();
+		int numVertices = models[i].m_vertexBuffer.size();
 
 		m_currentMaterial = &(models[i].m_material);
         m_currentModelMatrix = &(models[i].m_modelMatrix);
@@ -106,6 +102,7 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
         std::vector<Vec3> lightspace;
         lightspace.resize(numVertices);
 
+	    std::vector<Vertex3D> tVertices; // to store vertices after transformation
 		tVertices.resize(numVertices);
 
 		for(int j=0;j<numVertices;j++)
@@ -121,9 +118,6 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
             {
                 Vertex3D temp = vDepthshader(models[i].m_vertexBuffer[j]);
                 Vec4 p = temp.position;
-                if(p.w = 0.0f)
-                    p.w = 0.000001f;
-                p.NormalizeByW();
                 lightspace[j] = Vec3(p.x*0.5+0.5,p.y*0.5+0.5,p.z*0.5+0.5);
             }
         }
@@ -137,9 +131,9 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 			    b = models[i].m_indexBuffer[j+1],
 			    c = models[i].m_indexBuffer[j+2];
 				
-			Vec4 &v1 = tVertices[a].position;
-			Vec4 &v2 = tVertices[b].position;
-			Vec4 &v3 = tVertices[c].position;
+			Vec4 v1 = tVertices[a].position;
+			Vec4 v2 = tVertices[b].position;
+			Vec4 v3 = tVertices[c].position;
 
             Vec3 d1 = lightspace[a]; Vec3 d2 = lightspace[b];
             Vec3 d3 = lightspace[c];
@@ -215,8 +209,6 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
 				// send to Rasterizer::drawtriangle the three normalized vertices
 				Rasterizer::DrawTriangle(p1,p2,p3,m_width, m_height,fShader,m_depthBuffer);
 			}
-			//else 
-				//std::cout << "hidden\n ";
 		}
 	}
 
@@ -239,9 +231,6 @@ void Renderer::DepthModels(std::vector<Model> models, Vertex3D(*vertexDepthShade
 		for(int j=0;j<numVertices;j++)
         {
             tVertices[j] = vertexDepthShader(models[i].m_vertexBuffer[j]);
-            //avoid divide by zero case
-            if(tVertices[j].position.w ==0.0f)
-                tVertices[j].position.w = 0.000001f;
         }
 
 
@@ -256,19 +245,18 @@ void Renderer::DepthModels(std::vector<Model> models, Vertex3D(*vertexDepthShade
 			Vec4 v2 = tVertices[b].position;
 			Vec4 v3 = tVertices[c].position;
 
+            /* no need to normalize cuz orthographics projection w==1
             v1.NormalizeByW();
             v2.NormalizeByW();
             v3.NormalizeByW();
-
+            */
 			Point2D p1(static_cast<int>(v1.x*m_width/2.f+m_width/2.f), static_cast<int>(v1.y*(-m_height/2.f)+m_height/2.f)),
 					p2(static_cast<int>(v2.x*m_width/2.f+m_width/2.f), static_cast<int>(v2.y*(-m_height/2.f)+m_height/2.f)),
 					p3(static_cast<int>(v3.x*m_width/2.f+m_width/2.f), static_cast<int>(v3.y*(-m_height/2.f)+m_height/2.f));
 
-
 			p1.depth = v1.z;
 			p2.depth = v2.z;
 			p3.depth = v3.z;
-
 
 			RasterizerDepth::DrawTriangle(p1,p2,p3,m_width, m_height,m_depthBufferShadow);
         }

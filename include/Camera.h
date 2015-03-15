@@ -15,7 +15,7 @@ public:
 
 	void SetView(Vec3 pos, Vec3 target)
 	{
-        float y_limit = 30;
+        float y_limit = 70;
         if(pos.y < y_limit) pos.y = y_limit;
         if(target.y < y_limit) target.y = y_limit;
 		m_pos = pos;

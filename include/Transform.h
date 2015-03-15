@@ -123,15 +123,18 @@ public:
 				);
 	}
 
-	static Mat4 Orthographic(float right, float left, float top, float bottom, float near, float far)
-	{
-		return Mat4(
-					2/(right-left), 0, 0, -(right+left)/(right-left),
-					0, 2/(top-bottom), 0, -(top+bottom)/(top-bottom),
-					0, 0, -2/(far-near), (far+near)/(far-near),
-					0, 0, 0, 1
-					);
-	}
+    static Mat4 Orthographic(float left, float right, float bottom, float top, float near, float far)
+    {
+        float rl = 1.0f/(right - left);
+        float tb = 1.0f/(top - bottom);
+        float fn = 1.0f/(far - near);
+        return Mat4(
+                2*rl, 0, 0, -(right+left)*rl,
+                0, 2*tb, 0, -(top+bottom)*tb,
+                0, 0, -2*fn, -(far+near)*fn,
+                0, 0, 0, 1
+                );
+    }
 
 
 	// LookAt returns model view matrix

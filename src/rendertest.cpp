@@ -172,7 +172,7 @@ Vertex3D VertexDepthShader(const Vertex3D & vertex)
 inline void Render()
 {
     //first pass -> store only depth information relative to light
-    //renderer.DepthModels(models, &VertexDepthShader);
+    renderer.DepthModels(models, &VertexDepthShader);
 
     //second pass -> real rendering
 	renderer.DrawModels(models, &VertexShader, &VertexDepthShader, &FragmentShader);
@@ -227,7 +227,7 @@ void Update(double dt)
 	{
 		cam.MoveVertically(-100*dt);
 	}
-    //angle += 0.3;
+
     UpdateWater(dt);
 }
 
@@ -261,11 +261,11 @@ void UpdateWater(float dt)
 int main()
 {
 	PROJECTION = Transform::Perspective(60.f * 3.141592/180, float(WIDTH)/HEIGHT, 1.f, 4000.f);
-	//PROJECTION = Transform::Orthographic(200,-200,200,-200,-200,200); //R,L,T,B,F,N
+    //PROJECTION = Transform::Orthographic(-200,200,-200,200,200,-200);
 	cam.SetView(eyepos, lookat);
 
     //out lightspace parameters
-    DEPTH_PROJECTION = Transform::Orthographic(-100,100,-100,100,-100,200);
+    DEPTH_PROJECTION = Transform::Orthographic(-200,200,-200,200,200,-200);
     {
         lights[2].direction.NormalizeToUnit();
         Camera lightcam(lights[2].direction * -1, Vec3(0,0,0));
@@ -336,9 +336,8 @@ int main()
     groundplane.m_material.kd = {0.95f,0.65,0.38};
     groundplane.m_material.ks = {0,0,0};
     groundplane.m_material.ns = 0;
-    //groundplane.Scale(1,1,2);
-    groundplane.AddTransformation(Transform::Scale(10,1,4));
-    groundplane.Translate(-50,0,100);
+    groundplane.AddTransformation(Transform::Scale(10,1,20));
+    groundplane.AddTransformation(Transform::Translate(-350,0,400));
     
     // a water plane -> lyang during rendering
     Model water("objects/water.obj", &FlatShader, &CalculateLight);
@@ -347,7 +346,7 @@ int main()
     water.m_material.ks = {0,0,0};
     water.m_material.ns = 0;
     water.AddTransformation(Transform::Scale(2,1,2));
-    water.Translate(-440,2,200);
+    water.AddTransformation(Transform::Translate(-725,2,200));
 
     models.push_back(model2);
     models.push_back(model3);
