@@ -118,7 +118,9 @@ void Renderer::DrawModels(std::vector<Model> models, Vertex3D(*vShader)(const Ve
             {
                 Vertex3D temp = vDepthshader(models[i].m_vertexBuffer[j]);
                 Vec4 p = temp.position;
-                lightspace[j] = Vec3(p.x*0.5+0.5,p.y*0.5+0.5,p.z*0.5+0.5);
+                int x = (p.x*0.5+0.5) * m_width;
+                int y = (p.y * 0.5 + 0.5) * m_height;
+                lightspace[j] = Vec3(x,y,p.z*0.5+0.5);
             }
         }
 

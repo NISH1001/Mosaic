@@ -39,9 +39,9 @@ std::vector<Model> models;
 //lights
 AmbientLight ambientlight = {{0.4,0.4,0.4}};
 std::vector<DirectedLight> lights = {
-                                    {Vec3(0,-1,1), Vec3(1,1,1)},
-									{Vec3(1,-1,-1), Vec3(1,1,1)},
-									{Vec3(-1,-0.5,0.2), Vec3(1,1,1)},
+                                    DirectedLight(Vec3(0,-1,1), Vec3(1,1,1)),
+									DirectedLight(Vec3(1,-1,-1), Vec3(1,1,1)),
+									DirectedLight(Vec3(-1,-0.5,0.2), Vec3(1,1,1)),
 								};
 
 // Fragment shader, receives a point and renders it in framebuffer
@@ -172,7 +172,7 @@ Vertex3D VertexDepthShader(const Vertex3D & vertex)
 inline void Render()
 {
     //first pass -> store only depth information relative to light
-    renderer.DepthModels(models, &VertexDepthShader);
+    //renderer.DepthModels(models, &VertexDepthShader);
 
     //second pass -> real rendering
 	renderer.DrawModels(models, &VertexShader, &VertexDepthShader, &FragmentShader);
@@ -236,13 +236,13 @@ void UpdateWater(float dt)
 {
     t+=dt;
     // currently, the size of water is 20X20 array
-    for(int i=0;i<20;i++)
+    //for(int i=0;i<20;i++)
     ;//models[models.size()-1].m_vertexBuffer[i*20+4].position.y += 0.05*sin(3*t+ i);
     
     
-    for(int i=0;i<20;i+=2)
+    for(int i=0;i<50;i+=2)
     for(int j=0;j<20;j++)
-    models[models.size()-1].m_vertexBuffer[j*20+i].position.y += 0.05*sin(3*t+ j);
+    models[models.size()-1].m_vertexBuffer[j*50+i].position.y += 0.15*sin(1*t+ j);
 
     /*
     i=3;
@@ -265,10 +265,9 @@ int main()
 	cam.SetView(eyepos, lookat);
 
     //out lightspace parameters
-    DEPTH_PROJECTION = Transform::Orthographic(-200,200,-200,200,200,-200);
+    DEPTH_PROJECTION = Transform::Orthographic(-100,100,-100,100,100,-100);
     {
-        lights[2].direction.NormalizeToUnit();
-        Camera lightcam(lights[2].direction * -1, Vec3(0,0,0));
+        Camera lightcam(lights[2].direction * 1, Vec3(0,0,0));
         DEPTH_VIEW = lightcam.GetView();
     }
     DEPTH_MVP = DEPTH_PROJECTION * DEPTH_VIEW * DEPTH_MODEL;
@@ -321,14 +320,26 @@ int main()
     model6.m_material.ns = 20;
     model6.AddTransformation(Transform::Translate(300,0,-100));
 
+    Model model7 = model;
+    model7.AddTransformation(Transform::Translate(600,0,-800));
+
     //whitish teapot -> kd controls the color of model
-	Model teapot("objects/teapot.obj", &FlatShader, &CalculateLight);
+	Model teapot("objects/teapot.obj", &VertexShader );
 	teapot.m_material.ka = {0.1,0.1,0.1};
     teapot.m_material.kd = {0.4,0.4,0.4};
     teapot.m_material.ks = {0.4,0.4,0.4};
     teapot.m_material.ns = 20;
     teapot.AddTransformation(Transform::Scale(20,20,20));
-    teapot.AddTransformation(Transform::Translate(200,28,-300));
+    teapot.AddTransformation(Transform::Translate(200,25,-300));
+
+    Model teapot2 = teapot;
+	teapot2.m_material.ka = {0.1,0.1,0.1};
+    teapot2.m_material.kd = {0.8,0.4,0.4};
+    teapot2.m_material.ks = {0.4,0.4,0.4};
+    teapot2.m_material.ns = 10;
+    teapot2.AddTransformation(Transform::Scale(20,20,20));
+    teapot2.AddTransformation(Transform::Translate(100,28,-300));
+
 
     // a ground plane -> lyang during rendering
     Model groundplane("objects/ground.obj", &FlatShader, &CalculateLight);
@@ -336,7 +347,7 @@ int main()
     groundplane.m_material.kd = {0.95f,0.65,0.38};
     groundplane.m_material.ks = {0,0,0};
     groundplane.m_material.ns = 0;
-    groundplane.AddTransformation(Transform::Scale(10,1,20));
+    groundplane.AddTransformation(Transform::Scale(10,1,10));
     groundplane.AddTransformation(Transform::Translate(-350,0,400));
     
     // a water plane -> lyang during rendering
@@ -345,7 +356,7 @@ int main()
     water.m_material.kd = {0.25f,0.35,0.38};
     water.m_material.ks = {0,0,0};
     water.m_material.ns = 0;
-    water.AddTransformation(Transform::Scale(2,1,2));
+    water.AddTransformation(Transform::Scale(2,1,11));
     water.AddTransformation(Transform::Translate(-725,2,200));
 
     models.push_back(model2);
@@ -353,7 +364,9 @@ int main()
     models.push_back(model4);
     models.push_back(model5);
     models.push_back(model6);
+    models.push_back(model7);
     models.push_back(teapot);
+    models.push_back(teapot2);
     models.push_back(groundplane);
     models.push_back(water);
 
